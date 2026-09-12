@@ -18,6 +18,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
+from article_text import finalize_article
 from content_paths import ARTICLES, CATALOG
 DEFAULT_DB = Path.home() / "wiki-distill" / "educational-source.db"
 PACK_DIR = ARTICLES / "db-packs" / "uk-curriculum"
@@ -137,7 +138,7 @@ def write_articles(rows: list[dict]) -> tuple[dict[str, str], set[str]]:
     for row in rows:
         filename = f"{int(row['id']):05d}-{slugify(row['title'])}.md"
         path = PACK_DIR / filename
-        content = normalize_lesson(row["title"], row["draft"])
+        content, _ = finalize_article(normalize_lesson(row["title"], row["draft"]))
         if not path.exists() or path.read_text(encoding="utf-8") != content:
             path.write_text(content, encoding="utf-8")
             changed.add(filename)

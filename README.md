@@ -27,7 +27,7 @@ firmware build find it at `../pocketwiki-content`, or wherever
 `POCKETWIKI_CONTENT_DIR` points.
 
 ```sh
-git clone https://github.com/bilawalriaz/pocketwiki-esp32.git
+git clone https://github.com/bilawalriaz/pocketwiki.git
 git clone https://github.com/bilawalriaz/pocketwiki-content.git
 ```
 

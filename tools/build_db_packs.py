@@ -19,6 +19,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
+from article_text import finalize_article
 from content_paths import ARTICLES, CATALOG
 DEFAULT_DB = Path.home() / "wiki-distill" / "educational-source.db"
 DEFAULT_ARTICLES = ARTICLES / "db-packs"
@@ -410,7 +411,7 @@ def main() -> int:
             text = (row["draft"] or "").strip()
             # Normalize the leading title so the pack index always reflects DB metadata.
             text = re.sub(r"^#\s+[^\n]*(?:\n+|$)", "", text, count=1)
-            body = f"# {row['title']}\n\n{text.strip()}\n"
+            body, _ = finalize_article(f"# {row['title']}\n\n{text.strip()}\n")
             (pack_dir / filename).write_text(body, encoding="utf-8")
             filenames.append(filename)
         report = {

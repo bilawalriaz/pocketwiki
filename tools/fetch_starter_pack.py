@@ -16,6 +16,7 @@ import urllib.parse
 import urllib.request
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
+from article_text import finalize_article
 from content_paths import ARTICLES
 OUT = ARTICLES / "starter"
 
@@ -74,16 +75,9 @@ def main() -> None:
             body = [f"# {display}", ""]
             if description:
                 body.extend([f"*{description[0].upper() + description[1:]}.*", ""])
-            body.extend([
-                extract,
-                "",
-                "## Source and licence",
-                "",
-                f"Adapted from [{display}]({source}) on Wikipedia. Text is available under the "
-                "[Creative Commons Attribution-ShareAlike License](https://creativecommons.org/licenses/by-sa/4.0/).",
-                "",
-            ])
-            (OUT / f"{index:03d}-{slug(display)}.md").write_text("\n".join(body), encoding="utf-8")
+            body.extend([extract, ""])
+            text, _ = finalize_article("\n".join(body), source=source)
+            (OUT / f"{index:03d}-{slug(display)}.md").write_text(text, encoding="utf-8")
             print(f"[{index:03d}/100] {display}")
             time.sleep(0.04)
         except Exception as exc:  # keep the complete failure list actionable

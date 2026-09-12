@@ -43,6 +43,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
+from article_text import finalize_article
 from content_paths import ARTICLES, CATALOG
 DEFAULT_DB = Path.home() / "wiki-distill" / "wiki-distill.db"
 ARTICLES_DIR = ARTICLES / "distilled"
@@ -66,7 +67,6 @@ L4_CATEGORIES = [
 UA = {"User-Agent": "pocketwiki-export/1.0 (categorization; contact: none)"}
 API = "https://en.wikipedia.org/w/api.php"
 
-ATTRIBUTION = ""  # article pages carry no per-article Source/Licence footer
 
 
 def slugify(title: str) -> str:
@@ -131,9 +131,10 @@ def tables_to_bullets(text: str) -> str:
 
 
 def render_article(title: str, draft: str) -> str:
+    """Render one distillation with the article invariants already applied."""
     body = tables_to_bullets(draft).rstrip()
-    url = "https://en.wikipedia.org/wiki/" + title.replace(" ", "_")
-    return f"# {title}\n\n{body}{ATTRIBUTION.format(title=title, url=url)}"
+    text, _ = finalize_article(f"# {title}\n\n{body}\n")
+    return text
 
 
 def select_distillations(db_path: Path) -> list[dict]:

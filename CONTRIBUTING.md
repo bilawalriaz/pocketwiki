@@ -9,7 +9,8 @@ For code changes:
 1. Create a branch from `main`.
 2. Keep generated firmware, archives, corpora, `sdkconfig`, and managed
    components out of the commit.
-3. Run `python3 -m pytest -q`.
+3. Run `python3 -m pytest -q` and, when you touch article generation,
+   `python3 tools/finalize_articles.py --check`.
 4. Build with ESP-IDF when the change touches `firmware/`, CMake, Kconfig, or
    partition data.
 5. Preview frontend changes with `tools/reference_server.py` at desktop and

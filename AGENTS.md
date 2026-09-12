@@ -37,6 +37,8 @@ web interface, BLE setup, and an optional SSD1306 OLED.
 - Do not fetch network content during a normal firmware build.
 - Read article text from the separate `pocketwiki-content` checkout through
   `tools/content_paths.py`; keep article text out of this repository.
+- Route every generated article through `tools/article_text.py:finalize_article`
+  so it keeps one `h1`, no generator commentary, and its CC BY-SA footer.
 
 ## Verification
 

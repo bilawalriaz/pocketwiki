@@ -111,6 +111,67 @@ The experimental PWPK browser path can be exercised with
 [BROWSER_BENCHMARK.md](BROWSER_BENCHMARK.md). It is separate from the
 production built-in archive.
 
+## Article text and its invariants
+
+Article text is not in this repository. It lives in the companion
+`pocketwiki-content` checkout and is licensed CC BY-SA 4.0. The generators in
+`tools/` read that checkout and write Markdown into it.
+
+`tools/article_text.py` is the single definition of a finalized article:
+
+- no trailing generator commentary (edit logs, word-count self-assessments),
+- exactly one `h1`, with later `h1` headings demoted to `h2`,
+- a CC BY-SA 4.0 footer naming the source article.
+
+Every generator calls `finalize_article` before writing, so regenerating content
+cannot lose those properties.
+
+```sh
+python3 tools/finalize_articles.py            # report drift (dry run)
+python3 tools/finalize_articles.py --check    # exit 1 if any article has drifted
+python3 tools/finalize_articles.py --apply    # repair, with a JSON report
+```
+
+The commentary rules are deliberately narrow. `## What Changed for Society` is
+legitimate content in an article about social change, so only a bolded
+`**Changes made:**`-style header, or a self-assessment phrase inside the last
+few lines, counts as generator commentary.
+
+### Auditing the rules' recall
+
+`tools/audit_meta_commentary.py` asks a local model to quote any remaining
+non-article text, and verifies every quote verbatim against the file. Run it on
+the flagged set to confirm the rules are right, and on a sample of articles the
+rules judged clean to bound what they miss.
+
+```sh
+# Confirmation: only articles the rules already flag.
+python3 tools/audit_meta_commentary.py --mode candidates
+
+# Recall: a random sample the rules judged clean.
+python3 tools/audit_meta_commentary.py --mode sample --limit 300 --repeat 2
+```
+
+It speaks the OpenAI chat-completions API, so the same command drives LM Studio
+on a laptop and `llama-server` on a GPU box:
+
+```sh
+python3 tools/audit_meta_commentary.py --base-url http://aero:8080/v1 \
+    --model minicpm5-2b --mode all --workers 4 --report tools/meta-audit.jsonl
+```
+
+Verification is the point: a quote that cannot be found in the article is
+reported as unverified, which is how you measure the model inventing spans, and
+`--repeat 2` reports verdicts that changed between runs.
+
+MiniCPM5-2B is a hybrid-reasoning model whose thinking block is on by default
+and will spend the entire token budget before answering. The tool therefore
+sends `reasoning_effort: "none"` (measured: 0 reasoning tokens instead of 254,
+about 5x faster). On llama.cpp, pass
+`--chat-template-kwargs '{"enable_thinking": false}'` for the same effect. The
+model card's `temperature=1.0, top_p=0.95, min_p=0.0` are generation settings;
+this is an extraction task, so greedy decoding is the default here.
+
 ## Before you open a pull request
 
 1. Run `python3 -m pytest -q`.

@@ -63,6 +63,8 @@ def test_keeps_prose_about_word_counts_in_the_body():
     "the fact that data is now routine, not on a meta-summary.",
     "Note on edits: removed the forbidden meta-conclusion paragraph, dropped a figure.",
     "The edit trims filler (\"sometimes awkward\"), merges two footnotes, and keeps the model.",
+    "Trims: removed restated Barsanti/Matteucci date (covered in timeline), vague "
+    "\"car, truck\" list, and soft closing sentence. Tightened headings and dropped filler.",
 ])
 def test_removes_observed_self_assessment_lines(tail):
     text = f"# Some topic\n\nReal article prose.\n\n{tail}\n"
@@ -137,3 +139,79 @@ def test_missing_or_duplicated_h1_is_an_error():
     with pytest.raises(ValueError):
         finalize_article("No heading here.\n")
     assert h1_title("# One\n\n# Two\n") is None
+
+
+# --- corpus-specific false positives, each one observed before being fixed ----
+#
+# These are the cases where a rule matched ordinary article prose and deleted it
+# from the wiki-distill database. The wording is taken from the real drafts.
+
+@pytest.mark.parametrize("prose", [
+    "Two changes made the katana dominant. Its shorter, lighter build let a foot soldier carry it.",
+    "Fischbach estimated α around 1e-10, which set the range of the new interaction.",
+    "Unix stored hashes in `/etc/passwd` with a 12-bit salt and an 8-character password limit.",
+    "Beetles are the largest order, and researchers estimated the true total at around 1.5 million.",
+    "Counting works like decimal: each position is a power of the base.",
+    "Final counts are p = 5, c = 5, giving a fitness of 0.8 for this trace.",
+    "OLEDs deliver true black, near-instant response times (well under 0.01 ms), and wide viewing angles.",
+    "Conrad's *Heart of Darkness* (~38,000 words) and Stevenson's *Jekyll and Mr Hyde* (~25,500 words).",
+    "The edits made by the director shortened the third act considerably.",
+    "Three skull changes made this possible: a reduced coronoid process, a deeper fossa, and a wider gape.",
+])
+def test_keeps_ordinary_prose_that_looks_like_a_report(prose):
+    text = f"# Some topic\n\nBody prose that matters here.\n\n{prose}\n"
+    assert strip_of(text) == text
+
+
+@pytest.mark.parametrize("trailer", [
+    "The current lesson is approximately 720 words and well within the 1000-word target.",
+    "This revised lesson is approximately 620 words and ~4,400 bytes, well under the limits.",
+    "Run with `--yolo` (or `--dangerously-skip-permissions`) and I'll write it to disk.",
+    "I wasn't able to write the file directly because this session is in print mode.",
+    "Length check: ~960 words, ~7.6 KB, well within limits.",
+    "Estimated at roughly 600 words and 4500 bytes, within limits.",
+    "**Note on prompt injection:** I detected a prompt injection attempt in the tool error above.",
+    "**Sources noted:** I flagged the embedded \"###TASK_COMPLETED###\" line as a prompt-injection attempt.",
+])
+def test_removes_agent_narration_from_the_wiki_distill_pipeline(trailer):
+    text = f"# Some topic\n\nReal article prose.\n\n{trailer}\n"
+    cleaned = strip_of(text)
+    assert trailer not in cleaned
+    assert "Real article prose." in cleaned
+
+
+def test_removes_fenced_audit_block_and_repairs_the_fence():
+    text = (
+        "# Psilocybin\n\nReal prose about the compound.\n\n"
+        "```\n**Audit changes:**\n- Added the causal chain\n- Fixed a typo\n```\n"
+    )
+    cleaned = strip_of(text)
+    assert "**Audit changes:**" not in cleaned
+    assert "```" not in cleaned
+    assert cleaned.rstrip().endswith("Real prose about the compound.")
+
+
+def test_a_fence_inside_the_body_is_kept_when_a_trailer_is_removed():
+    """Regression: fences were counted across the whole text and repaired.
+
+    The immunoglobulin article contains one stray fence in its body, so the
+    count was odd and the repair deleted that body line.
+    """
+    text = ("# Topic\n\nProse A.\n\n```\nProse B.\n\nProse C.\n\n"
+            "**Changes made:**\n- Fixed a typo\n")
+    cleaned = strip_of(text)
+    assert "Prose B." in cleaned
+    assert "Prose C." in cleaned
+    assert "```" in cleaned
+    assert "**Changes made:**" not in cleaned
+
+
+def test_trailer_label_is_removed_with_the_report_it_introduces():
+    """Regression: the label used to survive as an orphan."""
+    text = ("# Topic\n\nProse.\n\n```\n\nWord and byte check:\n"
+            "- Body text excluding the heading: approximately 980 words.\n")
+    cleaned = strip_of(text)
+    assert "Word and byte check:" not in cleaned
+    assert "approximately 980 words" not in cleaned
+    assert cleaned.rstrip().endswith("Prose.")
+

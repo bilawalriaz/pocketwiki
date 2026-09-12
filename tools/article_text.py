@@ -62,9 +62,12 @@ SELF_ASSESSMENT = re.compile(
     r"the current lesson is approximately|"
     # A count label only counts as self-assessment when a number follows, so
     # "No word count is fixed" in an article about short stories is left alone.
-    r"(?:word count|length check|word check)[^.\n]{0,24}?\d|"
-    r"words?\)?\s*(?:target|budget|limit)|"
-    r"well under (?:the )?(?:target|\d)|"
+    r"\b(?:word count|length check|word check)[^.\n]{0,24}?\d|"
+    r"\bwords?\)?\s*(?:target|budget|limit)|"
+    # A bare "well under 0.01 ms" is a measurement, not a self-assessment, so a
+    # limit word must follow the number.
+    r"well under (?:the )?(?:target|budget|hard max|"
+    r"\d[\d,]*[ -]?(?:word|byte|token|cap|max|limit|target|budget))|"
     r"well within (?:the \d|the (?:word|length) (?:target|budget|limit))|"
     r"hard[ _]?max"
     r")",
@@ -88,6 +91,78 @@ EDIT_NARRATION = re.compile(
     r"merged|softens?|softened|preserves?|preserved|tightens?|tightened|"
     r"condenses?|condensed|rewrit(?:es|ten)|adds?|added|cuts?|drops?|dropped|"
     r"fixes|fixed|clarifies|clarified|expands?|expanded|keeps?|kept|reduces?|reduced)\b",
+    re.I,
+)
+
+# A bare edit-verb label starting a line: "Trims: removed ..., tightened ...".
+# Found in the engine article by tools/audit_meta_commentary.py. Only these
+# three copies of that article match corpus-wide, and like the rules above it is
+# confined to the tail so a legitimate "Changes:" list in a body cannot match.
+EDIT_LABEL = re.compile(
+    r"^\s*\**\s*(?:trims?|trimmed|edits?|edits made|changes|changes? made|cuts?|"
+    r"condensed|rewrote|rewrites?|tightened|fixes?|fixed|adds?|added|removed|"
+    r"reduced|merged|dropped|clarified|expanded|preserved)\s*\**\s*:\s",
+    re.I,
+)
+
+# Trailing narration from the generation pipeline. The distillation model was
+# asked to write each lesson to a file, could not, and explained itself: it
+# asked for write permissions, listed the edits it had made, and reported word
+# and byte counts against the limits. Two drafts even reported ignoring a prompt
+# injection. None of it is lesson content.
+#
+# Every phrase below comes from the removal log of an earlier cleanup pass (the
+# cleanup_audit table in the wiki-distill database), so these are strings
+# observed in this corpus rather than guesses.
+AGENT_NARRATION = re.compile(
+    r"("
+    # Tier 1: phrases only a writing agent produces. Bare counts are NOT here:
+    # "Conrad's Heart of Darkness (~38,000 words)" is an article about a novella,
+    # and matching it deleted most of that article. A count needs a self-
+    # reference, a report label, or a limit to count as narration.
+    r"--yolo|--dangerously-skip-permissions|"
+    r"write (?:or shell )?permissions?|permission policy|lacked write permission|"
+    r"print mode without write|write attempt was rejected|"
+    r"enable write permissions|note on the file write|"
+    r"(?:was|were|am|is)n'?t able to write|not able to write|unable to write|"
+    r"can'?t write to disk|"
+    r"(?:this|the) revised lesson|"
+    r"HARD_MAX_WORDS|HARD_MAX_BYTES|"
+    r"(?:lesson|draft|revision|text|body text)[^.\n]{0,40}?"
+    r"(?:is|runs|now|roughly|approximately|~)\s*~?\d[\d,]* words|"
+    r"(?:estimated|approximate\w*|counted|counting)[^.\n]{0,24}?\d[\d,]* words|"
+    r"\d[\d,]* words and ~?\d[\d,]* bytes|"
+    r"\b(?:word count|byte count|length check|approximate (?:stats|metrics)|"
+    r"final counts? (?:check|:)|audit (?:summary|complete))[^.\n]{0,40}?\d|"
+    r"word and byte (?:estimate|count|limit)|"
+    r"mental model (?:intact|elements remain)|"
+    r"(?:detected|flagged|ignored)[^.\n]{0,40}prompt[- ]injection|"
+    r"prompt[- ]injection (?:attempt|in the tool)|"
+    r"note on prompt[- ]injection|###TASK_COMPLETED###|"
+    r"well under (?:both )?(?:hard )?limits?|well under the byte cap|"
+    r"well under (?:both )?hard (?:limits|max)|"
+    # Tier 2: report labels, anchored at the start of a line and carrying a
+    # colon. Unanchored, "Three skull changes made this possible:" matched.
+    r"^\s*(?:```\s*)?(?:\*\*)?(?:edits? i made|edits? made|changes? made|"
+    r"changes? summary|edit summary|key changes|audit changes|\bword count|"
+    r"\bbyte count|\blength check|counting (?:words|roughly|this version)|\bcounted|"
+    r"approximate (?:stats|metrics|final length)|notes on the edits|"
+    r"audit (?:summary|complete))[^*:\n]{0,40}:"
+    r")",
+    re.I | re.M,
+)
+
+# How far back from the end agent narration is looked for. These trailers are
+# postambles, so a slightly wider window than TAIL_LINES is safe here.
+AGENT_TAIL_LINES = 20
+
+# A short label line introducing a report, such as "Word and byte check:".
+# Removed with the block it introduces so the report's own heading is not left
+# behind as an orphan. Requires a leading count/length word and a trailing
+# colon, and only applies immediately above a block already being removed.
+TRAILER_LABEL = re.compile(
+    r"^\s*(?:\*\*)?(?:word|byte|length|count|counting|approximate|final|audit|"
+    r"revised|lesson|draft|text)[^*:\n]{0,48}:\s*\*{0,2}\s*$",
     re.I,
 )
 
@@ -140,9 +215,19 @@ def _contamination_start(lines: list[str]) -> int | None:
     for i, line in enumerate(lines):
         if SELF_REPORT_HEADER.match(line):
             return i
-    tail = [i for i, line in enumerate(lines) if line.strip()][-TAIL_LINES:]
-    for i in reversed(tail):
-        if SELF_ASSESSMENT.search(lines[i]) or EDIT_NARRATION.search(lines[i]):
+
+    nonblank = [i for i, line in enumerate(lines) if line.strip()]
+
+    # Agent narration is a trailing block, so it gets a wider window. The cut
+    # starts at the matched line: walking back to a paragraph start sounds
+    # tidier but turns a single bad match into thousands of deleted characters.
+    for i in reversed(nonblank[-AGENT_TAIL_LINES:]):
+        if AGENT_NARRATION.search(lines[i]):
+            return i
+
+    for i in reversed(nonblank[-TAIL_LINES:]):
+        if (SELF_ASSESSMENT.search(lines[i]) or EDIT_NARRATION.search(lines[i])
+                or EDIT_LABEL.match(lines[i])):
             return i
     return None
 
@@ -157,8 +242,12 @@ def strip_meta_commentary(text: str) -> tuple[str, list[str]]:
     start = _contamination_start(lines)
     if start is None:
         return text, []
-    # Drop the horizontal rule or blank lines that introduced the block.
-    while start > 0 and lines[start - 1].strip() in ("", "---", "***", "___"):
+    # Drop the separator, fence, or label that introduced the block. Only these
+    # adjacent lines are removed: an earlier version also repaired "dangling"
+    # fences by counting them across the whole kept text, which deleted a body
+    # line from the immunoglobulin article because its body had one stray fence.
+    while start > 0 and (lines[start - 1].strip() in ("", "---", "***", "___", "```")
+                         or TRAILER_LABEL.match(lines[start - 1])):
         start -= 1
     removed = [line for line in lines[start:] if line.strip()]
     kept = "\n".join(lines[:start]).rstrip() + "\n"

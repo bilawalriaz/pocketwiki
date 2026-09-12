@@ -27,8 +27,6 @@ import urllib.parse
 LICENSE_URL = "https://creativecommons.org/licenses/by-sa/4.0/"
 SOURCE_BASE = "https://en.wikipedia.org/wiki/"
 
-H1_RE = re.compile(r"^#\s+(.+?)\s*$", re.M)
-
 # A trailing block the generating model wrote about its own edits. The bold
 # markers and the "made/changed" phrasing are what separate this from a real
 # section heading such as "## What changed and why".
@@ -44,13 +42,30 @@ SELF_REPORT_HEADER = re.compile(
 # not talk about its own word budget, so these are safe signals, but they are
 # only trusted near the end of a file: "No word count is fixed" is real content
 # in an article about short stories, and it sits in the body, not the tail.
+#
+# Only *framed* mentions of meta-commentary count. An earlier revision matched a
+# bare "meta-commentary", which stripped a legitimate bullet about Las Meninas
+# ("a meta-commentary on the act of painting") -- the painting is about
+# representation, so the phrase is subject matter. "no meta-conclusions" and
+# "rather than a meta-summary" are the generator judging its own output, so the
+# framing words are required.
+#
+# The other phrasings here were each observed in this corpus, found by
+# tools/audit_meta_commentary.py in articles these rules had judged clean.
 SELF_ASSESSMENT = re.compile(
     r"("
-    r"meta-conclusions?|no meta-conclusion|prohibited material|"
+    r"(?:no|not on|rather than|instead of|avoids?|avoided|without|forbidden|"
+    r"prohibited)\s+(?:a\s+|any\s+)?meta-\w+|"
+    r"prohibited material|"
+    r"note on edits?|notes? on (?:the )?(?:draft|edits?|editing)|"
     r"the lesson (?:was|is) (?:already )?within limits|"
     r"the current lesson is approximately|"
-    r"word count|words?\)?\s*(?:target|budget|limit)|"
-    r"well under (?:the )?(?:target|\d)|well within the \d|"
+    # A count label only counts as self-assessment when a number follows, so
+    # "No word count is fixed" in an article about short stories is left alone.
+    r"(?:word count|length check|word check)[^.\n]{0,24}?\d|"
+    r"words?\)?\s*(?:target|budget|limit)|"
+    r"well under (?:the )?(?:target|\d)|"
+    r"well within (?:the \d|the (?:word|length) (?:target|budget|limit))|"
     r"hard[ _]?max"
     r")",
     re.I,
@@ -82,9 +97,24 @@ TAIL_LINES = 6
 
 
 def h1_title(text: str) -> str | None:
-    """Return the article's ``h1`` title, or ``None`` when there is not exactly one."""
-    titles = H1_RE.findall(text)
-    return titles[0].strip() if len(titles) == 1 else None
+    """Return the article's ``h1`` title, or ``None`` when there is not exactly one.
+
+    Fenced code blocks are skipped, so a ``#`` comment in a shell or Python
+    snippet is not mistaken for a title and cannot make an article look as
+    though it has several.
+    """
+    titles: list[str] = []
+    in_fence = False
+    for line in text.splitlines():
+        if line.lstrip().startswith("```"):
+            in_fence = not in_fence
+            continue
+        if in_fence:
+            continue
+        match = re.match(r"^#\s+(.+?)\s*$", line)
+        if match:
+            titles.append(match.group(1).strip())
+    return titles[0] if len(titles) == 1 else None
 
 
 def source_url(title: str) -> str:

@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@bokuweb/zstd-wasm": "^0.0.27",
+    "zstd-codec": "^0.1.5"
+  }
+}

@@ -1,0 +1,62 @@
+# macOS and editor files
+.DS_Store
+.idea/
+.vscode/
+*~
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+.venv/
+
+# Generated firmware, archives and release artifacts
+build/
+firmware/build/
+firmware/managed_components/
+firmware/.pio/
+.pio/
+# Generated per-build ESP-IDF config. The hand-written target defaults are
+# tracked, so keep every firmware/sdkconfig.defaults* file.
+firmware/sdkconfig*
+!firmware/sdkconfig.defaults*
+flash/
+knowledgebase/
+output/
+dist/
+pocketwiki-packs-*.png
+*.bin
+*.elf
+*.map
+
+# Local secrets
+.env
+.env.*
+!.env.example
+
+# Cloudflare local state and staged site output
+.wrangler/
+cloudflare/site/public/
+
+# Browser-automation output from local tooling
+.playwright-cli/
+.playwright-mcp/
+
+# Swift flasher package and its bundle output
+flasher/.build/
+flasher/build/
+flasher/releases/
+flasher/PocketWiki-Flasher-*.zip
+
+# Generated assets: landing-page catalogue and the serial-benchmark fixture
+assets/pack-catalog.json
+firmware/main/pwpk_serial_fixture.c
+
+# Benchmark corpora and raw per-run output. The summarised JSON and CSV results
+# that docs/ cites stay tracked.
+benchmarks/**/*.pwpk
+benchmarks/**/*.pwcr
+benchmarks/runs/
+assets/pwpk-ui/node_modules/

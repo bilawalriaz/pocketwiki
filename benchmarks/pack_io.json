@@ -1,0 +1,1179 @@
+{
+  "catalogue_packs": 25,
+  "scale": [
+    {
+      "packs": 1,
+      "lookups": 100,
+      "elapsed_seconds": 0.013818708001053892,
+      "index_entry_reads": 593,
+      "mean_entry_reads": 5.93,
+      "catalogue_incremental_python_bytes": 480,
+      "lookup_peak_python_bytes": 7227,
+      "metadata_and_path_model_bytes": 84,
+      "note": "CPython incremental traced allocations; PackRef objects pre-exist. Not ESP RAM."
+    },
+    {
+      "packs": 5,
+      "lookups": 100,
+      "elapsed_seconds": 0.01240812499599997,
+      "index_entry_reads": 585,
+      "mean_entry_reads": 5.85,
+      "catalogue_incremental_python_bytes": 472,
+      "lookup_peak_python_bytes": 6715,
+      "metadata_and_path_model_bytes": 420,
+      "note": "CPython incremental traced allocations; PackRef objects pre-exist. Not ESP RAM."
+    },
+    {
+      "packs": 10,
+      "lookups": 100,
+      "elapsed_seconds": 0.012936874998558778,
+      "index_entry_reads": 568,
+      "mean_entry_reads": 5.68,
+      "catalogue_incremental_python_bytes": 592,
+      "lookup_peak_python_bytes": 6883,
+      "metadata_and_path_model_bytes": 840,
+      "note": "CPython incremental traced allocations; PackRef objects pre-exist. Not ESP RAM."
+    },
+    {
+      "packs": 25,
+      "lookups": 100,
+      "elapsed_seconds": 0.015071792004164308,
+      "index_entry_reads": 573,
+      "mean_entry_reads": 5.73,
+      "catalogue_incremental_python_bytes": 1400,
+      "lookup_peak_python_bytes": 7693,
+      "metadata_and_path_model_bytes": 2115,
+      "note": "CPython incremental traced allocations; PackRef objects pre-exist. Not ESP RAM."
+    }
+  ],
+  "rows": [
+    {
+      "pack_id": 7131892431666972936,
+      "buffer_bytes": 1024,
+      "samples": 100,
+      "bytes_read": 2467767,
+      "read_calls": 2451,
+      "elapsed_seconds": 0.0018504999970900826,
+      "mib_s": 1271.789251810702
+    },
+    {
+      "pack_id": 7131892431666972936,
+      "buffer_bytes": 2048,
+      "samples": 100,
+      "bytes_read": 2467767,
+      "read_calls": 1248,
+      "elapsed_seconds": 0.0008155830000760034,
+      "mib_s": 2885.5996343175216
+    },
+    {
+      "pack_id": 7131892431666972936,
+      "buffer_bytes": 4096,
+      "samples": 100,
+      "bytes_read": 2467767,
+      "read_calls": 648,
+      "elapsed_seconds": 0.0004949159992975183,
+      "mib_s": 4755.243334455491
+    },
+    {
+      "pack_id": 7131892431666972936,
+      "buffer_bytes": 8192,
+      "samples": 100,
+      "bytes_read": 2467767,
+      "read_calls": 348,
+      "elapsed_seconds": 0.00033408300078008324,
+      "mib_s": 7044.494934730621
+    },
+    {
+      "pack_id": 7131892431666972936,
+      "buffer_bytes": 16384,
+      "samples": 100,
+      "bytes_read": 2467767,
+      "read_calls": 200,
+      "elapsed_seconds": 0.0002509580008336343,
+      "mib_s": 9377.848081978684
+    },
+    {
+      "pack_id": 12728308129824258533,
+      "buffer_bytes": 1024,
+      "samples": 100,
+      "bytes_read": 2578431,
+      "read_calls": 2566,
+      "elapsed_seconds": 0.0018097499996656552,
+      "mib_s": 1358.7420482276402
+    },
+    {
+      "pack_id": 12728308129824258533,
+      "buffer_bytes": 2048,
+      "samples": 100,
+      "bytes_read": 2578431,
+      "read_calls": 1313,
+      "elapsed_seconds": 0.0009229580027749762,
+      "mib_s": 2664.241941596991
+    },
+    {
+      "pack_id": 12728308129824258533,
+      "buffer_bytes": 4096,
+      "samples": 100,
+      "bytes_read": 2578431,
+      "read_calls": 690,
+      "elapsed_seconds": 0.0007957920024637133,
+      "mib_s": 3089.982575488133
+    },
+    {
+      "pack_id": 12728308129824258533,
+      "buffer_bytes": 8192,
+      "samples": 100,
+      "bytes_read": 2578431,
+      "read_calls": 390,
+      "elapsed_seconds": 0.00038537500222446397,
+      "mib_s": 6380.754867679337
+    },
+    {
+      "pack_id": 12728308129824258533,
+      "buffer_bytes": 16384,
+      "samples": 100,
+      "bytes_read": 2578431,
+      "read_calls": 200,
+      "elapsed_seconds": 0.00026991599588654935,
+      "mib_s": 9110.180422057088
+    },
+    {
+      "pack_id": 16547750593436379786,
+      "buffer_bytes": 1024,
+      "samples": 100,
+      "bytes_read": 2426261,
+      "read_calls": 2424,
+      "elapsed_seconds": 0.0017690410022623837,
+      "mib_s": 1307.9757889381883
+    },
+    {
+      "pack_id": 16547750593436379786,
+      "buffer_bytes": 2048,
+      "samples": 100,
+      "bytes_read": 2426261,
+      "read_calls": 1223,
+      "elapsed_seconds": 0.0008341249995282851,
+      "mib_s": 2774.0000622289003
+    },
+    {
+      "pack_id": 16547750593436379786,
+      "buffer_bytes": 4096,
+      "samples": 100,
+      "bytes_read": 2426261,
+      "read_calls": 647,
+      "elapsed_seconds": 0.0006514589986181818,
+      "mib_s": 3551.8164696567383
+    },
+    {
+      "pack_id": 16547750593436379786,
+      "buffer_bytes": 8192,
+      "samples": 100,
+      "bytes_read": 2426261,
+      "read_calls": 359,
+      "elapsed_seconds": 0.0003403750015422702,
+      "mib_s": 6797.981021267194
+    },
+    {
+      "pack_id": 16547750593436379786,
+      "buffer_bytes": 16384,
+      "samples": 100,
+      "bytes_read": 2426261,
+      "read_calls": 200,
+      "elapsed_seconds": 0.0002390000008745119,
+      "mib_s": 9681.434276701319
+    },
+    {
+      "pack_id": 8530041206090231771,
+      "buffer_bytes": 1024,
+      "samples": 100,
+      "bytes_read": 2409438,
+      "read_calls": 2390,
+      "elapsed_seconds": 0.0015706249978393316,
+      "mib_s": 1462.9966673994702
+    },
+    {
+      "pack_id": 8530041206090231771,
+      "buffer_bytes": 2048,
+      "samples": 100,
+      "bytes_read": 2409438,
+      "read_calls": 1221,
+      "elapsed_seconds": 0.0010802079996210523,
+      "mib_s": 2127.2006302298632
+    },
+    {
+      "pack_id": 8530041206090231771,
+      "buffer_bytes": 4096,
+      "samples": 100,
+      "bytes_read": 2409438,
+      "read_calls": 631,
+      "elapsed_seconds": 0.0005027500010328367,
+      "mib_s": 4570.500512884458
+    },
+    {
+      "pack_id": 8530041206090231771,
+      "buffer_bytes": 8192,
+      "samples": 100,
+      "bytes_read": 2409438,
+      "read_calls": 341,
+      "elapsed_seconds": 0.0003271669993409887,
+      "mib_s": 7023.382988509633
+    },
+    {
+      "pack_id": 8530041206090231771,
+      "buffer_bytes": 16384,
+      "samples": 100,
+      "bytes_read": 2409438,
+      "read_calls": 200,
+      "elapsed_seconds": 0.00025308299518655986,
+      "mib_s": 9079.310665971087
+    },
+    {
+      "pack_id": 9932102950851630304,
+      "buffer_bytes": 1024,
+      "samples": 100,
+      "bytes_read": 2552201,
+      "read_calls": 2545,
+      "elapsed_seconds": 0.0026837500045076013,
+      "mib_s": 906.928193728282
+    },
+    {
+      "pack_id": 9932102950851630304,
+      "buffer_bytes": 2048,
+      "samples": 100,
+      "bytes_read": 2552201,
+      "read_calls": 1294,
+      "elapsed_seconds": 0.001230457994097378,
+      "mib_s": 1978.0996634442802
+    },
+    {
+      "pack_id": 9932102950851630304,
+      "buffer_bytes": 4096,
+      "samples": 100,
+      "bytes_read": 2552201,
+      "read_calls": 677,
+      "elapsed_seconds": 0.0005547920009121299,
+      "mib_s": 4387.173102720796
+    },
+    {
+      "pack_id": 9932102950851630304,
+      "buffer_bytes": 8192,
+      "samples": 100,
+      "bytes_read": 2552201,
+      "read_calls": 377,
+      "elapsed_seconds": 0.00036458300019148737,
+      "mib_s": 6676.03410671362
+    },
+    {
+      "pack_id": 9932102950851630304,
+      "buffer_bytes": 16384,
+      "samples": 100,
+      "bytes_read": 2552201,
+      "read_calls": 200,
+      "elapsed_seconds": 0.00048799999785842374,
+      "mib_s": 4987.640480917541
+    },
+    {
+      "pack_id": 2486501910857618124,
+      "buffer_bytes": 1024,
+      "samples": 100,
+      "bytes_read": 2578741,
+      "read_calls": 2555,
+      "elapsed_seconds": 0.00209312500373926,
+      "mib_s": 1174.9317675582652
+    },
+    {
+      "pack_id": 2486501910857618124,
+      "buffer_bytes": 2048,
+      "samples": 100,
+      "bytes_read": 2578741,
+      "read_calls": 1290,
+      "elapsed_seconds": 0.0011752909995266236,
+      "mib_s": 2092.4852324694925
+    },
+    {
+      "pack_id": 2486501910857618124,
+      "buffer_bytes": 4096,
+      "samples": 100,
+      "bytes_read": 2578741,
+      "read_calls": 690,
+      "elapsed_seconds": 0.0005422500034910627,
+      "mib_s": 4535.323272532359
+    },
+    {
+      "pack_id": 2486501910857618124,
+      "buffer_bytes": 8192,
+      "samples": 100,
+      "bytes_read": 2578741,
+      "read_calls": 390,
+      "elapsed_seconds": 0.0004179169991402887,
+      "mib_s": 5884.6112156787985
+    },
+    {
+      "pack_id": 2486501910857618124,
+      "buffer_bytes": 16384,
+      "samples": 100,
+      "bytes_read": 2578741,
+      "read_calls": 200,
+      "elapsed_seconds": 0.0002576670012786053,
+      "mib_s": 9544.408279524496
+    },
+    {
+      "pack_id": 8738093502900317780,
+      "buffer_bytes": 1024,
+      "samples": 100,
+      "bytes_read": 2498249,
+      "read_calls": 2496,
+      "elapsed_seconds": 0.002136875002179295,
+      "mib_s": 1114.9533336567583
+    },
+    {
+      "pack_id": 8738093502900317780,
+      "buffer_bytes": 2048,
+      "samples": 100,
+      "bytes_read": 2498249,
+      "read_calls": 1280,
+      "elapsed_seconds": 0.0012742090038955212,
+      "mib_s": 1869.7999307835312
+    },
+    {
+      "pack_id": 8738093502900317780,
+      "buffer_bytes": 4096,
+      "samples": 100,
+      "bytes_read": 2498249,
+      "read_calls": 678,
+      "elapsed_seconds": 0.0012164169966126792,
+      "mib_s": 1958.6341804842582
+    },
+    {
+      "pack_id": 8738093502900317780,
+      "buffer_bytes": 8192,
+      "samples": 100,
+      "bytes_read": 2498249,
+      "read_calls": 389,
+      "elapsed_seconds": 0.0008026659997995012,
+      "mib_s": 2968.2531811273043
+    },
+    {
+      "pack_id": 8738093502900317780,
+      "buffer_bytes": 16384,
+      "samples": 100,
+      "bytes_read": 2498249,
+      "read_calls": 200,
+      "elapsed_seconds": 0.0005614579931716435,
+      "mib_s": 4243.444632124488
+    },
+    {
+      "pack_id": 11142198443635274327,
+      "buffer_bytes": 1024,
+      "samples": 100,
+      "bytes_read": 2503489,
+      "read_calls": 2501,
+      "elapsed_seconds": 0.001875875001132954,
+      "mib_s": 1272.7464032857217
+    },
+    {
+      "pack_id": 11142198443635274327,
+      "buffer_bytes": 2048,
+      "samples": 100,
+      "bytes_read": 2503489,
+      "read_calls": 1265,
+      "elapsed_seconds": 0.0008245420031016693,
+      "mib_s": 2895.562811505646
+    },
+    {
+      "pack_id": 11142198443635274327,
+      "buffer_bytes": 4096,
+      "samples": 100,
+      "bytes_read": 2503489,
+      "read_calls": 663,
+      "elapsed_seconds": 0.0005018340016249567,
+      "mib_s": 4757.5755189459305
+    },
+    {
+      "pack_id": 11142198443635274327,
+      "buffer_bytes": 8192,
+      "samples": 100,
+      "bytes_read": 2503489,
+      "read_calls": 363,
+      "elapsed_seconds": 0.0003570420012692921,
+      "mib_s": 6686.925213890537
+    },
+    {
+      "pack_id": 11142198443635274327,
+      "buffer_bytes": 16384,
+      "samples": 100,
+      "bytes_read": 2503489,
+      "read_calls": 200,
+      "elapsed_seconds": 0.00033600000460864976,
+      "mib_s": 7105.693833208072
+    },
+    {
+      "pack_id": 3793737581375994221,
+      "buffer_bytes": 1024,
+      "samples": 100,
+      "bytes_read": 2464980,
+      "read_calls": 2431,
+      "elapsed_seconds": 0.0014420419975067489,
+      "mib_s": 1630.1800644638133
+    },
+    {
+      "pack_id": 3793737581375994221,
+      "buffer_bytes": 2048,
+      "samples": 100,
+      "bytes_read": 2464980,
+      "read_calls": 1243,
+      "elapsed_seconds": 0.0009628339976188727,
+      "mib_s": 2441.5300272618874
+    },
+    {
+      "pack_id": 3793737581375994221,
+      "buffer_bytes": 4096,
+      "samples": 100,
+      "bytes_read": 2464980,
+      "read_calls": 655,
+      "elapsed_seconds": 0.0005740419946960174,
+      "mib_s": 4095.150072948814
+    },
+    {
+      "pack_id": 3793737581375994221,
+      "buffer_bytes": 8192,
+      "samples": 100,
+      "bytes_read": 2464980,
+      "read_calls": 361,
+      "elapsed_seconds": 0.00033791700116125867,
+      "mib_s": 6956.702706216458
+    },
+    {
+      "pack_id": 3793737581375994221,
+      "buffer_bytes": 16384,
+      "samples": 100,
+      "bytes_read": 2464980,
+      "read_calls": 194,
+      "elapsed_seconds": 0.00024700000358279794,
+      "mib_s": 9517.360657312947
+    },
+    {
+      "pack_id": 14083162200700016090,
+      "buffer_bytes": 1024,
+      "samples": 100,
+      "bytes_read": 2558305,
+      "read_calls": 2541,
+      "elapsed_seconds": 0.001568249994306825,
+      "mib_s": 1555.740335336071
+    },
+    {
+      "pack_id": 14083162200700016090,
+      "buffer_bytes": 2048,
+      "samples": 100,
+      "bytes_read": 2558305,
+      "read_calls": 1314,
+      "elapsed_seconds": 0.000977958996372763,
+      "mib_s": 2494.777164567062
+    },
+    {
+      "pack_id": 14083162200700016090,
+      "buffer_bytes": 4096,
+      "samples": 100,
+      "bytes_read": 2558305,
+      "read_calls": 700,
+      "elapsed_seconds": 0.0005631250023725443,
+      "mib_s": 4332.5900319723505
+    },
+    {
+      "pack_id": 14083162200700016090,
+      "buffer_bytes": 8192,
+      "samples": 100,
+      "bytes_read": 2558305,
+      "read_calls": 400,
+      "elapsed_seconds": 0.0004006669987575151,
+      "mib_s": 6089.320507053439
+    },
+    {
+      "pack_id": 14083162200700016090,
+      "buffer_bytes": 16384,
+      "samples": 100,
+      "bytes_read": 2558305,
+      "read_calls": 200,
+      "elapsed_seconds": 0.000265417002083268,
+      "mib_s": 9192.288937346477
+    },
+    {
+      "pack_id": 320909863687901813,
+      "buffer_bytes": 1024,
+      "samples": 100,
+      "bytes_read": 2466253,
+      "read_calls": 2460,
+      "elapsed_seconds": 0.001684875001956243,
+      "mib_s": 1395.950525189729
+    },
+    {
+      "pack_id": 320909863687901813,
+      "buffer_bytes": 2048,
+      "samples": 100,
+      "bytes_read": 2466253,
+      "read_calls": 1268,
+      "elapsed_seconds": 0.0008724580038688146,
+      "mib_s": 2695.834221739248
+    },
+    {
+      "pack_id": 320909863687901813,
+      "buffer_bytes": 4096,
+      "samples": 100,
+      "bytes_read": 2466253,
+      "read_calls": 678,
+      "elapsed_seconds": 0.001108542004658375,
+      "mib_s": 2121.707733199241
+    },
+    {
+      "pack_id": 320909863687901813,
+      "buffer_bytes": 8192,
+      "samples": 100,
+      "bytes_read": 2466253,
+      "read_calls": 384,
+      "elapsed_seconds": 0.0008528340040356852,
+      "mib_s": 2757.8662819845163
+    },
+    {
+      "pack_id": 320909863687901813,
+      "buffer_bytes": 16384,
+      "samples": 100,
+      "bytes_read": 2466253,
+      "read_calls": 198,
+      "elapsed_seconds": 0.00059299999702489,
+      "mib_s": 3966.2768223608314
+    },
+    {
+      "pack_id": 16766301644585024477,
+      "buffer_bytes": 1024,
+      "samples": 100,
+      "bytes_read": 2452294,
+      "read_calls": 2464,
+      "elapsed_seconds": 0.0014979580009821802,
+      "mib_s": 1561.2519193086305
+    },
+    {
+      "pack_id": 16766301644585024477,
+      "buffer_bytes": 2048,
+      "samples": 100,
+      "bytes_read": 2452294,
+      "read_calls": 1264,
+      "elapsed_seconds": 0.0008266249933512881,
+      "mib_s": 2829.202870573359
+    },
+    {
+      "pack_id": 16766301644585024477,
+      "buffer_bytes": 4096,
+      "samples": 100,
+      "bytes_read": 2452294,
+      "read_calls": 664,
+      "elapsed_seconds": 0.0008265419965027831,
+      "mib_s": 2829.4869637265597
+    },
+    {
+      "pack_id": 16766301644585024477,
+      "buffer_bytes": 8192,
+      "samples": 100,
+      "bytes_read": 2452294,
+      "read_calls": 364,
+      "elapsed_seconds": 0.0007634159992448986,
+      "mib_s": 3063.454009858802
+    },
+    {
+      "pack_id": 16766301644585024477,
+      "buffer_bytes": 16384,
+      "samples": 100,
+      "bytes_read": 2452294,
+      "read_calls": 200,
+      "elapsed_seconds": 0.0005425409981398843,
+      "mib_s": 4310.623182571282
+    },
+    {
+      "pack_id": 5096040261576126063,
+      "buffer_bytes": 1024,
+      "samples": 100,
+      "bytes_read": 2461273,
+      "read_calls": 2448,
+      "elapsed_seconds": 0.0014783329970669001,
+      "mib_s": 1587.7700426231763
+    },
+    {
+      "pack_id": 5096040261576126063,
+      "buffer_bytes": 2048,
+      "samples": 100,
+      "bytes_read": 2461273,
+      "read_calls": 1259,
+      "elapsed_seconds": 0.0008478749950882047,
+      "mib_s": 2768.394939539377
+    },
+    {
+      "pack_id": 5096040261576126063,
+      "buffer_bytes": 4096,
+      "samples": 100,
+      "bytes_read": 2461273,
+      "read_calls": 659,
+      "elapsed_seconds": 0.0005264999999781139,
+      "mib_s": 4458.2200301267485
+    },
+    {
+      "pack_id": 5096040261576126063,
+      "buffer_bytes": 8192,
+      "samples": 100,
+      "bytes_read": 2461273,
+      "read_calls": 359,
+      "elapsed_seconds": 0.00034654200135264546,
+      "mib_s": 6773.357447588485
+    },
+    {
+      "pack_id": 5096040261576126063,
+      "buffer_bytes": 16384,
+      "samples": 100,
+      "bytes_read": 2461273,
+      "read_calls": 200,
+      "elapsed_seconds": 0.0002520000052754767,
+      "mib_s": 9314.495224705386
+    },
+    {
+      "pack_id": 12934672528327577331,
+      "buffer_bytes": 1024,
+      "samples": 100,
+      "bytes_read": 2481162,
+      "read_calls": 2476,
+      "elapsed_seconds": 0.001469416994950734,
+      "mib_s": 1610.3124452582622
+    },
+    {
+      "pack_id": 12934672528327577331,
+      "buffer_bytes": 2048,
+      "samples": 100,
+      "bytes_read": 2481162,
+      "read_calls": 1261,
+      "elapsed_seconds": 0.0011732080020010471,
+      "mib_s": 2016.880612992147
+    },
+    {
+      "pack_id": 12934672528327577331,
+      "buffer_bytes": 4096,
+      "samples": 100,
+      "bytes_read": 2481162,
+      "read_calls": 661,
+      "elapsed_seconds": 0.0017522909984108992,
+      "mib_s": 1350.358174748954
+    },
+    {
+      "pack_id": 12934672528327577331,
+      "buffer_bytes": 8192,
+      "samples": 100,
+      "bytes_read": 2481162,
+      "read_calls": 361,
+      "elapsed_seconds": 0.0007689999983995222,
+      "mib_s": 3077.0097258359556
+    },
+    {
+      "pack_id": 12934672528327577331,
+      "buffer_bytes": 16384,
+      "samples": 100,
+      "bytes_read": 2481162,
+      "read_calls": 200,
+      "elapsed_seconds": 0.0004367910005385056,
+      "mib_s": 5417.283028555824
+    },
+    {
+      "pack_id": 12734626690769482846,
+      "buffer_bytes": 1024,
+      "samples": 100,
+      "bytes_read": 2455470,
+      "read_calls": 2434,
+      "elapsed_seconds": 0.002371750000747852,
+      "mib_s": 987.3379036440064
+    },
+    {
+      "pack_id": 12734626690769482846,
+      "buffer_bytes": 2048,
+      "samples": 100,
+      "bytes_read": 2455470,
+      "read_calls": 1252,
+      "elapsed_seconds": 0.0015439999988302588,
+      "mib_s": 1516.6571732384398
+    },
+    {
+      "pack_id": 12734626690769482846,
+      "buffer_bytes": 4096,
+      "samples": 100,
+      "bytes_read": 2455470,
+      "read_calls": 658,
+      "elapsed_seconds": 0.0005412499958765693,
+      "mib_s": 4326.50104673641
+    },
+    {
+      "pack_id": 12734626690769482846,
+      "buffer_bytes": 8192,
+      "samples": 100,
+      "bytes_read": 2455470,
+      "read_calls": 364,
+      "elapsed_seconds": 0.0003655420005088672,
+      "mib_s": 6406.154889031008
+    },
+    {
+      "pack_id": 12734626690769482846,
+      "buffer_bytes": 16384,
+      "samples": 100,
+      "bytes_read": 2455470,
+      "read_calls": 200,
+      "elapsed_seconds": 0.000258167005085852,
+      "mib_s": 9070.55753668959
+    },
+    {
+      "pack_id": 5941524356432400193,
+      "buffer_bytes": 1024,
+      "samples": 100,
+      "bytes_read": 2412225,
+      "read_calls": 2418,
+      "elapsed_seconds": 0.0025203339973813854,
+      "mib_s": 912.7667326168876
+    },
+    {
+      "pack_id": 5941524356432400193,
+      "buffer_bytes": 2048,
+      "samples": 100,
+      "bytes_read": 2412225,
+      "read_calls": 1233,
+      "elapsed_seconds": 0.0009152089987765066,
+      "mib_s": 2513.6084008881576
+    },
+    {
+      "pack_id": 5941524356432400193,
+      "buffer_bytes": 4096,
+      "samples": 100,
+      "bytes_read": 2412225,
+      "read_calls": 646,
+      "elapsed_seconds": 0.0005119999987073243,
+      "mib_s": 4493.119206447681
+    },
+    {
+      "pack_id": 5941524356432400193,
+      "buffer_bytes": 8192,
+      "samples": 100,
+      "bytes_read": 2412225,
+      "read_calls": 359,
+      "elapsed_seconds": 0.0003832500005955808,
+      "mib_s": 6002.5493132891415
+    },
+    {
+      "pack_id": 5941524356432400193,
+      "buffer_bytes": 16384,
+      "samples": 100,
+      "bytes_read": 2412225,
+      "read_calls": 200,
+      "elapsed_seconds": 0.0002569579955888912,
+      "mib_s": 8952.735728736048
+    },
+    {
+      "pack_id": 4372125746554949338,
+      "buffer_bytes": 1024,
+      "samples": 100,
+      "bytes_read": 2423454,
+      "read_calls": 2407,
+      "elapsed_seconds": 0.0014722080013598315,
+      "mib_s": 1569.8772419775084
+    },
+    {
+      "pack_id": 4372125746554949338,
+      "buffer_bytes": 2048,
+      "samples": 100,
+      "bytes_read": 2423454,
+      "read_calls": 1227,
+      "elapsed_seconds": 0.0008390000002691522,
+      "mib_s": 2754.691103755138
+    },
+    {
+      "pack_id": 4372125746554949338,
+      "buffer_bytes": 4096,
+      "samples": 100,
+      "bytes_read": 2423454,
+      "read_calls": 627,
+      "elapsed_seconds": 0.0006776250011171214,
+      "mib_s": 3410.715119692764
+    },
+    {
+      "pack_id": 4372125746554949338,
+      "buffer_bytes": 8192,
+      "samples": 100,
+      "bytes_read": 2423454,
+      "read_calls": 327,
+      "elapsed_seconds": 0.000440583004092332,
+      "mib_s": 5245.744423467689
+    },
+    {
+      "pack_id": 4372125746554949338,
+      "buffer_bytes": 16384,
+      "samples": 100,
+      "bytes_read": 2423454,
+      "read_calls": 200,
+      "elapsed_seconds": 0.0002562080044299364,
+      "mib_s": 9020.74016748379
+    },
+    {
+      "pack_id": 4325380745326189584,
+      "buffer_bytes": 1024,
+      "samples": 100,
+      "bytes_read": 2428007,
+      "read_calls": 2445,
+      "elapsed_seconds": 0.0014924999995855615,
+      "mib_s": 1551.4424901826246
+    },
+    {
+      "pack_id": 4325380745326189584,
+      "buffer_bytes": 2048,
+      "samples": 100,
+      "bytes_read": 2428007,
+      "read_calls": 1262,
+      "elapsed_seconds": 0.0008979159974842332,
+      "mib_s": 2578.780111326894
+    },
+    {
+      "pack_id": 4325380745326189584,
+      "buffer_bytes": 4096,
+      "samples": 100,
+      "bytes_read": 2428007,
+      "read_calls": 666,
+      "elapsed_seconds": 0.0005241670005489141,
+      "mib_s": 4417.538520223022
+    },
+    {
+      "pack_id": 4325380745326189584,
+      "buffer_bytes": 8192,
+      "samples": 100,
+      "bytes_read": 2428007,
+      "read_calls": 368,
+      "elapsed_seconds": 0.0006880419969093055,
+      "mib_s": 3365.3874710496953
+    },
+    {
+      "pack_id": 4325380745326189584,
+      "buffer_bytes": 16384,
+      "samples": 100,
+      "bytes_read": 2428007,
+      "read_calls": 199,
+      "elapsed_seconds": 0.0005896250004298054,
+      "mib_s": 3927.1196341177742
+    },
+    {
+      "pack_id": 8818941203557665012,
+      "buffer_bytes": 1024,
+      "samples": 100,
+      "bytes_read": 2412046,
+      "read_calls": 2406,
+      "elapsed_seconds": 0.0015113750050659291,
+      "mib_s": 1521.9957406203669
+    },
+    {
+      "pack_id": 8818941203557665012,
+      "buffer_bytes": 2048,
+      "samples": 100,
+      "bytes_read": 2412046,
+      "read_calls": 1237,
+      "elapsed_seconds": 0.0012075830018147826,
+      "mib_s": 1904.884647045775
+    },
+    {
+      "pack_id": 8818941203557665012,
+      "buffer_bytes": 4096,
+      "samples": 100,
+      "bytes_read": 2412046,
+      "read_calls": 643,
+      "elapsed_seconds": 0.0005190830052015372,
+      "mib_s": 4431.480701814388
+    },
+    {
+      "pack_id": 8818941203557665012,
+      "buffer_bytes": 8192,
+      "samples": 100,
+      "bytes_read": 2412046,
+      "read_calls": 346,
+      "elapsed_seconds": 0.0003461660016910173,
+      "mib_s": 6645.0960202719425
+    },
+    {
+      "pack_id": 8818941203557665012,
+      "buffer_bytes": 16384,
+      "samples": 100,
+      "bytes_read": 2412046,
+      "read_calls": 199,
+      "elapsed_seconds": 0.00029558299866039306,
+      "mib_s": 7782.268704951269
+    },
+    {
+      "pack_id": 1710350531137213512,
+      "buffer_bytes": 1024,
+      "samples": 100,
+      "bytes_read": 2427080,
+      "read_calls": 2420,
+      "elapsed_seconds": 0.0018070000005536713,
+      "mib_s": 1280.9318534333515
+    },
+    {
+      "pack_id": 1710350531137213512,
+      "buffer_bytes": 2048,
+      "samples": 100,
+      "bytes_read": 2427080,
+      "read_calls": 1240,
+      "elapsed_seconds": 0.0008348330011358485,
+      "mib_s": 2772.5830875325328
+    },
+    {
+      "pack_id": 1710350531137213512,
+      "buffer_bytes": 4096,
+      "samples": 100,
+      "bytes_read": 2427080,
+      "read_calls": 650,
+      "elapsed_seconds": 0.0005070839979453012,
+      "mib_s": 4564.616255378187
+    },
+    {
+      "pack_id": 1710350531137213512,
+      "buffer_bytes": 8192,
+      "samples": 100,
+      "bytes_read": 2427080,
+      "read_calls": 356,
+      "elapsed_seconds": 0.00033916699612746015,
+      "mib_s": 6824.49615172294
+    },
+    {
+      "pack_id": 1710350531137213512,
+      "buffer_bytes": 16384,
+      "samples": 100,
+      "bytes_read": 2427080,
+      "read_calls": 198,
+      "elapsed_seconds": 0.00024604200007161126,
+      "mib_s": 9407.515217684775
+    },
+    {
+      "pack_id": 6766290408824722168,
+      "buffer_bytes": 1024,
+      "samples": 100,
+      "bytes_read": 2398432,
+      "read_calls": 2382,
+      "elapsed_seconds": 0.002126000006683171,
+      "mib_s": 1075.880992877036
+    },
+    {
+      "pack_id": 6766290408824722168,
+      "buffer_bytes": 2048,
+      "samples": 100,
+      "bytes_read": 2398432,
+      "read_calls": 1214,
+      "elapsed_seconds": 0.000847167000756599,
+      "mib_s": 2699.9670619890558
+    },
+    {
+      "pack_id": 6766290408824722168,
+      "buffer_bytes": 4096,
+      "samples": 100,
+      "bytes_read": 2398432,
+      "read_calls": 630,
+      "elapsed_seconds": 0.0005271670015645213,
+      "mib_s": 4338.896386265792
+    },
+    {
+      "pack_id": 6766290408824722168,
+      "buffer_bytes": 8192,
+      "samples": 100,
+      "bytes_read": 2398432,
+      "read_calls": 338,
+      "elapsed_seconds": 0.00033075000101234764,
+      "mib_s": 6915.56459877829
+    },
+    {
+      "pack_id": 6766290408824722168,
+      "buffer_bytes": 16384,
+      "samples": 100,
+      "bytes_read": 2398432,
+      "read_calls": 192,
+      "elapsed_seconds": 0.00024604200007161126,
+      "mib_s": 9296.47376212656
+    },
+    {
+      "pack_id": 2820576442120623416,
+      "buffer_bytes": 1024,
+      "samples": 100,
+      "bytes_read": 2298052,
+      "read_calls": 2292,
+      "elapsed_seconds": 0.0014182910017552786,
+      "mib_s": 1545.2351932386919
+    },
+    {
+      "pack_id": 2820576442120623416,
+      "buffer_bytes": 2048,
+      "samples": 100,
+      "bytes_read": 2298052,
+      "read_calls": 1183,
+      "elapsed_seconds": 0.0009624580052332021,
+      "mib_s": 2277.0792681338817
+    },
+    {
+      "pack_id": 2820576442120623416,
+      "buffer_bytes": 4096,
+      "samples": 100,
+      "bytes_read": 2298052,
+      "read_calls": 622,
+      "elapsed_seconds": 0.000953125003434252,
+      "mib_s": 2299.3764325449206
+    },
+    {
+      "pack_id": 2820576442120623416,
+      "buffer_bytes": 8192,
+      "samples": 100,
+      "bytes_read": 2298052,
+      "read_calls": 348,
+      "elapsed_seconds": 0.0006186660029925406,
+      "mib_s": 3542.449657109153
+    },
+    {
+      "pack_id": 2820576442120623416,
+      "buffer_bytes": 16384,
+      "samples": 100,
+      "bytes_read": 2298052,
+      "read_calls": 187,
+      "elapsed_seconds": 0.00026362499920651317,
+      "mib_s": 8313.297967804678
+    },
+    {
+      "pack_id": 6939550420008014933,
+      "buffer_bytes": 1024,
+      "samples": 100,
+      "bytes_read": 2334947,
+      "read_calls": 2327,
+      "elapsed_seconds": 0.001585167003213428,
+      "mib_s": 1404.7598641378036
+    },
+    {
+      "pack_id": 6939550420008014933,
+      "buffer_bytes": 2048,
+      "samples": 100,
+      "bytes_read": 2334947,
+      "read_calls": 1171,
+      "elapsed_seconds": 0.0008718750032130629,
+      "mib_s": 2554.011728589103
+    },
+    {
+      "pack_id": 6939550420008014933,
+      "buffer_bytes": 4096,
+      "samples": 100,
+      "bytes_read": 2334947,
+      "read_calls": 593,
+      "elapsed_seconds": 0.0004900409985566512,
+      "mib_s": 4544.066701823924
+    },
+    {
+      "pack_id": 6939550420008014933,
+      "buffer_bytes": 8192,
+      "samples": 100,
+      "bytes_read": 2334947,
+      "read_calls": 304,
+      "elapsed_seconds": 0.00031166600092547014,
+      "mib_s": 7144.760665127289
+    },
+    {
+      "pack_id": 6939550420008014933,
+      "buffer_bytes": 16384,
+      "samples": 100,
+      "bytes_read": 2334947,
+      "read_calls": 189,
+      "elapsed_seconds": 0.00025754200032679364,
+      "mib_s": 8646.275097825894
+    },
+    {
+      "pack_id": 14489818052833835996,
+      "buffer_bytes": 1024,
+      "samples": 100,
+      "bytes_read": 2467109,
+      "read_calls": 2482,
+      "elapsed_seconds": 0.0015291250019799918,
+      "mib_s": 1538.6698183785848
+    },
+    {
+      "pack_id": 14489818052833835996,
+      "buffer_bytes": 2048,
+      "samples": 100,
+      "bytes_read": 2467109,
+      "read_calls": 1261,
+      "elapsed_seconds": 0.0008447500003967434,
+      "mib_s": 2785.224608428159
+    },
+    {
+      "pack_id": 14489818052833835996,
+      "buffer_bytes": 4096,
+      "samples": 100,
+      "bytes_read": 2467109,
+      "read_calls": 674,
+      "elapsed_seconds": 0.0005303750003804453,
+      "mib_s": 4436.141385598865
+    },
+    {
+      "pack_id": 14489818052833835996,
+      "buffer_bytes": 8192,
+      "samples": 100,
+      "bytes_read": 2467109,
+      "read_calls": 387,
+      "elapsed_seconds": 0.0003582920035114512,
+      "mib_s": 6566.762489856991
+    },
+    {
+      "pack_id": 14489818052833835996,
+      "buffer_bytes": 16384,
+      "samples": 100,
+      "bytes_read": 2467109,
+      "read_calls": 200,
+      "elapsed_seconds": 0.000258250001934357,
+      "mib_s": 9110.62331636596
+    },
+    {
+      "pack_id": 7578445529166226295,
+      "buffer_bytes": 1024,
+      "samples": 100,
+      "bytes_read": 2484773,
+      "read_calls": 2455,
+      "elapsed_seconds": 0.002289000003656838,
+      "mib_s": 1035.2399250388826
+    },
+    {
+      "pack_id": 7578445529166226295,
+      "buffer_bytes": 2048,
+      "samples": 100,
+      "bytes_read": 2484773,
+      "read_calls": 1252,
+      "elapsed_seconds": 0.0011408330028643832,
+      "mib_s": 2077.1350287465357
+    },
+    {
+      "pack_id": 7578445529166226295,
+      "buffer_bytes": 4096,
+      "samples": 100,
+      "bytes_read": 2484773,
+      "read_calls": 663,
+      "elapsed_seconds": 0.0005377080015023239,
+      "mib_s": 4406.9721588278535
+    },
+    {
+      "pack_id": 7578445529166226295,
+      "buffer_bytes": 8192,
+      "samples": 100,
+      "bytes_read": 2484773,
+      "read_calls": 363,
+      "elapsed_seconds": 0.0003603330042096786,
+      "mib_s": 6576.3173634263985
+    },
+    {
+      "pack_id": 7578445529166226295,
+      "buffer_bytes": 16384,
+      "samples": 100,
+      "bytes_read": 2484773,
+      "read_calls": 200,
+      "elapsed_seconds": 0.0002607909991638735,
+      "mib_s": 9086.44930153697
+    }
+  ],
+  "measurement": "host cached files; no device, HTTP or raw-flash comparison implied",
+  "catalogue_formula": "24-byte conceptual fixed metadata plus UTF-8 path bytes per pack; excludes allocator overhead",
+  "seek_model": "96-byte header plus measured binary-search entry reads; validation CRC only at catalogue creation"
+}

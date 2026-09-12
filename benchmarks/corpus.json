@@ -1,0 +1,24 @@
+{
+  "count": 21966,
+  "raw_bytes": 104825233,
+  "mean": 4772.158472184285,
+  "median": 4706.0,
+  "p90": 6405.0,
+  "max": 8639,
+  "sha256": "575b54aa2332ad8e6e45652023cb8e286ff631a4d1721aef1d7e4bd696f3bee8",
+  "source_column": "minimax_distillations.draft",
+  "selection_sql": "SELECT a.id, a.title, m.draft FROM articles a\nJOIN minimax_distillations m ON m.article_id=a.id\nWHERE a.status='complete' AND m.status='complete' AND m.quality_status='complete'\nAND length(trim(COALESCE(m.draft,'')))>100 ORDER BY a.id",
+  "seed": 20260909,
+  "embedding_sha256": "53eb9cd8d4aa893c2747d09fc2d647d6ebc4bf394da4df5aeaf9171f7595a7b2",
+  "embedding_count": 21966,
+  "embedding_dimensions": 768,
+  "environment": {
+    "python": "3.13.7 (v3.13.7:bcee1c32211, Aug 14 2025, 19:10:51) [Clang 16.0.0 (clang-1600.0.26.6)]",
+    "platform": "macOS-27.0-arm64-arm-64bit-Mach-O",
+    "versions": {
+      "zstandard": "0.25.0",
+      "brotli": "1.2.0",
+      "numpy": "2.4.3"
+    }
+  }
+}

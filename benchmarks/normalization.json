@@ -1,0 +1,34 @@
+[
+  {
+    "transform": "crlf",
+    "changed_articles": 0,
+    "raw_bytes": 104825233,
+    "raw_saved": 0,
+    "compressed_payload_bytes": 48774727,
+    "compressed_saved": 0
+  },
+  {
+    "transform": "trailing_whitespace",
+    "changed_articles": 10,
+    "raw_bytes": 104825189,
+    "raw_saved": 44,
+    "compressed_payload_bytes": 48774711,
+    "compressed_saved": 16
+  },
+  {
+    "transform": "blank_lines",
+    "changed_articles": 0,
+    "raw_bytes": 104825233,
+    "raw_saved": 0,
+    "compressed_payload_bytes": 48774727,
+    "compressed_saved": 0
+  },
+  {
+    "transform": "nfc",
+    "changed_articles": 1,
+    "raw_bytes": 104825233,
+    "raw_saved": 0,
+    "compressed_payload_bytes": 48774733,
+    "compressed_saved": -6
+  }
+]

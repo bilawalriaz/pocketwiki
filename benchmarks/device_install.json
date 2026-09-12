@@ -1,0 +1,29 @@
+{
+  "date": "2026-09-10",
+  "board": "ESP32-C3 revision 0.4",
+  "station_ssid": "VM9786189",
+  "station_ip": "192.168.0.213",
+  "transport": "station HTTPS fetch requested from web UI endpoint",
+  "pack": "philosophy-religion-ethics-v1.pwp",
+  "pack_bytes": 343943,
+  "pack_articles": 96,
+  "result": "success",
+  "progress_terminal": "P:343943:343943",
+  "completion_terminal": "OK:96",
+  "heap_before_download": 45876,
+  "heap_after_ble_suspend": 97464,
+  "largest_block_after_ble_suspend": 47104,
+  "heap_after_ble_resume": 45184,
+  "packs_api_after_install": {
+    "bytes_used": 1929216,
+    "bytes_total": 1978368,
+    "bytes_free": 49152,
+    "bytes_installable": 40960,
+    "total_articles": 576
+  },
+  "notes": [
+    "Manual live-device measurement; no representative throughput or duration claim is made.",
+    "The BLE controller was suspended only for the station HTTPS transfer and resumed afterward.",
+    "The pack store contains six 96-article catalogue entries; actual capacity depends on pack density and selection."
+  ]
+}

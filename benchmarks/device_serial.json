@@ -1,0 +1,282 @@
+{
+  "target": "esp32c3",
+  "fixture_corpus_sha256": "b2e2bf20efcd32041f0f67066bdb473103143070eae886c916dc6b61afcbf24d",
+  "profiles": [
+    {
+      "profile": "zstd-l3",
+      "raw_bytes": 5898,
+      "frame_bytes": 2914,
+      "dictionary_bytes": 0,
+      "raw_sha256": "8f776412c139f9a1c4c035544a163560478820f51f4474ad6e2d2d5da728bf20"
+    },
+    {
+      "profile": "zstd-l19",
+      "raw_bytes": 5898,
+      "frame_bytes": 2795,
+      "dictionary_bytes": 0,
+      "raw_sha256": "8f776412c139f9a1c4c035544a163560478820f51f4474ad6e2d2d5da728bf20"
+    },
+    {
+      "profile": "zstd-dict-8192",
+      "raw_bytes": 5898,
+      "frame_bytes": 2331,
+      "dictionary_bytes": 8192,
+      "raw_sha256": "8f776412c139f9a1c4c035544a163560478820f51f4474ad6e2d2d5da728bf20"
+    },
+    {
+      "profile": "zstd-dict-32768",
+      "raw_bytes": 5898,
+      "frame_bytes": 2055,
+      "dictionary_bytes": 32768,
+      "raw_sha256": "8f776412c139f9a1c4c035544a163560478820f51f4474ad6e2d2d5da728bf20"
+    },
+    {
+      "profile": "zstd-block-16384",
+      "raw_bytes": 12573,
+      "frame_bytes": 5688,
+      "dictionary_bytes": 0,
+      "raw_sha256": "22951079d1b012a9ea3f982671a869d1e1ee817e6b6c51b9d16e57cda6208811"
+    },
+    {
+      "profile": "zstd-block-32768",
+      "raw_bytes": 28836,
+      "frame_bytes": 12321,
+      "dictionary_bytes": 0,
+      "raw_sha256": "72458d5be606434c5873ad423429b9c936193d5b791f23486ff5661cca8f410e"
+    },
+    {
+      "profile": "zstd-block-65536",
+      "raw_bytes": 61066,
+      "frame_bytes": 24291,
+      "dictionary_bytes": 0,
+      "raw_sha256": "180599399150dc65bee51fab29386ac5d623416ee1a7d586b8135e09ca760d64"
+    }
+  ],
+  "firmware_bytes": 1470464,
+  "firmware_sha256": "0f2be057dbdd1eb29f05f4bac514da3ad8b24c205a05eace5f8a647016ddc85f",
+  "chip_info": {
+    "command": [
+      "esptool",
+      "--port",
+      "/dev/cu.usbmodem1101",
+      "--chip",
+      "esp32c3",
+      "chip-id"
+    ],
+    "returncode": 0,
+    "output": "esptool v5.3.1\nSerial port /dev/cu.usbmodem1101:\nConnecting...\nConnected to ESP32-C3 on /dev/cu.usbmodem1101:\nChip type:          ESP32-C3 (QFN32) (revision v0.4)\nFeatures:           Wi-Fi, BT 5 (LE), Single Core, 160MHz, Embedded Flash 4MB (XMC)\nCrystal frequency:  40MHz\nUSB mode:           USB-Serial/JTAG\nMAC:                70:af:09:07:e0:74\n\nUploading stub flasher...\nRunning stub flasher...\nStub flasher running.\n\nWarning: ESP32-C3 has no chip ID. Reading MAC address instead.\nMAC:                70:af:09:07:e0:74\n\nHard resetting via RTS pin...\n"
+  },
+  "app_backup": "/Users/bilawalriaz/esp32_oled_wifi/build/device-backup/esp32-c3/app-before.bin",
+  "configuration": {
+    "PWPK_SERVICE": true,
+    "SERIAL_BENCHMARK": true
+  },
+  "measurements": [
+    {
+      "board": true,
+      "idf": "6.0.1",
+      "cores": 1,
+      "revision": 4,
+      "cpu_mhz": 160,
+      "psram_bytes": 0,
+      "heap_total": 216084,
+      "benchmark_stack_bytes": 8192
+    },
+    {
+      "profile": "zstd-l3",
+      "compressed": 2914,
+      "raw": 5898,
+      "dictionary_bytes": 0,
+      "decoded": 0,
+      "decode_us": 34,
+      "heap_before": 19820,
+      "heap_after": 19820,
+      "heap_min": 15368,
+      "largest_before": 8704,
+      "decoder_bytes": 0,
+      "ok": false,
+      "error": "context allocation failed"
+    },
+    {
+      "profile": "zstd-l19",
+      "compressed": 2795,
+      "raw": 5898,
+      "dictionary_bytes": 0,
+      "decoded": 0,
+      "decode_us": 14,
+      "heap_before": 19840,
+      "heap_after": 19840,
+      "heap_min": 15368,
+      "largest_before": 8704,
+      "decoder_bytes": 0,
+      "ok": false,
+      "error": "context allocation failed"
+    },
+    {
+      "profile": "zstd-dict-8192",
+      "compressed": 2331,
+      "raw": 5898,
+      "dictionary_bytes": 8192,
+      "decoded": 0,
+      "decode_us": 12,
+      "heap_before": 19840,
+      "heap_after": 19840,
+      "heap_min": 15368,
+      "largest_before": 8704,
+      "decoder_bytes": 0,
+      "ok": false,
+      "error": "context allocation failed"
+    },
+    {
+      "profile": "zstd-dict-32768",
+      "compressed": 2055,
+      "raw": 5898,
+      "dictionary_bytes": 32768,
+      "decoded": 0,
+      "decode_us": 29,
+      "heap_before": 19840,
+      "heap_after": 19840,
+      "heap_min": 15368,
+      "largest_before": 8704,
+      "decoder_bytes": 0,
+      "ok": false,
+      "error": "context allocation failed"
+    },
+    {
+      "profile": "zstd-block-16384",
+      "compressed": 5688,
+      "raw": 12573,
+      "dictionary_bytes": 0,
+      "decoded": 0,
+      "decode_us": 11,
+      "heap_before": 19840,
+      "heap_after": 19840,
+      "heap_min": 15368,
+      "largest_before": 8704,
+      "decoder_bytes": 0,
+      "ok": false,
+      "error": "context allocation failed"
+    },
+    {
+      "profile": "zstd-block-32768",
+      "compressed": 12321,
+      "raw": 28836,
+      "dictionary_bytes": 0,
+      "decoded": 0,
+      "decode_us": 10,
+      "heap_before": 19840,
+      "heap_after": 19840,
+      "heap_min": 15368,
+      "largest_before": 8704,
+      "decoder_bytes": 0,
+      "ok": false,
+      "error": "context allocation failed"
+    },
+    {
+      "profile": "zstd-block-65536",
+      "compressed": 24291,
+      "raw": 61066,
+      "dictionary_bytes": 0,
+      "decoded": 0,
+      "decode_us": 9,
+      "heap_before": 19840,
+      "heap_after": 19840,
+      "heap_min": 15368,
+      "largest_before": 8704,
+      "decoder_bytes": 0,
+      "ok": false,
+      "error": "context allocation failed"
+    },
+    {
+      "storage": "fat",
+      "buffer": 1024,
+      "bytes": 2429100,
+      "read_us": 749814,
+      "heap_before": 19648,
+      "heap_during": 18220,
+      "ok": true
+    },
+    {
+      "storage": "fat",
+      "buffer": 2048,
+      "bytes": 2429100,
+      "read_us": 720294,
+      "heap_before": 19248,
+      "heap_during": 16880,
+      "ok": true
+    },
+    {
+      "storage": "fat",
+      "buffer": 4096,
+      "bytes": 2429100,
+      "read_us": 705672,
+      "heap_before": 18932,
+      "heap_during": 15020,
+      "ok": true
+    },
+    {
+      "storage": "fat",
+      "buffer": 8192,
+      "bytes": 2429100,
+      "read_us": 712814,
+      "heap_before": 19120,
+      "heap_during": 10924,
+      "ok": true
+    },
+    {
+      "storage": "fat",
+      "buffer": 16384,
+      "ok": false,
+      "reason": "malloc"
+    },
+    {
+      "storage": "raw-app",
+      "buffer": 1024,
+      "bytes": 2429100,
+      "read_us": 476223,
+      "heap_before": 19120,
+      "heap_during": 18092,
+      "ok": true
+    },
+    {
+      "storage": "raw-app",
+      "buffer": 2048,
+      "bytes": 2429100,
+      "read_us": 458903,
+      "heap_before": 19120,
+      "heap_during": 17068,
+      "ok": true
+    },
+    {
+      "storage": "raw-app",
+      "buffer": 4096,
+      "bytes": 2429100,
+      "read_us": 449263,
+      "heap_before": 19120,
+      "heap_during": 15020,
+      "ok": true
+    },
+    {
+      "storage": "raw-app",
+      "buffer": 8192,
+      "bytes": 2429100,
+      "read_us": 440642,
+      "heap_before": 19120,
+      "heap_during": 10924,
+      "ok": true
+    },
+    {
+      "storage": "raw-app",
+      "buffer": 16384,
+      "ok": false,
+      "reason": "malloc"
+    },
+    {
+      "pack_store_total": 1978368,
+      "pack_store_used": 270336
+    },
+    {
+      "benchmark_complete": true
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+name: macOS flasher app
+
+# Builds the ESPFlashGUI macOS app (scripts/bundle-macos.sh) for both
+# Apple-silicon and Intel runners and uploads the zipped .app.
+#
+# Runner labels: macos-15 is Apple silicon (arm64), macos-15-intel is x86_64.
+# Swap the labels if GitHub changes the pool naming.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'flasher/**'
+      - '.github/workflows/macos-app.yml'
+  pull_request:
+    paths:
+      - 'flasher/**'
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-15
+            arch: arm64
+          - os: macos-15-intel
+            arch: x86_64
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build and bundle ESPFlashGUI.app
+        working-directory: flasher
+        run: |
+          ./scripts/bundle-macos.sh
+          test -d build/ESPFlashGUI.app
+
+      - name: Run Swift tests
+        working-directory: flasher
+        run: swift test
+
+      - name: Package app zip
+        working-directory: flasher
+        run: ditto -c -k --keepParent build/ESPFlashGUI.app PocketWiki-Flasher-macOS-${{ matrix.arch }}.zip
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: flasher-macos-${{ matrix.arch }}
+          path: flasher/PocketWiki-Flasher-macOS-${{ matrix.arch }}.zip
+          if-no-files-found: error

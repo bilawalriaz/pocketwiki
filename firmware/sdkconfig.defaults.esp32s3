@@ -1,0 +1,26 @@
+# Target-specific overrides for the ESP32-S3 build (applied on top of
+# sdkconfig.defaults by ESP-IDF's kconfig step). The S3 devkit carries 16 MB
+# flash; everything else inherits the shared defaults.
+CONFIG_IDF_TARGET="esp32s3"
+CONFIG_ESPTOOLPY_FLASHSIZE_16MB=y
+CONFIG_ESPTOOLPY_FLASHSIZE="16MB"
+CONFIG_PARTITION_TABLE_CUSTOM=y
+CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions_16mb.csv"
+
+# --- Dual-core optimisation: keep WiFi/LWIP on Core 0, httpd on Core 1 ---
+CONFIG_ESP_WIFI_TASK_PINNED_TO_CORE_0=y
+CONFIG_LWIP_TCPIP_TASK_AFFINITY_CPU0=y
+
+# S3 has 512 KB SRAM — allow more concurrent browser connections
+CONFIG_POCKETWIKI_HTTPD_MAX_SOCKETS=7
+CONFIG_LWIP_MAX_SOCKETS=12
+CONFIG_POCKETWIKI_PACK_INDEX_RAM_CACHE=y
+
+# 16 MB flash has headroom; prefer speed over size
+CONFIG_COMPILER_OPTIMIZATION_PERF=y
+
+# --- OLED pin mapping: S3 has no GPIO0 exposed, shift both pins up by 1 ---
+# C3 default: SCL=GPIO0, SDA=GPIO1
+# S3 wiring:  SCL=GPIO1, SDA=GPIO2
+CONFIG_POCKETWIKI_OLED_SCL=1
+CONFIG_POCKETWIKI_OLED_SDA=2

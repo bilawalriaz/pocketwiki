@@ -1,0 +1,22 @@
+{
+  "method": "riscv32-esp-elf-nm -S on linked firmware ELF; sums sizes of exported and local symbols by decoder prefix. Symbol sums exclude unlabelled compiler support and are a lower bound for linked decoder code.",
+  "targets": {
+    "esp32-c3": {
+      "elf": "firmware/.pio/build/esp32-c3/firmware.elf",
+      "build_sha256": "a479ae873b28b4a402139f3b035b107ee3f618225268afaebec52617caa3869c",
+      "elf_size": 2452659,
+      "zstd_decoder_symbol_bytes": 38202,
+      "zstd_symbols": 93,
+      "miniz_tinfl_tdefl_symbol_bytes": 8190,
+      "miniz_symbols": 14,
+      "firmware_build_present": true
+    },
+    "esp32-s3": {
+      "elf": null,
+      "firmware_build_present": false,
+      "note": "Only dist firmware.bin exists; no linked ELF/map was available for attribution."
+    }
+  },
+  "brotli": {"integrated_decoder": false, "note": "No firmware port or linked object was present."},
+  "xz_lzma2": {"integrated_decoder": false, "note": "No firmware port or linked object was present."}
+}

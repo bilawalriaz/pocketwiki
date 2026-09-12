@@ -1,0 +1,78 @@
+{
+  "files": [
+    {
+      "asset": "vendor/NOTICE",
+      "raw_bytes": 1281,
+      "gzip_bytes": 755,
+      "sha256": "bde1eb848b1ffdc8fdbf77cc73508a6cbd11d99dbfe6925fdbf12b69ad377a95"
+    },
+    {
+      "asset": "vendor/ZSTD-LICENSE",
+      "raw_bytes": 1549,
+      "gzip_bytes": 826,
+      "sha256": "7055266497633c9025b777c78eb7235af13922117480ed5c674677adc381c9d8"
+    },
+    {
+      "asset": "vendor/errors/index.js",
+      "raw_bytes": 488,
+      "gzip_bytes": 326,
+      "sha256": "3c88461d9c2c4d74d19c5fe0fcc5eb6d75de3572dbd49c73f8562221850dba45"
+    },
+    {
+      "asset": "vendor/index.web.js",
+      "raw_bytes": 1211,
+      "gzip_bytes": 544,
+      "sha256": "289cf1d8d0636c7830967b5209aee1578429fc564be1ce499cdaa6a3128c7208"
+    },
+    {
+      "asset": "vendor/module.js",
+      "raw_bytes": 988,
+      "gzip_bytes": 461,
+      "sha256": "f04083fe72970ef6745a6cce248621a3e963e25e60c778744b7fc50ae0d341ad"
+    },
+    {
+      "asset": "vendor/simple/compress.js",
+      "raw_bytes": 1769,
+      "gzip_bytes": 725,
+      "sha256": "b936f0c22ee1c1b00148e43d9dc47bcd0f15c93be3d40295b69cc73a6bcbf692"
+    },
+    {
+      "asset": "vendor/simple/compress_using_dict.js",
+      "raw_bytes": 2000,
+      "gzip_bytes": 703,
+      "sha256": "c6228350d24779b4994f8e7526a08f478c099acbf8809a3cbe654c71b1609cdf"
+    },
+    {
+      "asset": "vendor/simple/decompress.js",
+      "raw_bytes": 2041,
+      "gzip_bytes": 892,
+      "sha256": "d4aed3df55d95e8dbe1092cceea1faca41767f4da185528a8705490d09b4788d"
+    },
+    {
+      "asset": "vendor/simple/decompress_using_dict.js",
+      "raw_bytes": 1689,
+      "gzip_bytes": 619,
+      "sha256": "1cd5810dd15aa29584cf3b991e8844c8000ab7b151bee25380de8e6bf861670f"
+    },
+    {
+      "asset": "vendor/zstd.js",
+      "raw_bytes": 12061,
+      "gzip_bytes": 3133,
+      "sha256": "22e49b83d2677c31722aaf7bfbcdc7ae6231325ad933b648d32c93fc564afe02"
+    },
+    {
+      "asset": "vendor/zstd.wasm",
+      "raw_bytes": 251806,
+      "gzip_bytes": 79798,
+      "sha256": "80260eee5795ee8072bb5821e203730c74dca3909938f5ac1128da67f96223df"
+    },
+    {
+      "asset": "prototype.html",
+      "raw_bytes": 1994,
+      "gzip_bytes": 919
+    }
+  ],
+  "total_raw_bytes": 278877,
+  "total_gzip_bytes": 89701,
+  "note": "Per-file gzip9 including WASM, JS imports, notices and prototype page; benchmark page omitted from shipping assets."
+}

@@ -1,0 +1,21 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "pocketwiki-pack-catalog",
+  "main": "src/index.js",
+  "compatibility_date": "2026-08-18",
+  "routes": [
+    {
+      "pattern": "packs.educated.space",
+      "custom_domain": true
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "PACKS",
+      "bucket_name": "pocketwiki-packs"
+    }
+  ],
+  "observability": {
+    "enabled": true
+  }
+}

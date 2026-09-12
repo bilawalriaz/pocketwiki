@@ -1,0 +1,27 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>PocketWiki PWPK prototype</title>
+<style>body{max-width:70ch;margin:2rem auto;padding:0 1rem;font:18px/1.6 system-ui}pre{white-space:pre-wrap;font:inherit}button,input,select{font:inherit;max-width:100%}</style>
+<h1>PocketWiki pack reader</h1><p>Experimental browser decoding. Choose a pack and enter an article ID.</p>
+<form id="form"><select id="packs" aria-label="Pack"></select> <input id="article" aria-label="Article ID" type="number" min="0" required> <button>Read</button></form>
+<p id="status" role="status">Loading packs…</p><h2 id="title"></h2><pre id="body"></pre>
+<script type="module">
+import {init,decompress,decompressUsingDict,createDCtx,freeDCtx} from './vendor/index.web.js';
+const [packs,article,form,status,title,body]=['packs','article','form','status','title','body'].map(id=>document.getElementById(id));
+const dictionaryCache=new Map();let ready=init();
+async function get(url){const r=await fetch(url);if(!r.ok)throw Error(`${r.status}: ${await r.text()}`);return r;}
+const catalogue=await (await get('/pwpk/packs')).json();
+for(const p of catalogue.packs){const option=new Option(p.name,p.name);option.dataset.first=p.first_article_id;packs.append(option);}
+function select(){article.value=packs.selectedOptions[0]?.dataset.first||'';}
+packs.onchange=select;select();status.textContent=catalogue.packs.length?'Ready':'Install a PWPK pack using the benchmark tool.';
+form.onsubmit=async event=>{event.preventDefault();status.textContent='Loading…';try{
+ const name=encodeURIComponent(packs.value),id=article.value,meta=await (await get(`/pwpk/${name}/meta/${id}`)).json();
+ if(meta.codec!==1)throw Error('This prototype browser reader supports Zstd packs.');
+ const bytes=new Uint8Array(await (await get(`/pwpk/${name}/raw/${id}`)).arrayBuffer());await ready;
+ let decoded;
+ if(meta.dictionary_bytes){const key=name+meta.pack_id;if(!dictionaryCache.has(key))dictionaryCache.set(key,get(`/pwpk/${name}/dictionary`).then(r=>r.arrayBuffer()).then(b=>new Uint8Array(b)));
+ const dictionary=await dictionaryCache.get(key),ctx=createDCtx();try{decoded=decompressUsingDict(ctx,bytes,dictionary);}finally{freeDCtx(ctx);}}
+ else decoded=decompress(bytes);
+ if(decoded.length!==meta.unit_raw_bytes)throw Error('Decoded unit length mismatch');
+ const slice=decoded.subarray(meta.raw_offset,meta.raw_offset+meta.raw_bytes);let crc=0xffffffff;for(const b of slice){crc^=b;for(let i=0;i<8;i++)crc=(crc>>>1)^((crc&1)?0xedb88320:0);}if(((crc^0xffffffff)>>>0)!==meta.crc32)throw Error('Article checksum mismatch');
+ title.textContent=meta.title;body.textContent=new TextDecoder('utf-8',{fatal:true}).decode(slice);status.textContent=`${meta.raw_bytes} article bytes; ${bytes.length} compressed bytes transferred`;
+}catch(e){status.textContent=e.message;}};
+</script></html>

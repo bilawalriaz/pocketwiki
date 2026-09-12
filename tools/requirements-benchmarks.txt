@@ -1,0 +1,4 @@
+zstandard>=0.23,<1
+Brotli>=1.2,<2
+numpy>=1.26,<3
+pytest>=8,<10

@@ -1,0 +1,4 @@
+interface:
+  display_name: "PocketWiki Pack Authoring"
+  short_description: "Create and publish PocketWiki article packs"
+  default_prompt: "Create or update a PocketWiki pack, catalogue entry, and release assets while following the repository's pack format and validation workflow."

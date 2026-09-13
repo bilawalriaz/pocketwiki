@@ -232,11 +232,25 @@ def _contamination_start(lines: list[str]) -> int | None:
     return None
 
 
-def strip_meta_commentary(text: str) -> tuple[str, list[str]]:
+# No rule may remove more than this share of an article, and never more than
+# both limits allow. Contamination in this corpus is a trailer or a short
+# preamble; a match that would delete a third of the text means the rule is
+# wrong, not the article. This is not hypothetical: "That comes to roughly 530
+# words" opens the Transfer learning draft and cutting from it to the end would
+# have deleted 51% of it, while Nuclear power would have lost 77% including two
+# whole sections. The absolute floor keeps short articles workable, where a
+# legitimate trailer is naturally a larger share.
+MAX_REMOVAL_FRACTION = 0.35
+MIN_REMOVAL_LIMIT = 400
+
+
+def strip_meta_commentary(text: str, max_fraction: float = MAX_REMOVAL_FRACTION,
+                          min_limit: int = MIN_REMOVAL_LIMIT) -> tuple[str, list[str]]:
     """Remove trailing generator commentary.
 
     Returns the cleaned text and the non-blank lines that were removed, so
-    callers can report or review exactly what changed.
+    callers can report or review exactly what changed. Text is returned
+    unchanged, with no removals, when the cut would exceed the limit.
     """
     lines = text.splitlines()
     start = _contamination_start(lines)
@@ -251,6 +265,9 @@ def strip_meta_commentary(text: str) -> tuple[str, list[str]]:
         start -= 1
     removed = [line for line in lines[start:] if line.strip()]
     kept = "\n".join(lines[:start]).rstrip() + "\n"
+    limit = max(min_limit, max_fraction * len(text))
+    if len(text) - len(kept) > limit:
+        return text, []
     return kept, removed
 
 

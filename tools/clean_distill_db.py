@@ -53,7 +53,7 @@ DEFAULT_DB = Path(os.environ.get(
 
 FIELD = "minimax_distillations.draft"
 MODEL = "deterministic"
-PROMPT_VERSION = "meta-cleanup-deterministic-v2"
+PROMPT_VERSION = "meta-cleanup-deterministic-v3"
 MIN_KEPT_CHARS = 200
 
 

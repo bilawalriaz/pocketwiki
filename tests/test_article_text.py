@@ -206,6 +206,23 @@ def test_a_fence_inside_the_body_is_kept_when_a_trailer_is_removed():
     assert "**Changes made:**" not in cleaned
 
 
+def test_refuses_a_removal_larger_than_the_cap():
+    """A report at the top of a draft must not delete the draft.
+
+    The rule set matched leading sentences and cut to end of file. That removed
+    51% of the Transfer learning draft, 77% of Nuclear power (including two whole
+    sections), and real content from Military, Specific heat capacity and
+    Generational list of programming languages. The size cap is the backstop.
+    """
+    body = "# Topic\n\n" + ("Real article prose about the subject. " * 60) + "\n"
+    leading = "**Changes made:**\n- Fixed a typo\n\n" + body
+    assert strip_of(leading) == leading
+
+    # The same rule still removes a small trailer.
+    trailer = body + "\n**Changes made:**\n- Fixed a typo\n"
+    assert "**Changes made:**" not in strip_of(trailer)
+
+
 def test_trailer_label_is_removed_with_the_report_it_introduces():
     """Regression: the label used to survive as an orphan."""
     text = ("# Topic\n\nProse.\n\n```\n\nWord and byte check:\n"

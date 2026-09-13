@@ -178,7 +178,11 @@ def _post(url: str, payload: dict, timeout: int, retries: int = 3) -> dict:
 
 
 def _extract_json(content: str) -> dict:
-    """Parse the model's reply, tolerating prose or fences around the object."""
+    """Parse the model's reply, tolerating prose, fences, or trailing data.
+
+    Some replies contain two concatenated JSON objects, which ``json.loads``
+    rejects as "Extra data"; ``raw_decode`` returns the first one.
+    """
     content = content.strip()
     fence = re.search(r"```(?:json)?\s*(.*?)```", content, re.S)
     if fence:
@@ -188,9 +192,13 @@ def _extract_json(content: str) -> dict:
     except json.JSONDecodeError:
         pass
     start = content.find("{")
-    end = content.rfind("}")
-    if start != -1 and end > start:
-        return json.loads(content[start:end + 1])
+    if start != -1:
+        try:
+            value, _ = json.JSONDecoder().raw_decode(content[start:])
+            if isinstance(value, dict):
+                return value
+        except json.JSONDecodeError:
+            pass
     raise ValueError(f"no JSON object in reply: {content[:200]!r}")
 
 

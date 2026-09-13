@@ -200,6 +200,24 @@ draft is enough, because contamination from this pipeline is always a trailing
 postamble -- that held for every removal in the database. Trailing text runs
 roughly eight times faster than whole articles.
 
+When a model finds commentary that no rule covers yet, remove it by the verified
+span rather than by a pattern:
+
+```sh
+python3 tools/apply_audit_removals.py --audit build/meta-confirm.jsonl          # review
+python3 tools/apply_audit_removals.py --audit build/meta-confirm.jsonl --apply \
+    --exclude 11801,12630
+```
+
+It deletes the block of lines containing each verified quote, merges overlapping
+blocks, and refuses any block that contains a markdown heading or that exceeds
+the size cap. `--exclude` names model flags that review showed are article
+content. This is the fallback for what rules cannot safely express: a rule
+matching "changes made" also matched "Two changes made the katana dominant".
+
+Every pass records its `original_text` in `cleanup_audit`, so a pass can be
+rolled back from the audit trail rather than only from a backup.
+
 ## Before you open a pull request
 
 1. Run `python3 -m pytest -q`.

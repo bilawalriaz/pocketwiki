@@ -218,6 +218,30 @@ matching "changes made" also matched "Two changes made the katana dominant".
 Every pass records its `original_text` in `cleanup_audit`, so a pass can be
 rolled back from the audit trail rather than only from a backup.
 
+### Outcome on the wiki-distill corpus (2026-09-13)
+
+22,033 drafts, audited end to end on full text with MiniCPM5-2B:
+
+- 157 drafts had generator commentary removed: 107 by rules and 51 by verified
+  quote, overlapping on one draft.
+- 231 glued headings were split across 213 drafts by
+  `tools/fix_glued_headings.py`.
+- The full-text sweep flagged 17 drafts and **none was commentary**. Reading each
+  in context, 16 are article prose the model misread and one was a glued heading
+  the splitter had already fixed. Examples worth remembering: "Contamination
+  episode" is the 1989 eosinophilia-myalgia outbreak, "In editing, outcomes are
+  coded as gains or losses" is the editing phase of prospect theory, and
+  "## A note on practice" is a section about feature counts.
+- The model's false-positive modes on this corpus, all seen repeatedly: a
+  quantity followed by "words" ("30 million words of manuscript"), a heading
+  containing an editorial word ("The Editorial Afterlife", "Revision history"),
+  and CamelCase or hyphenated compounds.
+
+The lesson for anyone extending the rules: add a pattern only after reading every
+match it produces across the whole corpus. Three rounds of that discipline
+removed rules that had deleted whole sections, and the sweep above is what
+confirmed the remaining flags are content rather than a backlog.
+
 ## Before you open a pull request
 
 1. Run `python3 -m pytest -q`.

@@ -172,6 +172,34 @@ about 5x faster). On llama.cpp, pass
 model card's `temperature=1.0, top_p=0.95, min_p=0.0` are generation settings;
 this is an extraction task, so greedy decoding is the default here.
 
+### Cleaning the wiki-distill database
+
+The content repository is generated from
+`~/wiki-distill/educational-source.db`, and `minimax_distillations.draft` is the
+column every pack generator reads. Clearing generator commentary there fixes
+every pack at once instead of per exported file:
+
+```sh
+python3 tools/clean_distill_db.py            # report only, writes nothing
+python3 tools/clean_distill_db.py --apply    # back up, then write
+python3 tools/clean_distill_db.py --verify   # prove a further pass is a no-op
+```
+
+It writes a backup beside the database before modifying anything, applies every
+change in one transaction, refuses a removal larger than
+`--max-removal-fraction` (35% by default) or one that would leave an
+implausibly short draft, and records each change in `cleanup_audit` under
+`meta-cleanup-deterministic-v2`, matching the earlier `meta-cleanup-*` passes.
+It is idempotent.
+
+`generated_draft` is deliberately left alone: it is the raw pre-trim model
+output, kept for provenance, and nothing in this repository reads it.
+
+To check a whole corpus, auditing only the trailing 2,000 characters of each
+draft is enough, because contamination from this pipeline is always a trailing
+postamble -- that held for every removal in the database. Trailing text runs
+roughly eight times faster than whole articles.
+
 ## Before you open a pull request
 
 1. Run `python3 -m pytest -q`.

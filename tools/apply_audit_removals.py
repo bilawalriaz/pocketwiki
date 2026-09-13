@@ -74,6 +74,7 @@ def propose(text: str, quotes: list[str]) -> dict | None:
     lines = text.splitlines()
     starts = _line_starts(text)
     blocks: list[tuple[int, int]] = []
+    quote_lines: set[int] = set()
     unlocated = []
     for quote in quotes:
         at = text.find(quote)
@@ -81,6 +82,12 @@ def propose(text: str, quotes: list[str]) -> dict | None:
             unlocated.append(quote[:60])
             continue
         line = bisect.bisect_right(starts, at) - 1
+        # A quote that is itself a heading is the model over-flagging the
+        # article's own title. It is never removable content, so drop it rather
+        # than let it veto the rest of the report.
+        if lines[line].lstrip().startswith(HEADING):
+            continue
+        quote_lines.add(line)
         blocks.append(_block(lines, line))
     if not blocks:
         return None
@@ -92,21 +99,30 @@ def propose(text: str, quotes: list[str]) -> dict | None:
         else:
             merged.append([start, end])
 
-    # A heading inside a block means the block is article structure.
+    # A block with a heading in it is article structure, so fall back to
+    # removing only the quoted line itself. That is the preamble shape: the note
+    # sits directly above the title, as in the Transfer learning draft, where
+    # removing the whole block would take the title with it.
+    drop: set[int] = set()
     for start, end in merged:
-        for line in lines[start:end + 1]:
-            if line.lstrip().startswith(HEADING):
-                return {"refused": "block contains a heading", "block": lines[start][:90]}
+        heading = any(lines[i].lstrip().startswith(HEADING) for i in range(start, end + 1))
+        if not heading:
+            drop.update(range(start, end + 1))
+            continue
+        inner = [i for i in sorted(quote_lines) if start <= i <= end]
+        if not inner or any(lines[i].lstrip().startswith(HEADING) for i in inner):
+            return {"refused": "quoted line is itself a heading",
+                    "block": lines[start][:90]}
+        drop.update(inner)
 
-    # Take the separator, fence or label that introduced each block with it.
-    for pair in merged:
-        while pair[0] > 0 and (lines[pair[0] - 1].strip() in SEPARATORS
-                               or TRAILER_LABEL.match(lines[pair[0] - 1])):
-            pair[0] -= 1
+    # Take the separator, fence or label that introduced each removed run.
+    for index in sorted(drop):
+        j = index
+        while j > 0 and (lines[j - 1].strip() in SEPARATORS
+                         or TRAILER_LABEL.match(lines[j - 1])):
+            drop.add(j - 1)
+            j -= 1
 
-    drop = set()
-    for start, end in merged:
-        drop.update(range(start, end + 1))
     kept = "\n".join(line for i, line in enumerate(lines) if i not in drop).rstrip() + "\n"
     removed_lines = [line for i, line in enumerate(lines) if i in drop and line.strip()]
     removed_chars = len(text) - len(kept)

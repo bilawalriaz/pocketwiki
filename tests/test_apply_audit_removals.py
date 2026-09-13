@@ -25,20 +25,25 @@ def test_removes_the_block_containing_the_quote():
     assert "Real article prose about the subject." in result["kept"]
 
 
-def test_refuses_a_block_that_contains_a_heading():
-    """A heading means the block is article structure, not a note.
+def test_heading_block_falls_back_to_the_quoted_line():
+    """A note directly above the title must not take the title with it.
 
-    Mirrors the real case: the Galois sentence sits in the same unbroken block
-    as a heading, which is what refused it.
+    Mirrors the Gap metric and Transfer learning drafts, whose notes open the
+    file immediately above their own heading.
     """
     text = (
-        "# Topic\n\nReal prose.\n\n"
-        "Évariste Galois constructed GL(ν, p) and computed its order in 1832.\n"
-        "## Legacy\n\nThe work influenced later algebra.\n"
+        "This should be ~900-950 words and well under 12k bytes.\n"
+        "# Gap metric\n\nReal article prose.\n"
     )
-    result = propose(text, ["Évariste Galois constructed GL(ν, p) and computed its order"])
-    assert result is not None
-    assert "refused" in result
+    result = propose(text, ["This should be ~900-950 words and well under 12k bytes."])
+    assert result is not None and "refused" not in result
+    assert "# Gap metric" in result["kept"]
+    assert "well under 12k bytes" not in result["kept"]
+
+
+def test_a_quote_that_is_a_heading_is_ignored():
+    """The model sometimes flags the article's own title; that is not content."""
+    assert propose("# Real title\n\nProse.\n", ["# Real title"]) is None
 
 
 def test_merges_several_quotes_into_one_block():

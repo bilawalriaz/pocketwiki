@@ -3,6 +3,10 @@ name: macOS flasher app
 # Builds the ESPFlashGUI macOS app (flasher/scripts/bundle-macos.sh) for both
 # Apple-silicon and Intel runners and uploads the zipped .app.
 #
+# The Swift tests compare the app's partition encoder against a PlatformIO
+# build's own output. This job does not build the firmware, so those tests
+# report a skip here; they run in full on a checkout that has one.
+#
 # Runner labels: macos-15 is Apple silicon (arm64), macos-15-intel is x86_64.
 # Swap the labels if GitHub changes the pool naming.
 

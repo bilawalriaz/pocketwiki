@@ -8,10 +8,11 @@ reproduction steps, impact, and any suggested mitigation.
 
 ## Security model
 
-PocketWiki is a local, read-only HTTP service on a device-created Wi-Fi
-network. It does not provide transport encryption, user accounts, WAN access,
-or remote update routes. Anyone who can join the access point can read its
-articles and diagnostic endpoints.
+PocketWiki is a local HTTP service on a device-created Wi-Fi network. It
+serves articles, and it accepts pack installs and Wi-Fi credentials over the
+same plain HTTP. It has no transport encryption, no user accounts, no WAN
+exposure and no remote update route, so anyone who can join the access point
+can read its articles and diagnostic endpoints and can reconfigure it.
 
 Set a WPA2 password before deploying the device in a shared or public area.
 Do not treat the device as a boundary for confidential material.

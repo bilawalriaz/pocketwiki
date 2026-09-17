@@ -6,14 +6,15 @@ adaptive
 
 ## Stack
 
-ESP-IDF firmware for ESP32-C3, an embedded HTML/CSS/JavaScript management and reading interface, Python pack tooling, and a native Android app built with Kotlin and Jetpack Compose. The Android stack is delegated from the explicit request for a simple Android app and the existing native provisioning requirements.
+ESP-IDF firmware for ESP32-C3 and ESP32-S3, an embedded HTML/CSS/JavaScript management and reading interface, Python pack tooling, a Swift flasher, and a native Android app built with Kotlin and Jetpack Compose.
 
 ## Users
 
-Primary users are people carrying a PocketWiki device who want reliable access to a small offline reference library and a straightforward way to configure or refresh it from an Android phone or web browser. 
+Primary users are people carrying a PocketWiki device who want reliable access to a small offline reference library and a straightforward way to configure or refresh it from an Android phone or web browser.
+
 ## Product Purpose
 
-PocketWiki turns a USB-C-powered ESP32-C3 into a pocket library. It always offers a local Wi-Fi access point for reading and management, can join a 2.4 GHz network for online management, and can receive portable knowledge packs from an Android phone. Success means a new user can get the device online and install multiple packs without embedded-development knowledge; every installed pack participates in the library at the same time.
+PocketWiki turns a USB-C-powered ESP32-C3 or ESP32-S3 into a pocket library. It always offers a local Wi-Fi access point for reading and management, can join a 2.4 GHz network for online management, and can receive portable knowledge packs from an Android phone. Success means a new user can get the device online and install multiple packs without embedded-development knowledge; every installed pack participates in the library at the same time.
 
 ## Positioning
 
@@ -39,13 +40,13 @@ The library remains useful with no router, account, cloud service, or phone afte
 
 ## Brand Commitments
 
-Keep the PocketWiki name, its concise plain-English voice, the calm green reading identity, and the recognisable `P` library mark. The requested experience is sleek, modern, and intentionally small rather than feature-dense.
+Keep the PocketWiki name, its concise plain-English voice, the calm green reading identity, and the recognisable `P` library mark. The experience stays sleek and intentionally small rather than feature-dense.
 
 ## Evidence on Hand
 
 - Article text for the optional packs is adapted from Wikipedia and lives in the companion pocketwiki-content repository under CC BY-SA 4.0.
 - `articles/pocketwiki/` in this repository holds the device's own guide.
-- No user research, product photography, testimonials, or commercial claims were supplied; future work must not invent them.
+- The project has no user research, product photography, testimonials or commercial claims behind it, and the documentation must not invent any.
 
 ## Product Principles
 

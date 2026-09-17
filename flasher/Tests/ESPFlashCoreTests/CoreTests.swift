@@ -1,6 +1,16 @@
 import XCTest
 @testable import ESPFlashCore
 
+/// Firmware images are build output, so a test run only has them when someone
+/// has already built the firmware. A missing artifact skips the test that needs
+/// it instead of failing a checkout that has not been built.
+func stagedFirmware<T>(_ value: T?, _ name: String) throws -> T {
+    guard let value else {
+        throw XCTSkip("firmware/\(name) is not built: run pio run -d firmware -e esp32-s3")
+    }
+    return value
+}
+
 /// Helper for locating repo firmware artifacts (the PocketWiki checkout).
 enum Fixtures {
     static var repoRoot: URL {
@@ -134,7 +144,7 @@ final class PartitionTableTests: XCTestCase {
     /// The encoder must reproduce PlatformIO's partitions.bin byte for byte.
     func testEncodeMatchesPlatformIOBinary() throws {
         let csv = try XCTUnwrap(Fixtures.partitionsCSV16MB)
-        let real = try XCTUnwrap(Fixtures.s3PartitionsBin)
+        let real = try stagedFirmware(Fixtures.s3PartitionsBin, ".pio/build/esp32-s3/partitions.bin")
         let parts = try PartitionTable.parseCSV(csv)
         let encoded = PartitionTable.encode(parts)
         XCTAssertEqual(encoded, real, "generated table must match gen_esp32part output")
@@ -149,7 +159,7 @@ final class PartitionTableTests: XCTestCase {
 
     func testDecodePlatformIOBinary() throws {
         let csv = try XCTUnwrap(Fixtures.partitionsCSV16MB)
-        let real = try XCTUnwrap(Fixtures.s3PartitionsBin)
+        let real = try stagedFirmware(Fixtures.s3PartitionsBin, ".pio/build/esp32-s3/partitions.bin")
         let parts = try PartitionTable.parseCSV(csv)
         let decoded = try PartitionTable.decode(real)
         XCTAssertEqual(decoded, parts)
@@ -174,7 +184,7 @@ final class PartitionTableTests: XCTestCase {
 
 final class FirmwareImageTests: XCTestCase {
     func testParseRealS3Firmware() throws {
-        let data = try XCTUnwrap(Fixtures.s3FirmwareBin)
+        let data = try stagedFirmware(Fixtures.s3FirmwareBin, ".pio/build/esp32-s3/firmware.bin")
         let image = try XCTUnwrap(FirmwareImage(data: data))
         XCTAssertEqual(image.chipID, 9) // ESP32-S3
         XCTAssertEqual(image.magic, 0xE9)
@@ -182,7 +192,7 @@ final class FirmwareImageTests: XCTestCase {
     }
 
     func testValidateAppChipMismatch() throws {
-        let data = try XCTUnwrap(Fixtures.s3FirmwareBin)
+        let data = try stagedFirmware(Fixtures.s3FirmwareBin, ".pio/build/esp32-s3/firmware.bin")
         XCTAssertThrowsError(try FirmwareImage.validateApp(data, for: .esp32c3)) { error in
             XCTAssertTrue("\(error)".contains("chip id"))
         }
@@ -190,7 +200,7 @@ final class FirmwareImageTests: XCTestCase {
     }
 
     func testPatchBootloaderFlashSize() throws {
-        let data = try XCTUnwrap(Fixtures.s3BootloaderBin)
+        let data = try stagedFirmware(Fixtures.s3BootloaderBin, ".pio/build/esp32-s3/bootloader.bin")
         let original = data[3]
         let patched = FirmwareImage.patchBootloaderFlashSize(data, sizeBits: 0x30) // 8MB
         XCTAssertEqual(patched.count, data.count)
@@ -231,7 +241,7 @@ final class FirmwareImageTests: XCTestCase {
 
 final class ImageBuilderTests: XCTestCase {
     func testBuildPlanFromRealS3Build() throws {
-        let fwDir = try XCTUnwrap(Fixtures.fixture("firmware/.pio/build/esp32-s3"))
+        let fwDir = try stagedFirmware(Fixtures.fixture("firmware/.pio/build/esp32-s3"), ".pio/build/esp32-s3")
         let csv = try XCTUnwrap(Fixtures.partitionsCSV16MB)
         let result = try ImageBuilder.build(BuildOptions(
             app: nil, bootloader: nil, partitionsCSV: csv, fwDir: fwDir,
@@ -250,7 +260,7 @@ final class ImageBuilderTests: XCTestCase {
     }
 
     func testRejectsPartitionLayoutLargerThanDetectedFlash() throws {
-        let fwDir = try XCTUnwrap(Fixtures.fixture("firmware/.pio/build/esp32-s3"))
+        let fwDir = try stagedFirmware(Fixtures.fixture("firmware/.pio/build/esp32-s3"), ".pio/build/esp32-s3")
         let csv = try XCTUnwrap(Fixtures.partitionsCSV16MB)
         XCTAssertThrowsError(try ImageBuilder.build(BuildOptions(
             app: nil, bootloader: nil, partitionsCSV: csv, fwDir: fwDir,
@@ -261,7 +271,7 @@ final class ImageBuilderTests: XCTestCase {
     }
 
     func testAppOnlyPlan() throws {
-        let fwDir = try XCTUnwrap(Fixtures.fixture("firmware/.pio/build/esp32-s3"))
+        let fwDir = try stagedFirmware(Fixtures.fixture("firmware/.pio/build/esp32-s3"), ".pio/build/esp32-s3")
         let csv = try XCTUnwrap(Fixtures.partitionsCSV16MB)
         let result = try ImageBuilder.build(BuildOptions(
             app: nil, bootloader: nil, partitionsCSV: csv, fwDir: fwDir,
@@ -272,7 +282,7 @@ final class ImageBuilderTests: XCTestCase {
     }
 
     func testAppTooLargeForPartition() throws {
-        let fwDir = try XCTUnwrap(Fixtures.fixture("firmware/.pio/build/esp32-s3"))
+        let fwDir = try stagedFirmware(Fixtures.fixture("firmware/.pio/build/esp32-s3"), ".pio/build/esp32-s3")
         // 4MB layout against the 16MB build's 4MB app: factory is only 1.5MB there.
         let csv = try XCTUnwrap(Fixtures.partitionsCSV4MB)
         XCTAssertThrowsError(try ImageBuilder.build(BuildOptions(

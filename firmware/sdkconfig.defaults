@@ -1,0 +1,76 @@
+CONFIG_IDF_TARGET="esp32c3"
+CONFIG_ESPTOOLPY_FLASHSIZE_4MB=y
+CONFIG_ESPTOOLPY_FLASHSIZE="4MB"
+CONFIG_PARTITION_TABLE_CUSTOM=y
+CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.csv"
+CONFIG_COMPILER_OPTIMIZATION_SIZE=y
+CONFIG_ESP_WIFI_SOFTAP_SUPPORT=y
+
+# --- Socket budget shared by both targets ---
+# esp_http_server reserves 3 sockets internally, so the 7-socket HTTP pool
+# (CONFIG_POCKETWIKI_HTTPD_MAX_SOCKETS, default 7) needs at least 10. 12 keeps
+# that pool, the station-side HTTPS pack download, SNTP, and introspection
+# from starving each other on the 4 MB C3 as well as on the S3.
+CONFIG_LWIP_MAX_SOCKETS=12
+CONFIG_BT_ENABLED=y
+CONFIG_BT_NIMBLE_ENABLED=y
+CONFIG_BT_BLUEDROID_ENABLED=n
+CONFIG_NIMBLE_CPP_ENABLE=n
+CONFIG_BT_NIMBLE_MAX_CONNECTIONS=1
+CONFIG_BT_NIMBLE_ROLE_PERIPHERAL=y
+CONFIG_BT_NIMBLE_ROLE_CENTRAL=n
+CONFIG_BT_NIMBLE_ROLE_BROADCASTER=y
+CONFIG_BT_NIMBLE_ROLE_OBSERVER=n
+CONFIG_ESP_WIFI_ENABLE_WPA3_SAE=n
+CONFIG_ESP_WIFI_ENABLE_WPA3_OWE_STA=n
+CONFIG_ESP_WIFI_ENTERPRISE_SUPPORT=n
+CONFIG_LWIP_IPV6=n
+CONFIG_ESP_CONSOLE_USB_SERIAL_JTAG=y
+CONFIG_ESP_CONSOLE_SECONDARY_NONE=y
+CONFIG_MBEDTLS_CUSTOM_CERTIFICATE_BUNDLE=y
+CONFIG_MBEDTLS_CUSTOM_CERTIFICATE_BUNDLE_PATH="packs_ca.pem"
+CONFIG_MBEDTLS_CERTIFICATE_BUNDLE_DEFAULT_NONE=y
+CONFIG_MBEDTLS_DYNAMIC_BUFFER=y
+# TLS peers may legally send the standard maximum 16 KiB application record.
+# The downloader keeps its application buffers bounded and uses IDF's normal
+# dynamic receive-buffer strategy so this remains compatible with TLS 1.2.
+CONFIG_MBEDTLS_SSL_IN_CONTENT_LEN=16384
+CONFIG_MBEDTLS_SSL_OUT_CONTENT_LEN=2048
+CONFIG_MBEDTLS_DYNAMIC_FREE_CONFIG_DATA=y
+# HTTPS error reporting uses esp_http_client's errno/TLS error APIs; the
+# mbedTLS trace subsystem is unnecessary in production and adds flash.
+CONFIG_MBEDTLS_DEBUG=n
+# PocketWiki is an HTTP server locally and an HTTPS client for remote packs;
+# omit the unused TLS-server half while retaining RSA/ECDSA client support.
+CONFIG_MBEDTLS_TLS_CLIENT_ONLY=y
+# These APIs are not used by the product, certificate validation, or WPA
+# supplicant. PK_WRITE_C remains enabled because WPA uses it internally.
+CONFIG_MBEDTLS_SELF_TEST=n
+CONFIG_MBEDTLS_PEM_WRITE_C=n
+CONFIG_MBEDTLS_PK_WRITE_C=y
+CONFIG_MBEDTLS_X509_REMOVE_INFO=y
+CONFIG_MBEDTLS_X509_CRL_PARSE_C=n
+CONFIG_MBEDTLS_X509_CSR_PARSE_C=n
+CONFIG_MBEDTLS_SSL_ALL_ALERT_MESSAGES=n
+CONFIG_MBEDTLS_SSL_MAX_FRAGMENT_LENGTH=n
+CONFIG_MBEDTLS_SSL_RENEGOTIATION=n
+CONFIG_MBEDTLS_CLIENT_SSL_SESSION_TICKETS=n
+CONFIG_MBEDTLS_SERVER_SSL_SESSION_TICKETS=n
+CONFIG_MBEDTLS_PKCS5_C=n
+CONFIG_MBEDTLS_PKCS7_C=n
+# The pack format is DEFLATE against a trained dictionary, decoded by the
+# vendored miniz inflater, so leave Zstandard out of the image entirely.
+CONFIG_ZSTD_COMPRESSION=n
+CONFIG_ZSTD_DECOMPRESSION=n
+CONFIG_POCKETWIKI_PACK_INDEX_RAM_CACHE=n
+
+# --- TCP timer tuning: faster socket recycling for small socket pools ---
+# MSL 10s (TIME_WAIT = 2×MSL = 20s instead of 120s) — safe on a local AP
+CONFIG_LWIP_TCP_MSL=10000
+# FIN_WAIT 5s (down from 20s) — reclaim half-closed connections faster
+CONFIG_LWIP_TCP_FIN_WAIT_TIMEOUT=5000
+
+# --- CPU load on the OLED: FreeRTOS run-time stats (idle-task accounting) ---
+CONFIG_FREERTOS_USE_TRACE_FACILITY=y
+CONFIG_FREERTOS_GENERATE_RUN_TIME_STATS=y
+CONFIG_FREERTOS_RUN_TIME_STATS_USING_ESP_TIMER=y

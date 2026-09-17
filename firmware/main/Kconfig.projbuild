@@ -1,0 +1,152 @@
+menu "PocketWiki"
+
+    config POCKETWIKI_AP_SSID
+        string "SoftAP SSID"
+        default "PocketWiki"
+        help
+            Network name broadcast by the device.
+
+    config POCKETWIKI_AP_PASSWORD
+        string "SoftAP password"
+        default ""
+        help
+            WPA2 password. Must be 8..63 characters. Leave empty for an
+            open network.
+
+    config POCKETWIKI_HOSTNAME
+        string "Device hostname"
+        default "pocketwiki"
+
+    config POCKETWIKI_BLE_ENABLE
+        bool "Enable BLE provisioning"
+        default y
+        help
+            Advertises a GATT service for Android setup and pack management.
+            Pack uploads use acknowledged, offset-framed BLE chunks.
+
+    config POCKETWIKI_AP_IP
+        string "SoftAP IP address"
+        default "192.168.4.1"
+        help
+            Static address of the device on its own network. The DHCP server
+            hands out addresses on the same /24 subnet.
+
+    config POCKETWIKI_AP_NETMASK
+        string "SoftAP netmask"
+        default "255.255.255.0"
+
+    config POCKETWIKI_AP_CHANNEL
+        int "SoftAP Wi-Fi channel"
+        default 1
+        range 1 13
+
+    config POCKETWIKI_AP_MAX_CONNECTIONS
+        int "Maximum simultaneous clients"
+        default 4
+        range 1 8
+
+    config POCKETWIKI_STA_MIN_RSSI
+        int "Minimum station uplink RSSI in dBm"
+        default -87
+        range -100 -60
+        help
+            The access point and the station share one radio. Below this signal
+            the station's retries and rate adaptation use the air time the
+            access point needs: measured on an ESP32-C3 at -90 dBm, the reader
+            page loaded once or twice and then stopped answering on both iOS
+            and Android, while the same board with no uplink served the page
+            indefinitely. After a few seconds below this limit the firmware
+            drops the uplink (the saved credentials are kept and the reason is
+            logged), so the reader keeps its own network. Set the Wi-Fi again
+            from /manage to retry. Lower this value only if a deliberately
+            marginal uplink is known to work on this board.
+
+    config POCKETWIKI_HTTPD_MAX_SOCKETS
+        int "HTTP server max open sockets"
+        default 7
+        range 2 16
+        help
+            Concurrent client sockets the reader and manager pages may use.
+            esp_http_server reserves three sockets of CONFIG_LWIP_MAX_SOCKETS
+            for itself, so this value needs CONFIG_LWIP_MAX_SOCKETS >= value+3
+            (the project sets 12, which also leaves room for the station-side
+            HTTPS pack download and SNTP). A browser opens several parallel
+            connections per host plus captive-portal probes; a pool that is too
+            small makes the server purge - and truncate - a response that is
+            still being written. Keep this at 7 on both targets.
+
+    config POCKETWIKI_PACK_INDEX_RAM_CACHE
+        bool "Cache active pack index in RAM"
+        default n
+        help
+            Speeds repeated title reads at the cost of the complete active
+            index in internal RAM (about 77 bytes per article). Leave disabled
+            on ESP32-C3: the articles decode out of a static workspace, so
+            this cache competes with the access point and BLE for the little
+            heap that is left.
+
+    config POCKETWIKI_PACK_MAX_UPLOAD_KB
+        int "Maximum uploaded pack size (KiB)"
+        default 2048
+        range 64 6144
+
+    menu "OLED display (SSD1306)"
+
+        config POCKETWIKI_OLED_ENABLE
+            bool "Enable OLED status display"
+            default y
+            help
+                Shows the welcome message, SSID, AP IP and article count.
+                The server runs fine without the display.
+
+        config POCKETWIKI_OLED_SDA
+            int "SDA GPIO"
+            default 1
+
+        config POCKETWIKI_OLED_SCL
+            int "SCL GPIO"
+            default 0
+
+        config POCKETWIKI_OLED_I2C_ADDR
+            hex "I2C address"
+            default 0x3C
+            help
+                0x3C and 0x3D are probed automatically; this address is tried
+                first.
+
+        config POCKETWIKI_OLED_WIDTH
+            int "Display width in pixels"
+            default 128
+
+        config POCKETWIKI_OLED_HEIGHT
+            int "Display height in pixels"
+            default 64
+
+    endmenu
+
+    menu "Boot button"
+
+        config POCKETWIKI_BUTTON_ENABLE
+            bool "Enable boot-button screen cycle"
+            default y
+            help
+                With the OLED attached, a short press of the BOOT button cycles
+                the display from the live status to a Wi-Fi join QR code and
+                then to the reader-address QR code.
+
+        config POCKETWIKI_BUTTON_GPIO
+            int "Boot button GPIO"
+            default 9 if IDF_TARGET_ESP32C3
+            default 0 if IDF_TARGET_ESP32S3
+            default 9
+            help
+                GPIO9 is the BOOT button on an ESP32-C3-DevKitM-1 and GPIO0 is
+                the BOOT button on an ESP32-S3-DevKitC-1. GPIO0 is also the
+                default OLED SCL pin: if the button and the display share a
+                pin, the button is disabled and the conflict is logged. Move
+                the display to the documented S3 pins (SDA 1, SCL 2) or choose
+                another free GPIO.
+
+    endmenu
+
+endmenu

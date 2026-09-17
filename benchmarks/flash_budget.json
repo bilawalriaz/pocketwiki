@@ -1,0 +1,180 @@
+{
+  "layouts": [
+    {
+      "target": "esp32-c3",
+      "layout": [
+        {
+          "name": "nvs",
+          "type": "data",
+          "subtype": "nvs",
+          "offset": 36864,
+          "size": 24576
+        },
+        {
+          "name": "phy_init",
+          "type": "data",
+          "subtype": "phy",
+          "offset": 61440,
+          "size": 4096
+        },
+        {
+          "name": "factory",
+          "type": "app",
+          "subtype": "factory",
+          "offset": 65536,
+          "size": 1572864
+        },
+        {
+          "name": "content",
+          "type": "data",
+          "subtype": "0x40",
+          "offset": 1638400,
+          "size": 458752
+        },
+        {
+          "name": "index",
+          "type": "data",
+          "subtype": "0x41",
+          "offset": 2097152,
+          "size": 65536
+        },
+        {
+          "name": "packs",
+          "type": "data",
+          "subtype": "fat",
+          "offset": 2162688,
+          "size": 2031616
+        }
+      ],
+      "nominal_flash_bytes": 4194304,
+      "pack_partition_bytes": 2031616,
+      "generated_fat_usable_bytes": 1978368,
+      "wl_bytes": 24576,
+      "fat_metadata_bytes": 28672,
+      "filesystem_overhead_percent": 2.620967741935484,
+      "reserved_free_bytes": 8192,
+      "usable_pack_budget": 1970176,
+      "firmware_image_bytes": 1224416,
+      "geometry_note": "Host IDF WLFATFS generated geometry, 4096-byte sectors/clusters, two FATs, 512 root entries; confirm actual mounted volume.",
+      "worst_case_cluster_slack": {
+        "1": 4095,
+        "5": 20475,
+        "10": 40950,
+        "25": 102375
+      }
+    },
+    {
+      "target": "esp32-s3",
+      "layout": [
+        {
+          "name": "nvs",
+          "type": "data",
+          "subtype": "nvs",
+          "offset": 36864,
+          "size": 24576
+        },
+        {
+          "name": "phy_init",
+          "type": "data",
+          "subtype": "phy",
+          "offset": 61440,
+          "size": 4096
+        },
+        {
+          "name": "factory",
+          "type": "app",
+          "subtype": "factory",
+          "offset": 65536,
+          "size": 1572864
+        },
+        {
+          "name": "content",
+          "type": "data",
+          "subtype": "0x40",
+          "offset": 1638400,
+          "size": 524288
+        },
+        {
+          "name": "index",
+          "type": "data",
+          "subtype": "0x41",
+          "offset": 2162688,
+          "size": 65536
+        },
+        {
+          "name": "packs",
+          "type": "data",
+          "subtype": "fat",
+          "offset": 2228224,
+          "size": 14548992
+        }
+      ],
+      "nominal_flash_bytes": 16777216,
+      "pack_partition_bytes": 14548992,
+      "generated_fat_usable_bytes": 14389248,
+      "wl_bytes": 122880,
+      "fat_metadata_bytes": 36864,
+      "filesystem_overhead_percent": 1.097972972972973,
+      "reserved_free_bytes": 8192,
+      "usable_pack_budget": 14381056,
+      "firmware_image_bytes": 1144240,
+      "geometry_note": "Host IDF WLFATFS generated geometry, 4096-byte sectors/clusters, two FATs, 512 root entries; confirm actual mounted volume.",
+      "worst_case_cluster_slack": {
+        "1": 4095,
+        "5": 20475,
+        "10": 40950,
+        "25": 102375
+      }
+    }
+  ],
+  "density": [
+    {
+      "case": "production-v3",
+      "n": 82,
+      "composition": "db-packs",
+      "codec": "deflate",
+      "level": 9,
+      "dictionary_target": 32768,
+      "dictionary_scope": "pack",
+      "block_size": 0,
+      "ordering": "source",
+      "budget_bytes": 1970176,
+      "bytes_per_article": 2387.9,
+      "estimated_articles": 825,
+      "whole_packs_fit": 9.0,
+      "whole_pack_articles": 738.0,
+      "note": "Measured with tools/pack_content.py over 27 article domains of 82 articles each."
+    },
+    {
+      "case": "production-v3",
+      "n": 82,
+      "composition": "db-packs",
+      "codec": "deflate",
+      "level": 9,
+      "dictionary_target": 32768,
+      "dictionary_scope": "pack",
+      "block_size": 0,
+      "ordering": "source",
+      "budget_bytes": 14381056,
+      "bytes_per_article": 2387.9,
+      "estimated_articles": 6022,
+      "whole_packs_fit": 71.0,
+      "whole_pack_articles": 5822.0,
+      "note": "Measured with tools/pack_content.py over 27 article domains of 82 articles each."
+    }
+  ],
+  "production": {
+    "codec": "deflate",
+    "level": 9,
+    "dictionary_target": 32768,
+    "dictionary_scope": "pack",
+    "ordering": "source",
+    "block_size": 0,
+    "n": 82,
+    "composition": "db-packs",
+    "bytes_per_article": 2387.9402444545044,
+    "total_pack_bytes": 201741.0,
+    "packs": 27,
+    "corpus_bytes": 5792367
+  }
+}

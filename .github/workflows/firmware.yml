@@ -1,0 +1,77 @@
+name: Firmware build
+
+# Builds the ESP32-C3 and ESP32-S3 firmware and stages the flash images
+# (bootloader, partitions, firmware, content) into firmware/dist/<env>/ via
+# pio_post.py. Artifacts are uploaded for manual download; tagged releases are
+# assembled by release.yml.
+#
+# The dist folder is gitignored by design: binaries live as CI artifacts and
+# GitHub Release assets, not in the repository.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'firmware/**'
+      - 'assets/**'
+      - 'articles/**'
+      - 'tools/**'
+      - '.github/workflows/firmware.yml'
+  pull_request:
+    paths:
+      - 'firmware/**'
+      - 'assets/**'
+      - 'articles/**'
+      - 'tools/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check out article content
+        # The catalogue tests need the corpus, and tools/content_paths.py
+        # resolves it at this sibling path. The firmware itself packs only the
+        # in-repo guide at articles/pocketwiki/.
+        run: git clone --depth 1 "https://github.com/${{ github.repository_owner }}/pocketwiki-content.git" "$GITHUB_WORKSPACE/../pocketwiki-content"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install PlatformIO
+        run: python -m pip install --upgrade platformio
+
+      - name: Install build and test dependencies
+        # The pre-build hook packs the built-in archive, which trains its
+        # dictionary with the zstandard cover trainer.
+        run: python -m pip install -r tools/requirements.txt
+
+      - name: Cache PlatformIO toolchains
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.platformio/.cache
+            ~/.platformio/packages
+            ~/.platformio/platforms
+          key: pio-${{ runner.os }}-espressif32-7.0.1-${{ hashFiles('firmware/platformio.ini', 'firmware/dependencies.lock') }}
+
+      - name: Build firmware (esp32-s3 + esp32-c3)
+        working-directory: firmware
+        # Build serially: both environments regenerate the shared managed
+        # component directory and concurrent builds race on its sources.
+        run: |
+          pio run -e esp32-s3
+          pio run -e esp32-c3
+
+      - name: Run repo Python tests
+        run: python -m pytest tests/ -q
+
+      - name: Upload staged dist images
+        uses: actions/upload-artifact@v4
+        with:
+          name: firmware-dist
+          path: firmware/dist/
+          if-no-files-found: error

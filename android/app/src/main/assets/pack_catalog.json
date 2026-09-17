@@ -1,0 +1,749 @@
+{
+  "catalog_version": 10,
+  "collections": [
+    {
+      "description": "Pathogens, vaccines, parasites, and the immune system's failures.",
+      "id": "infectious-disease-2",
+      "name": "Infectious Disease & Immunity"
+    },
+    {
+      "description": "The periodic table, chemical reactions, materials, engines, and power.",
+      "id": "chemistry-materials-2",
+      "name": "Chemistry, Materials & Energy"
+    },
+    {
+      "description": "How people organise, trade, govern, communicate, and create.",
+      "id": "society-culture-2",
+      "name": "Society, Culture & Commerce"
+    },
+    {
+      "description": "The animal kingdom, from insects and fish to dinosaurs and early humans.",
+      "id": "animals-deep-time-2",
+      "name": "Animals & Deep Time"
+    },
+    {
+      "description": "Mechanics, electromagnetism, quantum theory, and the physicists behind them.",
+      "id": "physics-2",
+      "name": "Physics"
+    },
+    {
+      "description": "Geology, minerals, tectonics, and the built world.",
+      "id": "rocks-minerals-2",
+      "name": "Rocks, Minerals & Structures"
+    },
+    {
+      "description": "Rivers and oceans, climate zones, ice, ecology, and a changing planet.",
+      "id": "earth-climate-2",
+      "name": "Earth, Oceans & Climate"
+    },
+    {
+      "description": "Cosmology, stars and planets, spaceflight, and the sky we observe.",
+      "id": "space-astronomy-2",
+      "name": "Space & Astronomy"
+    },
+    {
+      "description": "Crops, trees, fruits, microbes, and the science of growing things.",
+      "id": "plants-farming-2",
+      "name": "Plants, Farming & Microbes"
+    },
+    {
+      "description": "Artificial intelligence, robots, control, signals, and machine vision.",
+      "id": "robotics-ai-2",
+      "name": "Robotics & Intelligent Systems"
+    },
+    {
+      "description": "Programs, languages, networks, hardware, and software practice.",
+      "id": "computing-2",
+      "name": "Computing & Software"
+    },
+    {
+      "description": "Dynasties, empires, revolutions, and the people who shaped nations.",
+      "id": "world-history-2",
+      "name": "World History & Empires"
+    },
+    {
+      "description": "Mental health, disease, treatment, and the practice of medicine.",
+      "id": "medicine-health-2",
+      "name": "Medicine, Mind & Health"
+    },
+    {
+      "description": "Metabolism, proteins, named reactions, and the molecules of life.",
+      "id": "biochemistry-2",
+      "name": "Biochemistry & Organic Reactions"
+    },
+    {
+      "description": "Probability, inference, learning from data, and information theory.",
+      "id": "statistics-2",
+      "name": "Statistics & Machine Learning"
+    },
+    {
+      "description": "Algebra, analysis, geometry, logic, and the foundations of proof.",
+      "id": "mathematics-2",
+      "name": "Pure Mathematics"
+    },
+    {
+      "description": "Genes, genomes, cells, reproduction, and evolution at the molecular level.",
+      "id": "genetics-2",
+      "name": "Genetics & Cell Biology"
+    }
+  ],
+  "generated_at": "2026-09-17T20:39:52Z",
+  "packs": [
+    {
+      "articles": 17,
+      "bytes": 16040,
+      "description": "The device's own manual: setup, reading, packs, storage, Wi-Fi, Bluetooth, the app, updates, privacy, and troubleshooting.",
+      "id": "pocketwiki",
+      "license": "CC BY-SA 4.0",
+      "name": "PocketWiki Guide",
+      "sha256": "71fbba57b9098dd52d986a00d6a9503a442152e9e63d1dbbace3c3c2761109fd",
+      "url": "https://packs.educated.space/v10/pocketwiki-v2.pwp",
+      "version": 2
+    },
+    {
+      "articles": 67,
+      "bytes": 178264,
+      "description": "A compact knowledge companion spanning primary through secondary topics across England, Scotland, Wales, and Northern Ireland. It supports curriculum study but is not a replacement for official programmes of study.",
+      "id": "uk-curriculum-companion",
+      "license": "CC BY-SA 4.0",
+      "name": "UK Curriculum Knowledge Companion",
+      "sha256": "2a728a3273c5828db57fd6d070c2230fe232a381969e35b90f0706aa2d648b7f",
+      "url": "https://packs.educated.space/v10/uk-curriculum-companion-v2.pwp",
+      "version": 2
+    },
+    {
+      "articles": 20,
+      "bytes": 65944,
+      "description": "Reading, writing, phonics, literary craft, music, visual art, and the languages of the UK for curriculum-linked exploration.",
+      "id": "uk-literacy-arts-languages",
+      "license": "CC BY-SA 4.0",
+      "name": "UK Literacy, Arts & Languages",
+      "sha256": "58f090488e007335f3d0d91a15fdc27ed9e9573f0ba9cfbde2ca1323bcebcbb9",
+      "url": "https://packs.educated.space/v10/uk-literacy-arts-languages-v2.pwp",
+      "version": 2
+    },
+    {
+      "articles": 18,
+      "bytes": 41416,
+      "description": "High-leverage mathematics, science, design technology, digital literacy, and computing concepts aligned with UK school knowledge spines.",
+      "id": "uk-maths-stem-computing",
+      "license": "CC BY-SA 4.0",
+      "name": "UK Maths, Science & Computing",
+      "sha256": "3ec6844ab893f028e07bf46ea166ea2f9e9b386de1e11d5fac64b3f47931f8d6",
+      "url": "https://packs.educated.space/v10/uk-maths-stem-computing-v2.pwp",
+      "version": 2
+    },
+    {
+      "articles": 29,
+      "bytes": 82486,
+      "description": "UK history, the four nations, citizenship, democracy, wellbeing, and everyday institutions for context-rich study.",
+      "id": "uk-britain-civic-life",
+      "license": "CC BY-SA 4.0",
+      "name": "Britain, Nations & Civic Life",
+      "sha256": "bf7b25fc62b2fc8ef0d3f6d36b9ebf88a34e65b35176ba2552b880a9b6c06695",
+      "url": "https://packs.educated.space/v10/uk-britain-civic-life-v2.pwp",
+      "version": 2
+    },
+    {
+      "articles": 117,
+      "bytes": 233838,
+      "collection": "mathematics-2",
+      "description": "Euclidean, hyperbolic, and projective geometry.",
+      "id": "geometry-triangle",
+      "license": "CC BY-SA 4.0",
+      "name": "Geometry",
+      "sha256": "c5bbd591252b5913effc96aafc15e44bfd4da57c2d9d5fbb8794822f78a7a55b",
+      "url": "https://packs.educated.space/v10/geometry-triangle-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 74,
+      "bytes": 164710,
+      "collection": "mathematics-2",
+      "description": "Decimal, binary, and positional notation.",
+      "id": "number-systems",
+      "license": "CC BY-SA 4.0",
+      "name": "Number Systems",
+      "sha256": "e25f679223b60654ae39a25a578ebd75c149dbc38a6873f74d34c9c6cd47af7a",
+      "url": "https://packs.educated.space/v10/number-systems-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 85,
+      "bytes": 169472,
+      "collection": "mathematics-2",
+      "description": "Differential calculus and the derivative in several variables.",
+      "id": "differential-equation-calculus",
+      "license": "CC BY-SA 4.0",
+      "name": "Calculus & Derivatives",
+      "sha256": "2f78c17fb438475134963ec63513eda927b261d13f222979a03dcb53a4d6241b",
+      "url": "https://packs.educated.space/v10/differential-equation-calculus-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 79,
+      "bytes": 148694,
+      "collection": "mathematics-2",
+      "description": "Vector spaces, bases, and linear maps.",
+      "id": "linear-basis",
+      "license": "CC BY-SA 4.0",
+      "name": "Linear Algebra",
+      "sha256": "fbcf74d396f572d163ab75db76d61c46d836c543b80882c616e2326170cadf7d",
+      "url": "https://packs.educated.space/v10/linear-basis-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 115,
+      "bytes": 227180,
+      "collection": "physics-2",
+      "description": "Newton's laws, motion, and rigid-body dynamics.",
+      "id": "motion-mechanics",
+      "license": "CC BY-SA 4.0",
+      "name": "Classical Mechanics",
+      "sha256": "733685573c7abf665f8d907601a021a13a7d11265a7c124bcabb4a20ac04e4ed",
+      "url": "https://packs.educated.space/v10/motion-mechanics-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 121,
+      "bytes": 233958,
+      "collection": "physics-2",
+      "description": "Maxwell's equations, fields, and electromagnetic theory.",
+      "id": "electromagnetism",
+      "license": "CC BY-SA 4.0",
+      "name": "Electromagnetism",
+      "sha256": "1922538d08c1a68a1205ee93b509f1ccf3e2af30d8fe79443cfee4c1f740d10f",
+      "url": "https://packs.educated.space/v10/electromagnetism-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 104,
+      "bytes": 208976,
+      "collection": "physics-2",
+      "description": "States, entanglement, and the interpretation of quantum theory.",
+      "id": "quantum",
+      "license": "CC BY-SA 4.0",
+      "name": "Quantum Mechanics",
+      "sha256": "ef66be39701344651e7fd6dbc0639938eac0d911a6b1887d8a07fc40136452a5",
+      "url": "https://packs.educated.space/v10/quantum-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 145,
+      "bytes": 345203,
+      "collection": "chemistry-materials-2",
+      "description": "Elements, groups, periods, and how the table explains chemistry.",
+      "id": "periodic-table",
+      "license": "CC BY-SA 4.0",
+      "name": "The Periodic Table",
+      "sha256": "a7e443e6dec87d2e7815557ed780fdda7c5a8a4c5108a6bde539db439dfb8e4c",
+      "url": "https://packs.educated.space/v10/periodic-table-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 140,
+      "bytes": 285173,
+      "collection": "chemistry-materials-2",
+      "description": "Bonds, polarity, and the three-dimensional shape of molecules.",
+      "id": "chemical-bonding",
+      "license": "CC BY-SA 4.0",
+      "name": "Chemical Bonding & Molecular Shape",
+      "sha256": "d8b42f40b1b4ec980fdda8a89d9222b2555a028eab06b8c7c5b905b909d497bc",
+      "url": "https://packs.educated.space/v10/chemical-bonding-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 104,
+      "bytes": 211813,
+      "collection": "chemistry-materials-2",
+      "description": "Acids, bases, salts, and neutralisation.",
+      "id": "acids-and-bases",
+      "license": "CC BY-SA 4.0",
+      "name": "Acids & Bases",
+      "sha256": "de2715aef105113d929d28b94e2a8dbca0e0804e54b8a644f24b4f78170903bd",
+      "url": "https://packs.educated.space/v10/acids-and-bases-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 101,
+      "bytes": 236003,
+      "collection": "chemistry-materials-2",
+      "description": "Batteries, solar and wind power, and storing energy at scale.",
+      "id": "energy-storage",
+      "license": "CC BY-SA 4.0",
+      "name": "Energy Storage & Renewables",
+      "sha256": "55bbdf33785f9ab6986d1410a45f275256622aa546651fdd2be1a26ef9dbaa3a",
+      "url": "https://packs.educated.space/v10/energy-storage-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 120,
+      "bytes": 261406,
+      "collection": "genetics-2",
+      "description": "The cell cycle, potency, and programmed cell death.",
+      "id": "cell-stem-cell",
+      "license": "CC BY-SA 4.0",
+      "name": "Cells & Cell Division",
+      "sha256": "7b42131e39fe1f6f3b3a6bc7ab6bc8c7068c885e58d0a254cd2cda06ccbd67d7",
+      "url": "https://packs.educated.space/v10/cell-stem-cell-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 113,
+      "bytes": 237370,
+      "collection": "genetics-2",
+      "description": "Gene expression, regulation, and genomes.",
+      "id": "gene-genome",
+      "license": "CC BY-SA 4.0",
+      "name": "Genes & Genomes",
+      "sha256": "3bc0ab30ac0b478dcaebad8f0cd491af2d85d065f42263be1ce3a13a79f8ea17",
+      "url": "https://packs.educated.space/v10/gene-genome-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 124,
+      "bytes": 270910,
+      "collection": "genetics-2",
+      "description": "Natural selection and the mechanisms of evolutionary change.",
+      "id": "evolution",
+      "license": "CC BY-SA 4.0",
+      "name": "Evolution",
+      "sha256": "1ae1dcfa57861bc90552d219068dac4e18260d45b111c298b88f486819be01b6",
+      "url": "https://packs.educated.space/v10/evolution-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 93,
+      "bytes": 205232,
+      "collection": "plants-farming-2",
+      "description": "How plants grow, reproduce, and are classified.",
+      "id": "plant-biology",
+      "license": "CC BY-SA 4.0",
+      "name": "Plant Biology",
+      "sha256": "48ae9724d2958d9bc90f8551e917050c74629a6bbff6e8c766869156fb617b96",
+      "url": "https://packs.educated.space/v10/plant-biology-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 100,
+      "bytes": 213346,
+      "collection": "animals-deep-time-2",
+      "description": "Mammal orders, marsupials, and rodents.",
+      "id": "squirrel-mole",
+      "license": "CC BY-SA 4.0",
+      "name": "Mammals",
+      "sha256": "f9b5e1bc416c811e64141bdde3beb09c77080b6ad2455e7da3dbf50271043cdc",
+      "url": "https://packs.educated.space/v10/squirrel-mole-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 69,
+      "bytes": 160359,
+      "collection": "animals-deep-time-2",
+      "description": "Hominins, palaeoanthropology, and the Stone Age.",
+      "id": "homo-paleolithic",
+      "license": "CC BY-SA 4.0",
+      "name": "Human Origins",
+      "sha256": "7bc9e56113b66ab9c7b43fa5cad0267fa15f6722a8cc004dcd9a60ddeb59ca36",
+      "url": "https://packs.educated.space/v10/homo-paleolithic-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 123,
+      "bytes": 297446,
+      "collection": "medicine-health-2",
+      "description": "Medical practice, clinics, and health systems.",
+      "id": "medicine-health",
+      "license": "CC BY-SA 4.0",
+      "name": "Healthcare",
+      "sha256": "bfe1a85a0044cfa219c009a615b316ffbfb809d633103f3b7c89f4404cea2208",
+      "url": "https://packs.educated.space/v10/medicine-health-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 117,
+      "bytes": 291086,
+      "collection": "medicine-health-2",
+      "description": "Cognition, mind, and the schools of psychology.",
+      "id": "psychology-and-cognition",
+      "license": "CC BY-SA 4.0",
+      "name": "Psychology & Cognition",
+      "sha256": "b470985314929de5af55bdf5a985095d9cef7e6823baa548a6324d4407d46494",
+      "url": "https://packs.educated.space/v10/psychology-and-cognition-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 131,
+      "bytes": 301274,
+      "collection": "medicine-health-2",
+      "description": "Psychiatric diagnoses and their symptoms.",
+      "id": "mental-disorders",
+      "license": "CC BY-SA 4.0",
+      "name": "Mental Disorders",
+      "sha256": "4e248210814c3600d01809e52d0fca4609427d2801d92e4643935d78a4221d8c",
+      "url": "https://packs.educated.space/v10/mental-disorders-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 104,
+      "bytes": 241516,
+      "collection": "medicine-health-2",
+      "description": "Brain anatomy, imaging, and cognitive neuroscience.",
+      "id": "brain-neuroscience",
+      "license": "CC BY-SA 4.0",
+      "name": "Brain & Neuroscience",
+      "sha256": "6a98a4d153aad67a0f6f94c7af80f640c6211349247caea50b758a92e4df1fde",
+      "url": "https://packs.educated.space/v10/brain-neuroscience-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 139,
+      "bytes": 292760,
+      "collection": "infectious-disease-2",
+      "description": "Viruses, outbreaks, and the diseases they cause.",
+      "id": "virus-infectious-diseases",
+      "license": "CC BY-SA 4.0",
+      "name": "Viruses & Infectious Disease",
+      "sha256": "d32409fab8b97dd20aaf7292fdc6cb4f2d8764b6d3666e72bb1fab51343ba238",
+      "url": "https://packs.educated.space/v10/virus-infectious-diseases-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 114,
+      "bytes": 220969,
+      "collection": "infectious-disease-2",
+      "description": "How vaccines are made, tested, and used against disease.",
+      "id": "vaccine",
+      "license": "CC BY-SA 4.0",
+      "name": "Vaccines & Immunisation",
+      "sha256": "080e2f3ec8e1a530074d7fea5d2a6918cc88350aa221f827919fec0759256d8e",
+      "url": "https://packs.educated.space/v10/vaccine-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 60,
+      "bytes": 148840,
+      "collection": "biochemistry-2",
+      "description": "Nutrition, digestion, and food processing.",
+      "id": "food-and-nutrition",
+      "license": "CC BY-SA 4.0",
+      "name": "Food & Nutrition",
+      "sha256": "b239569eb6f04ba9770e0deedfe187b21d7c41ee4694ff23f4e3f15422841456",
+      "url": "https://packs.educated.space/v10/food-and-nutrition-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 143,
+      "bytes": 331604,
+      "collection": "plants-farming-2",
+      "description": "Farming systems, crops, and soil management.",
+      "id": "agricultural-agriculture",
+      "license": "CC BY-SA 4.0",
+      "name": "Agriculture & Farming",
+      "sha256": "f93bfdf9c17d3d0a74a624fbb44c8a00fca98f8d6644cc89565c54b6d05d07ca",
+      "url": "https://packs.educated.space/v10/agricultural-agriculture-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 86,
+      "bytes": 203290,
+      "collection": "computing-2",
+      "description": "The computer as a machine, and how it got that way.",
+      "id": "computer-computing",
+      "license": "CC BY-SA 4.0",
+      "name": "Computers",
+      "sha256": "c51e0142a3067787acb7c6642e5c026781b758d7867ce268f0538831ad53e4bf",
+      "url": "https://packs.educated.space/v10/computer-computing-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 110,
+      "bytes": 249735,
+      "collection": "computing-2",
+      "description": "Programs, paradigms, compilers, and how code is structured.",
+      "id": "programming-foundations",
+      "license": "CC BY-SA 4.0",
+      "name": "Programming Foundations",
+      "sha256": "087faa1abd2c88e759106a7fc2e5b920b4f8a4f529e4513eca06db82de7855c3",
+      "url": "https://packs.educated.space/v10/programming-foundations-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 106,
+      "bytes": 246519,
+      "collection": "computing-2",
+      "description": "Computer networks, the internet, and its protocols.",
+      "id": "network-protocol",
+      "license": "CC BY-SA 4.0",
+      "name": "Networks & Protocols",
+      "sha256": "f86c7d3bfab598ef0c5f8a3587ffa00978472cedbcedac1123f492ca2c265bac",
+      "url": "https://packs.educated.space/v10/network-protocol-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 135,
+      "bytes": 296948,
+      "collection": "robotics-ai-2",
+      "description": "AI methods, progress, and the debates around them.",
+      "id": "artificial-intelligence-computing",
+      "license": "CC BY-SA 4.0",
+      "name": "Artificial Intelligence",
+      "sha256": "719210ffffb7c75e5bf8b179986068f094108f5fe1b3f36dc92a821b375e4765",
+      "url": "https://packs.educated.space/v10/artificial-intelligence-computing-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 145,
+      "bytes": 286711,
+      "collection": "statistics-2",
+      "description": "Learning from data, classifiers, and statistical learning theory.",
+      "id": "learning-machine-learning",
+      "license": "CC BY-SA 4.0",
+      "name": "Machine Learning",
+      "sha256": "7c4243f153e5466199a9f53b92915a7098ab7b351cb33c94c5b5dfa13d81a9cf",
+      "url": "https://packs.educated.space/v10/learning-machine-learning-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 135,
+      "bytes": 259149,
+      "collection": "statistics-2",
+      "description": "Random variables, probability spaces, and distributions.",
+      "id": "probability-distribution",
+      "license": "CC BY-SA 4.0",
+      "name": "Probability Theory",
+      "sha256": "c14137eba188118c405ec4f59a79e8a6340a86f41d590941474e202f5024f695",
+      "url": "https://packs.educated.space/v10/probability-distribution-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 109,
+      "bytes": 233061,
+      "collection": "robotics-ai-2",
+      "description": "Robots, robot control, and autonomous machines.",
+      "id": "robot",
+      "license": "CC BY-SA 4.0",
+      "name": "Robotics",
+      "sha256": "8b9252cc53af5db9ef284d6accf6c841a2d4d7845d0fcdc7dbdef4ad9cc136ce",
+      "url": "https://packs.educated.space/v10/robot-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 64,
+      "bytes": 149758,
+      "collection": "earth-climate-2",
+      "description": "Causes, effects, and mitigation of a warming climate.",
+      "id": "climate-change-effects-climate",
+      "license": "CC BY-SA 4.0",
+      "name": "Climate Change",
+      "sha256": "d4a621825b20c85a6263de55d6729694d0dac60750c1c223f9bf0384f2b38870",
+      "url": "https://packs.educated.space/v10/climate-change-effects-climate-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 107,
+      "bytes": 253269,
+      "collection": "earth-climate-2",
+      "description": "Ecosystems, habitats, and biodiversity loss.",
+      "id": "ecology-ecological",
+      "license": "CC BY-SA 4.0",
+      "name": "Ecology",
+      "sha256": "03b5a6a772e50ba2906fd83d738e00f9bfc0010711f5e230b9d7310bbecca4c3",
+      "url": "https://packs.educated.space/v10/ecology-ecological-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 91,
+      "bytes": 198044,
+      "collection": "earth-climate-2",
+      "description": "Oceans, currents, and the physics of the sea.",
+      "id": "ocean-global-ocean",
+      "license": "CC BY-SA 4.0",
+      "name": "Oceanography",
+      "sha256": "01d4863891c5cd4443e86f6745f42ea68fd462315d33d26eff76f2f3c535a671",
+      "url": "https://packs.educated.space/v10/ocean-global-ocean-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 119,
+      "bytes": 251704,
+      "collection": "rocks-minerals-2",
+      "description": "Rocks, sediments, and how the crust is layered.",
+      "id": "soil-geology",
+      "license": "CC BY-SA 4.0",
+      "name": "Geology & Sedimentary Rock",
+      "sha256": "bf25471e302cbe52dc3abf3d9d6b9060dce850b4f0d7fa173996e47c6e8d7d30",
+      "url": "https://packs.educated.space/v10/soil-geology-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 87,
+      "bytes": 181177,
+      "collection": "rocks-minerals-2",
+      "description": "Volcanism, lava, and how mountains are built.",
+      "id": "mountains-lava",
+      "license": "CC BY-SA 4.0",
+      "name": "Volcanoes & Mountains",
+      "sha256": "152df526c48fd0240bf7000433259013e975e6363e68c56e69c7fdf37ee3d246",
+      "url": "https://packs.educated.space/v10/mountains-lava-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 150,
+      "bytes": 296237,
+      "collection": "space-astronomy-2",
+      "description": "General relativity, the Big Bang, and the large-scale universe.",
+      "id": "black-hole-kaluza-klein",
+      "license": "CC BY-SA 4.0",
+      "name": "Cosmology & Relativity",
+      "sha256": "4f25015bc41e42ea35932256114124924eb16106b5c52bdf04b26539294b55b6",
+      "url": "https://packs.educated.space/v10/black-hole-kaluza-klein-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 99,
+      "bytes": 215724,
+      "collection": "space-astronomy-2",
+      "description": "Planets, dwarf planets, and planetary systems.",
+      "id": "planet-neptune",
+      "license": "CC BY-SA 4.0",
+      "name": "Planets & the Solar System",
+      "sha256": "d11134e1f5f6b24cd76d4e020848d3dac94b7d5463c5010a0c806f2fa2cb3afc",
+      "url": "https://packs.educated.space/v10/planet-neptune-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 101,
+      "bytes": 238672,
+      "collection": "space-astronomy-2",
+      "description": "Launch vehicles, orbits, and crewed space exploration.",
+      "id": "spaceflight",
+      "license": "CC BY-SA 4.0",
+      "name": "Spaceflight",
+      "sha256": "06ebe29c5da95d8c24a5a72b5409ea6d6a367c3b726c60cb88916e9b41e473de",
+      "url": "https://packs.educated.space/v10/spaceflight-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 110,
+      "bytes": 243205,
+      "collection": "world-history-2",
+      "description": "Greek city-states, Alexander, and the successor empires.",
+      "id": "ancient-greek-athens",
+      "license": "CC BY-SA 4.0",
+      "name": "Ancient Greece & the Hellenistic World",
+      "sha256": "f25f14726cd62d9c861e59e6c728cd13e5399c8013ae850c8bbd8d699adea695",
+      "url": "https://packs.educated.space/v10/ancient-greek-athens-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 66,
+      "bytes": 151378,
+      "collection": "world-history-2",
+      "description": "The Roman, Byzantine, and Holy Roman empires.",
+      "id": "roman-empire-europe",
+      "license": "CC BY-SA 4.0",
+      "name": "Rome & Medieval Europe",
+      "sha256": "ebb907468435d8efe6ba1d4e5cf8ba98ebdbcedf563898a93924e714e76cba8d",
+      "url": "https://packs.educated.space/v10/roman-empire-europe-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 89,
+      "bytes": 196415,
+      "collection": "world-history-2",
+      "description": "The German states, the World Wars, and unification.",
+      "id": "western-front-berlin",
+      "license": "CC BY-SA 4.0",
+      "name": "Germany & the World Wars",
+      "sha256": "200263f74dba6c1fdde5e5291bc3396afb5fd317b98e5268ab0e8475056f8360",
+      "url": "https://packs.educated.space/v10/western-front-berlin-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 111,
+      "bytes": 240842,
+      "collection": "world-history-2",
+      "description": "The caliphates and the early expansion of Islam.",
+      "id": "muhammad-caliphate",
+      "license": "CC BY-SA 4.0",
+      "name": "Caliphates & Early Islam",
+      "sha256": "3f654fd8f6588475b617325d83c5aefd2baedf8c9fed6c139f323125450b6278",
+      "url": "https://packs.educated.space/v10/muhammad-caliphate-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 64,
+      "bytes": 156624,
+      "collection": "world-history-2",
+      "description": "Hinduism, Zoroastrianism, and the history of religion.",
+      "id": "religion-religious",
+      "license": "CC BY-SA 4.0",
+      "name": "Religion & Belief",
+      "sha256": "ef4700ccc43a770c58eb6efe990850c254d95a6eb7764fe0df50dd0067260151",
+      "url": "https://packs.educated.space/v10/religion-religious-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 96,
+      "bytes": 226500,
+      "collection": "society-culture-2",
+      "description": "States, constitutions, legislatures, and democratic systems.",
+      "id": "political-democracy",
+      "license": "CC BY-SA 4.0",
+      "name": "Government & Democracy",
+      "sha256": "f84de61e9de290b1e3dcd2dc3b25592e2d6f6c996609f76998da07d7e32107db",
+      "url": "https://packs.educated.space/v10/political-democracy-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 104,
+      "bytes": 245850,
+      "collection": "society-culture-2",
+      "description": "Markets, growth, trade, and economic thought.",
+      "id": "economics-trade",
+      "license": "CC BY-SA 4.0",
+      "name": "Economics & Trade",
+      "sha256": "0616feef10782129ec4b494ec496a3505a900f2caeceed76686178ee39f1b55b",
+      "url": "https://packs.educated.space/v10/economics-trade-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 104,
+      "bytes": 248113,
+      "collection": "society-culture-2",
+      "description": "How languages are structured, learned, and translated.",
+      "id": "language-machine-translation",
+      "license": "CC BY-SA 4.0",
+      "name": "Language & Linguistics",
+      "sha256": "96c2aa0ef4971b36b60a569c3619893f5332b530925bd57d717206d0dca0e0f1",
+      "url": "https://packs.educated.space/v10/language-machine-translation-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 105,
+      "bytes": 258392,
+      "collection": "society-culture-2",
+      "description": "The traditions, thinkers, and arguments of philosophy.",
+      "id": "ethics-philosophy",
+      "license": "CC BY-SA 4.0",
+      "name": "Philosophy & Its History",
+      "sha256": "5bd35cbe1d1489ca62220d38a1b5fab9b98b89c57653caa4e37345fdcc262246",
+      "url": "https://packs.educated.space/v10/ethics-philosophy-v1.pwp",
+      "version": 1
+    },
+    {
+      "articles": 73,
+      "bytes": 181459,
+      "collection": "society-culture-2",
+      "description": "Visual arts practice and art history.",
+      "id": "photography-drawing",
+      "license": "CC BY-SA 4.0",
+      "name": "Drawing, Painting & Photography",
+      "sha256": "3865f1ac876ea297442da45c009428b1d0b8f3ce0ece6bac3d24510c3f110863",
+      "url": "https://packs.educated.space/v10/photography-drawing-v1.pwp",
+      "version": 1
+    }
+  ],
+  "schema": 1
+}

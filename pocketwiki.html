@@ -21,8 +21,6 @@
     <script>
         /* Set the stored theme before first paint. */
         try {
-            var pocketWikiPath = window.location.pathname.replace(/\/+$/, '');
-            document.documentElement.dataset.variant = /(?:^|\/)pocketwiki2(?:\/|$)/.test(pocketWikiPath) ? 'boardui' : 'classic';
             var storedTheme = localStorage.getItem('pocketwiki-theme');
             if (storedTheme) document.documentElement.dataset.theme = storedTheme;
         } catch (e) { /* storage unavailable */ }

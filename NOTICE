@@ -1,0 +1,94 @@
+PocketWiki
+Copyright (c) 2026 Bilawal Riaz
+
+This project is licensed under the MIT License (see LICENSE).
+
+It includes or depends on the third-party components listed below. Each entry
+names the license and where its text lives, either in this repository or in the
+package it comes from. Nothing here changes the terms of those licenses.
+
+
+## Vendored in this repository
+
+miniz
+  Version:  3.0.x (see firmware/third_party/miniz)
+  License:  MIT
+  Text:     firmware/third_party/miniz/LICENSE
+  Used by:  firmware, as the inflate implementation that decodes every article
+
+
+## Fetched at build time, not stored here
+
+esp-idf (ESP-IDF)
+  Version:  6.0.1
+  License:  Apache-2.0
+  Used by:  the firmware framework and every component it registers
+
+espressif/cjson
+  Version:  1.7.19~2
+  License:  MIT (Copyright (c) 2009-2017 Dave Gamble and cJSON contributors)
+  Used by:  firmware JSON handling
+  Note:     fetched by the ESP-IDF component manager into
+            firmware/managed_components/, which is not committed
+
+AndroidX, Jetpack Compose, Material 3, AndroidX Lifecycle, AndroidX Navigation 3,
+Kotlin, kotlinx.coroutines
+  License:  Apache-2.0
+  Used by:  the Android companion app in android/
+  Note:     resolved by Gradle from the versions in
+            android/gradle/libs.versions.toml; license texts ship inside the
+            resolved artifacts
+
+esptool-js
+  Version:  0.6.1
+  License:  MIT
+  Used by:  the browser flasher on the landing page, loaded from jsDelivr at
+            runtime rather than bundled
+
+
+## Used as separate programs, not linked or redistributed
+
+esptool
+  License:  GPL-2.0
+  Used by:  tools/flash_all.py as a separate process to write flash. It is
+            invoked, not linked or bundled, so its license does not extend to
+            this project. Users install it themselves.
+
+PlatformIO, pytest, and the Python packages in tools/requirements.txt
+  License:  varies
+  Used by:  development and CI only. They are not part of any distributed
+            binary.
+
+JUnit 4.13.2 (EPL-1.0) and AndroidX Test / Espresso (Apache-2.0)
+  Used by:  the Android app's test source sets only; not included in a release
+            build.
+
+
+## Fonts loaded from a CDN
+
+The landing page loads variable fonts from jsDelivr at runtime rather than
+bundling them:
+
+  Inter            SIL Open Font License 1.1
+  JetBrains Mono   SIL Open Font License 1.1
+
+No font binaries are stored in this repository.
+
+
+## Article text is a separate, CC BY-SA work
+
+The articles the device serves are adapted from English Wikipedia and are not
+part of this repository, apart from the device's own guide under
+articles/pocketwiki/ and the two sample articles under tests/fixtures/. The
+Wikipedia-derived text lives in the companion pocketwiki-content repository and
+is licensed CC BY-SA 4.0, not MIT. Attribution details are recorded in that
+repository's ATTRIBUTION.md.
+
+
+## Trademarks
+
+PocketWiki is not affiliated with, endorsed by, or sponsored by Espressif
+Systems, the Wikimedia Foundation, or Google. "ESP32", "ESP32-C3", and
+"ESP32-S3" are trademarks of Espressif Systems. "Wikipedia" is a trademark of
+the Wikimedia Foundation. "Android" is a trademark of Google LLC. These names
+are used only to describe compatibility and provenance.

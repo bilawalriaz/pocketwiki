@@ -1,0 +1,10 @@
+# Name,   Type, SubType, Offset,   Size,      Flags
+# Safe default for a 4 MB ESP32-C3: 1.5 MB app, built-in biology pack,
+# and almost 2 MB for user-installed portable packs.
+nvs,      data, nvs,     0x9000,   0x6000,
+phy_init, data, phy,     0xf000,   0x1000,
+factory,  app,  factory, 0x10000,  0x180000,
+content,  data, 0x40,    0x190000, 0x70000,
+index,    data, 0x41,    0x200000, 0x10000,
+# pack_store uses FAT + wear levelling on both targets.
+packs,    data, fat,     0x210000, 0x1F0000,

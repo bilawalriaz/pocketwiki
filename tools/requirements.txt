@@ -1,0 +1,7 @@
+# Packages the firmware build and the repository test suite need.
+#
+# The PlatformIO pre-build hook packs the built-in archive with
+# tools/pack_content.py, which needs zstandard; the test suite needs both.
+# Benchmark-only dependencies live in requirements-benchmarks.txt.
+zstandard>=0.23,<1
+pytest>=8,<10

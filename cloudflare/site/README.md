@@ -12,10 +12,11 @@ semantic tokens, composite type scale, and component geometry (button, chip,
 input, switch, radio-card, notification, tabs, table, carousel, theme-toggle)
 ported to plain CSS so the page stays one self-contained file.
 
-`prepare.sh` stages it as `public/pocketwiki/index.html`, the canonical URL. The
-worker rewrites exactly `/pocketwiki` and `/pocketwiki/`; any other path under
-the route answers 404, since the assets binding cannot serve a path it does not
-have.
+`prepare.sh` stages it as `public/pocketwiki/index.html`, the canonical URL,
+along with the landing illustrations, pattern, screenshots, and pack catalogue
+used by the page. The worker rewrites exactly `/pocketwiki` and
+`/pocketwiki/`; any other path under the route answers 404, since the assets
+binding cannot serve a path it does not have.
 
 The accent ramp is re-tinted to the PocketWiki hue (`--color-accent-*`), which
 is how BoardUI expects a brand to diverge from its defaults.

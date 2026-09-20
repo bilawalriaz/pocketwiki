@@ -5,9 +5,11 @@ site_script_dir=$(CDPATH= cd -- "$(dirname "$0")" && pwd)
 repo_root=$(CDPATH= cd -- "$site_script_dir/../.." && pwd)
 
 rm -rf "$site_script_dir/public/pocketwiki"
-mkdir -p "$site_script_dir/public/pocketwiki/assets/screenshots"
+mkdir -p "$site_script_dir/public/pocketwiki/assets/screenshots" "$site_script_dir/public/pocketwiki/assets/illustrations" "$site_script_dir/public/pocketwiki/assets/patterns"
 cp "$repo_root/pocketwiki.html" "$site_script_dir/public/pocketwiki/index.html"
 cp "$repo_root"/assets/screenshots/*.png "$site_script_dir/public/pocketwiki/assets/screenshots/"
+cp "$repo_root"/assets/illustrations/*.webp "$site_script_dir/public/pocketwiki/assets/illustrations/"
+cp "$repo_root"/assets/patterns/*.svg "$site_script_dir/public/pocketwiki/assets/patterns/"
 python3 "$repo_root/tools/build_landing_catalog.py" \
   --output "$site_script_dir/public/pocketwiki/assets/pack-catalog.json"
 

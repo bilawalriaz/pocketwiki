@@ -4,23 +4,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PocketWiki: An offline library on an ESP32</title>
-    <meta name="description" content="Flash PocketWiki to an ESP32-C3 or ESP32-S3, join its Wi-Fi, and read locally on your phone or computer.">
+    <title>PocketWiki — A library that stays with you</title>
+    <meta name="description" content="Turn a supported ESP32-C3 or ESP32-S3 into an offline reference library. Flash it from Chrome or Edge, join its Wi-Fi, and read without an account, cloud, or internet.">
     <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
     <meta name="theme-color" content="#f5f5f7" media="(prefers-color-scheme: light)">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="PocketWiki">
-    <meta property="og:title" content="PocketWiki: An offline library on an ESP32">
-    <meta property="og:description" content="Flash an ESP32-C3 or ESP32-S3 from your browser. Read the built-in guide and add article packs to the board.">
+    <meta property="og:title" content="PocketWiki — A library that stays with you">
+    <meta property="og:description" content="Flash a supported ESP32 from your browser, start with the built-in guide, and carry curated reference libraries offline.">
     <meta property="og:url" content="https://educated.space/pocketwiki">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="PocketWiki: An offline library on an ESP32">
-    <meta name="twitter:description" content="Flash an ESP32-C3 or ESP32-S3 from your browser. Read the built-in guide and add article packs to the board.">
+    <meta name="twitter:title" content="PocketWiki — A library that stays with you">
+    <meta name="twitter:description" content="Flash a supported ESP32 from your browser, start with the built-in guide, and carry curated reference libraries offline.">
     <link rel="canonical" href="https://educated.space/pocketwiki">
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23000000'/%3E%3Ctext x='32' y='45' font-family='system-ui,sans-serif' font-size='40' font-weight='700' fill='%232db89a' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E">
     <script>
         /* Set the stored theme before first paint. */
         try {
+            var pocketWikiPath = window.location.pathname.replace(/\/+$/, '');
+            document.documentElement.dataset.variant = /(?:^|\/)pocketwiki2(?:\/|$)/.test(pocketWikiPath) ? 'boardui' : 'classic';
             var storedTheme = localStorage.getItem('pocketwiki-theme');
             if (storedTheme) document.documentElement.dataset.theme = storedTheme;
         } catch (e) { /* storage unavailable */ }
@@ -153,6 +155,7 @@
             --shadow-md: 0 2px 4px -1px rgb(0 0 0 / 0.06), 0 4px 6px -1px rgb(0 0 0 / 0.10);
             --shadow-lg: 0 4px 6px -2px rgb(0 0 0 / 0.05), 0 10px 15px -3px rgb(0 0 0 / 0.10);
             --shadow-card: 0 1px 1px 0 rgb(0 0 0 / 0.05);
+            --shadow-flash-panel: 0 2px 3px 0 rgb(0 0 0 / 0.04), 0 12px 30px -14px rgb(20 37 29 / 0.22), 0 24px 64px -28px rgb(20 37 29 / 0.18);
             --shadow-dropdown: 0 1px 1px 0 rgb(0 0 0 / 0.04), 0 4px 4px 0 rgb(0 0 0 / 0.02);
             --shadow-sidebar: 0 1px 0 0 rgb(0 0 0 / 0.0196), 0 1px 12px 0 rgb(0 0 0 / 0.0588), 0 0 1px 0 rgb(0 0 0 / 0.3216);
             --shadow-nav-selected: 0 0 0 1px var(--color-accent-500), inset 0 1px 0 0 rgb(255 255 255 / 0.251);
@@ -323,6 +326,7 @@
             --shadow-md: 0 2px 4px -1px rgb(0 0 0 / 0.12), 0 4px 6px -1px rgb(0 0 0 / 0.18);
             --shadow-lg: 0 4px 6px -2px rgb(0 0 0 / 0.10), 0 10px 15px -3px rgb(0 0 0 / 0.18);
             --shadow-card: 0 1px 1px 0 rgb(0 0 0 / 0.14);
+            --shadow-flash-panel: 0 2px 4px 0 rgb(0 0 0 / 0.28), 0 14px 34px -14px rgb(0 0 0 / 0.58), 0 28px 70px -28px rgb(0 0 0 / 0.45);
             --shadow-dropdown: 0 1px 1px 0 rgb(0 0 0 / 0.14), 0 4px 4px 0 rgb(0 0 0 / 0.10);
             --shadow-sidebar: 0 1px 0 0 rgb(0 0 0 / 0.10), 0 1px 12px 0 rgb(0 0 0 / 0.16), 0 0 1px 0 rgb(0 0 0 / 0.42);
             --gradient-button-primary-disabled: linear-gradient(180deg, var(--color-neutral-700) 0%, var(--color-neutral-800) 100%);
@@ -1158,48 +1162,43 @@
         .device-stage {
             max-width: 660px;
             margin: 76px auto 0;
-            --canvas: var(--color-background-full);
         }
 
         .device-scene {
             position: relative;
+            isolation: isolate;
             display: grid;
             place-items: center;
             min-height: 760px;
             perspective: 1200px;
         }
 
-        .device-halo {
+        .device-scene::before {
             position: absolute;
-            width: min(100%, 500px);
-            aspect-ratio: 1;
-            border: 1px solid var(--color-separator-border);
-            border-radius: 50%;
-            background:
-                radial-gradient(closest-side, color-mix(in srgb, var(--color-accent-500) 12%, transparent), transparent 74%),
-                var(--canvas);
-        }
-
-        /* Two fixed guides. The dashed ring used to turn once a minute, which
-           no one could see and which kept a compositor animation alive under
-           the hero for the life of the page. */
-        .device-halo::before,
-        .device-halo::after {
-            position: absolute;
-            inset: 9%;
-            border: 1px dashed var(--color-separator-border);
-            border-radius: inherit;
+            z-index: 0;
+            top: -96px;
+            left: 50%;
+            bottom: -96px;
+            width: 100vw;
+            background: url("assets/patterns/article-cta-dot-landscape-v7.svg") center / 100% 100% no-repeat;
+            -webkit-mask-image: radial-gradient(ellipse 68% 58% at 50% 48%, #000 0%, #000 20%, rgb(0 0 0 / 0.58) 57%, transparent 94%);
+            mask-image: radial-gradient(ellipse 68% 58% at 50% 48%, #000 0%, #000 20%, rgb(0 0 0 / 0.58) 57%, transparent 94%);
+            -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
             content: "";
+            opacity: 0.62;
+            pointer-events: none;
+            transform: translateX(-50%);
         }
 
-        .device-halo::after {
-            inset: 20%;
-            border-style: solid;
-            border-color: var(--color-separator-border-strong);
+        [data-theme="dark"] .device-scene::before {
+            filter: saturate(1.28) brightness(1.1);
+            opacity: 0.46;
         }
 
         .device {
             position: relative;
+            z-index: 2;
             width: min(396px, 84vw);
             padding: 14px 14px 0;
             border: 1px solid var(--color-border-button-default);
@@ -1834,6 +1833,7 @@
 
         .float-card {
             position: absolute;
+            z-index: 3;
             display: flex;
             gap: 9px;
             align-items: center;
@@ -2140,9 +2140,10 @@
            13. Boards
            ============================================================ */
         .boards-grid {
-            margin-top: 40px;
+            width: min(760px, 100%);
+            margin: 40px auto 0;
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 16px;
             align-items: stretch;
         }
@@ -2240,23 +2241,95 @@
            BoardUI components the panel is built from.
            ============================================================ */
         .flash-panel-stage {
-            margin: 40px auto 0;
-            width: min(880px, 100%);
+            position: relative;
+            isolation: isolate;
+            margin: 36px auto 0;
+            width: min(760px, 100%);
+        }
+
+        .flash-panel-stage::before {
+            position: absolute;
+            z-index: 0;
+            top: -96px;
+            left: 50%;
+            bottom: -96px;
+            width: 100vw;
+            background: url("assets/patterns/article-cta-dot-landscape-v7.svg") center / 100% 100% no-repeat;
+            -webkit-mask-image: radial-gradient(ellipse 68% 58% at 50% 48%, #000 0%, #000 20%, rgb(0 0 0 / 0.58) 57%, transparent 94%);
+            mask-image: radial-gradient(ellipse 68% 58% at 50% 48%, #000 0%, #000 20%, rgb(0 0 0 / 0.58) 57%, transparent 94%);
+            -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+            content: "";
+            opacity: 0.72;
+            pointer-events: none;
+            transform: translateX(-50%);
+        }
+
+        .flash-panel-stage::after {
+            position: absolute;
+            z-index: 0;
+            inset: -18px -24px;
+            border-radius: 38px;
+            background: linear-gradient(112deg, #fca5a5 0%, #fdc49b 50%, #fce3a6 100%);
+            filter: blur(28px);
+            opacity: 0.34;
+            content: "";
+            pointer-events: none;
+        }
+
+        [data-theme="dark"] .flash-panel-stage::before {
+            filter: saturate(1.28) brightness(1.1);
+            opacity: 0.54;
+        }
+
+        [data-theme="dark"] .flash-panel-stage::after {
+            filter: blur(32px) saturate(0.86);
+            opacity: 0.26;
         }
 
         .flash-panel {
-            padding: 8px;
-            border-radius: var(--r-2xl);
-            background: var(--color-background-secondary-default);
+            position: relative;
+            z-index: 1;
+            padding: 14px;
+            border: 1px solid transparent;
+            border-radius: 24px;
+            background:
+                linear-gradient(color-mix(in srgb, var(--color-background-secondary-default) 92%, transparent), color-mix(in srgb, var(--color-background-secondary-default) 92%, transparent)) padding-box,
+                linear-gradient(112deg, rgb(252 165 165 / 0.78), rgb(253 196 155 / 0.68), rgb(252 227 166 / 0.78)) border-box;
+            -webkit-backdrop-filter: blur(24px);
+            backdrop-filter: blur(24px);
+            box-shadow: var(--shadow-flash-panel);
             text-align: left;
         }
 
         .flash-panel-header {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: space-between;
             gap: 16px;
-            padding: 8px 12px 16px;
+            padding: 2px 4px 16px;
+        }
+
+        .flash-panel-heading {
+            display: grid;
+            gap: 3px;
+        }
+
+        .flash-panel-title {
+            margin: 0;
+            color: var(--color-text-primary);
+            font-size: 1.25rem;
+            line-height: 1.5rem;
+            letter-spacing: -0.02em;
+            font-weight: 600;
+        }
+
+        .flash-panel-subtitle {
+            margin: 0;
+            max-width: 42ch;
+            color: var(--color-text-secondary);
+            font-size: 0.8125rem;
+            line-height: 1.125rem;
         }
 
         .flash-panel-kicker {
@@ -2267,9 +2340,10 @@
 
         .flash-step {
             padding: 16px;
-            border-radius: var(--r-2lg);
+            border: 1px solid var(--color-separator-border);
+            border-radius: 16px;
             background: var(--color-background-primary-default);
-            box-shadow: var(--shadow-card);
+            box-shadow: none;
         }
 
         .flash-step + .flash-step {
@@ -2280,20 +2354,25 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
             font-size: 1rem;
             line-height: 1.375rem;
-            font-weight: 500;
+            font-weight: 600;
         }
 
         .flash-step-head .step-num {
-            width: 24px;
-            height: 24px;
-            border-radius: var(--r-md);
-            background: var(--color-background-secondary-default);
-            color: var(--color-text-secondary);
+            display: inline-flex;
+            width: 26px;
+            height: 26px;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid color-mix(in srgb, var(--color-accent-500) 22%, var(--color-separator-border));
+            border-radius: 10px;
+            background: color-mix(in srgb, var(--color-accent-500) 10%, var(--color-background-secondary-default));
+            color: var(--color-accent-600);
             font-size: 0.8125rem;
             line-height: 1.125rem;
+            font-variant-numeric: tabular-nums;
         }
 
         /* radio-card — BoardUI radio/radio-card */
@@ -2309,18 +2388,31 @@
             align-items: center;
             justify-content: space-between;
             gap: 12px;
-            padding: 12px 20px 12px 16px;
+            min-height: 76px;
+            padding: 14px 16px;
             border: 1px solid var(--color-border-button-default);
-            border-radius: var(--r-2lg);
+            border-radius: 14px;
             background: var(--color-background-primary-default);
             cursor: pointer;
             -webkit-user-select: none;
             user-select: none;
-            transition: background-color 150ms ease, border-color 150ms ease;
+            transition: transform 180ms var(--ease-out), background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
         }
 
         .radio-card:hover {
             background: var(--color-background-primary-hover);
+            box-shadow: var(--shadow-xs);
+        }
+
+        .radio-card:active {
+            transform: scale(0.985);
+            transition-duration: 90ms;
+        }
+
+        .radio-card:has(input:checked) {
+            border-color: color-mix(in srgb, var(--color-accent-500) 58%, var(--color-border-button-default));
+            background: color-mix(in srgb, var(--color-accent-500) 9%, var(--color-background-primary-default));
+            box-shadow: 0 2px 8px color-mix(in srgb, var(--color-accent-600) 12%, transparent);
         }
 
         .radio-card:has(input:disabled) {
@@ -2350,16 +2442,19 @@
 
         .radio-card__title {
             color: var(--color-text-primary);
+            font-size: 1rem;
+            font-weight: 600;
         }
 
         .radio-card__desc {
             color: var(--color-text-secondary);
+            font-size: 0.8125rem;
         }
 
         .radio-dot {
             position: relative;
-            width: 16px;
-            height: 16px;
+            width: 18px;
+            height: 18px;
             flex-shrink: 0;
             border-radius: var(--r-full);
         }
@@ -2414,27 +2509,30 @@
         .field__control {
             display: flex;
             align-items: center;
-            border-radius: var(--r-2lg);
+            min-height: 44px;
+            border: 1px solid var(--color-separator-border);
+            border-radius: 12px;
             background: var(--color-background-tertiary-default);
-            box-shadow: inset 0 0 0 2px transparent;
+            box-shadow: inset 0 0 0 1px transparent;
             transition: background-color var(--input-transition-ms) ease, box-shadow var(--input-transition-ms) ease;
         }
 
         [data-theme="dark"] .field__control {
-            box-shadow: inset 0 0 0 1px var(--color-border-button-default);
+            border-color: var(--color-border-button-default);
         }
 
         .field__control:hover {
-            box-shadow: inset 0 0 0 2px var(--color-border-button-hover);
+            box-shadow: inset 0 0 0 1px var(--color-border-button-hover);
         }
 
         .field__control:focus-within {
-            box-shadow: inset 0 0 0 2px var(--color-border-button-active);
+            border-color: var(--color-border-button-active);
+            box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent-500) 18%, transparent);
         }
 
         .field input {
             width: 100%;
-            height: 36px;
+            height: 42px;
             padding: 0 12px 0 12px;
             border: 0;
             background: none;
@@ -2489,13 +2587,56 @@
             font-size: 0.9em;
         }
 
+        .flash-pack-list-shell {
+            position: relative;
+            margin-top: 12px;
+        }
+        .flash-pack-list-shell::before,
+        .flash-pack-list-shell::after {
+            position: absolute;
+            z-index: 2;
+            right: 0;
+            left: 0;
+            height: 2px;
+            pointer-events: none;
+            content: "";
+        }
+        .flash-pack-list-shell::before {
+            top: 0;
+            box-shadow: 0 7px 14px -5px rgb(0 0 0 / 0.30), 0 2px 5px -3px rgb(0 0 0 / 0.14);
+        }
+        .flash-pack-list-shell::after {
+            bottom: 0;
+            box-shadow: 0 -7px 14px -5px rgb(0 0 0 / 0.30), 0 -2px 5px -3px rgb(0 0 0 / 0.14);
+        }
+        .flash-pack-list {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+            max-height: 250px;
+            overflow: auto;
+            padding: 4px;
+            scrollbar-width: thin;
+        }
+        .flash-pack-option { display:flex; align-items:flex-start; gap:9px; padding:11px 12px; border:1px solid var(--color-separator-border); border-radius:12px; background:var(--color-background-primary-default); cursor:pointer; transition:background-color 150ms ease, border-color 150ms ease; }
+        .flash-pack-option:hover { border-color:var(--color-border-button-hover); background:var(--color-background-primary-hover); }
+        .flash-pack-option.is-capacity-disabled { opacity: 0.52; cursor: not-allowed; }
+        .flash-pack-option.is-capacity-disabled:hover { border-color: var(--color-separator-border); background: var(--color-background-primary-default); }
+        .flash-pack-option input { margin-top:4px; accent-color:var(--color-accent-500); }
+        .flash-pack-option span { display:grid; gap:2px; }
+        .flash-pack-option small { color:var(--color-text-secondary); }
+        @media(max-width:767px) { .flash-pack-list { grid-template-columns:1fr; } }
         .flash-actions {
             display: flex;
             align-items: center;
             gap: 16px;
             flex-wrap: wrap;
-            padding: 16px 12px 8px;
+            padding: 16px 4px 4px;
         }
+
+        .flash-actions .btn { min-height: 46px; }
 
         /* switch — BoardUI switch.tsx, medium */
         .flash-check {
@@ -2839,6 +2980,78 @@
             margin: 0;
         }
 
+        .doc-guide-intro {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(220px, 42%);
+            align-items: center;
+            gap: clamp(16px, 3vw, 28px);
+            margin-bottom: 28px;
+        }
+
+        .doc-guide-intro__art,
+        .doc-guide-pack__art {
+            display: grid;
+            place-items: center;
+            margin: 0;
+            border-radius: var(--r-xl);
+            background: #c7cdce;
+            overflow: hidden;
+        }
+
+        .doc-guide-intro__art img,
+        .doc-guide-pack__art img {
+            display: block;
+            width: 100%;
+            height: auto;
+            filter: drop-shadow(0 16px 18px rgb(15 38 31 / 0.2));
+        }
+
+        [data-theme="dark"] .doc-guide-intro__art img,
+        [data-theme="dark"] .doc-guide-pack__art img {
+            filter: drop-shadow(0 16px 20px rgb(0 0 0 / 0.5));
+        }
+
+        .doc-guide-intro__art img {
+            max-width: 330px;
+        }
+
+        .doc-guide-pack {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 190px;
+            align-items: center;
+            gap: 20px;
+            margin-top: 28px;
+        }
+
+        .doc-guide-pack h4 {
+            margin-top: 0;
+        }
+
+        @media (max-width: 620px) {
+            .doc-guide-intro {
+                grid-template-columns: 1fr;
+            }
+
+            .doc-guide-intro__art {
+                max-width: 380px;
+            }
+
+            .doc-guide-pack {
+                grid-template-columns: minmax(0, 1fr) 128px;
+                gap: 12px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .doc-guide-pack {
+                grid-template-columns: 1fr;
+            }
+
+            .doc-guide-pack__art {
+                max-width: 190px;
+            }
+        }
+
         .doc-body > :first-child {
             margin-top: 0;
         }
@@ -3068,6 +3281,26 @@
                 min-height: 720px;
             }
 
+            .device-scene::before,
+            .flash-panel-stage::before {
+                background-size: 680px auto;
+                background-repeat: repeat;
+                -webkit-mask-image: none;
+                mask-image: none;
+                opacity: 0.85;
+            }
+
+            .device,
+            .device-scene:hover .device {
+                transform: none;
+                transition: none;
+            }
+
+            .flash-panel-stage::before {
+                top: -60px;
+                bottom: -60px;
+            }
+
             .float-card {
                 display: none;
             }
@@ -3080,6 +3313,15 @@
             .flash-boards,
             .flash-fields {
                 grid-template-columns: 1fr;
+            }
+
+            .flash-panel-header {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .flash-panel-header .chip {
+                align-self: flex-start;
             }
 
             .footer-grid {
@@ -3636,7 +3878,6 @@
                 <!-- Reader preview -->
                 <div class="device-stage" data-reveal>
                 <div class="device-scene" aria-label="Illustration of a PocketWiki device showing the offline reader it serves">
-                  <div class="device-halo" aria-hidden="true"></div>
                   <div class="device" id="device">
                     <div class="device-head">
                       <span class="device-led" aria-hidden="true"></span>
@@ -3688,7 +3929,7 @@
                           <p class="storage-status" data-installable="1767"><strong>1767 KB available</strong> for new packs &middot; 216 KB used of 1984 KB</p>
                           <div class="storage-meter" role="progressbar" aria-label="Flash storage used" aria-valuemin="0" aria-valuemax="100" aria-valuenow="10"><span style="width:10%"></span></div>
                           <div class="list pack-list">
-                            <p data-builtin="1"><strong>PocketWiki Guide</strong> &middot; 17 articles &middot; built in and always available <span class="inline-action">Hide from libraries</span></p>
+                            <div class="pack-row" data-builtin="1"><strong>PocketWiki Guide</strong> &middot; 17 articles &middot; built in and always available <span class="inline-action">Hide from libraries</span></div>
                             <p data-pack-name="mathematical-thinking"><strong>Mathematical Thinking</strong> &middot; 100 articles &middot; installed <span class="inline-action danger">Remove</span></p>
                           </div>
                           <section class="manager-section">
@@ -3765,7 +4006,7 @@
                 <div class="steps" data-reveal>
                     <article class="step-card">
                         <span class="step-num" aria-hidden="true">1</span>
-                        <h3 class="step-name text-title-3-semibold">Flash the board</h3>
+                        <h3 class="step-name text-title-3-semibold">Flash it once</h3>
                         <p class="step-desc text-body-regular">Use a data-capable USB cable and the browser flasher below. It writes the bootloader, partitions, firmware, and PocketWiki Guide in one pass.</p>
                         <span class="step-chip">Chrome or Edge on desktop</span>
                     </article>
@@ -3834,7 +4075,7 @@
                             <img src="assets/screenshots/search.png" alt="PocketWiki search results for theory across mathematical and natural science libraries" loading="lazy" decoding="async">
                             <figcaption>
                                 <h3>Search across libraries</h3>
-                                <p>Results include titles from every installed pack.</p>
+                                <p>Search any title across the packs you have installed.</p>
                             </figcaption>
                         </figure>
                         </div>
@@ -3892,7 +4133,7 @@
                             <li class="board-feat text-body-regular"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Powered and flashed over USB</li>
                         </ul>
                         <div class="board-card-cta">
-                            <a class="btn btn-primary btn-block" href="#flash">Flash this board</a>
+                            <a class="btn btn-primary btn-block" href="#flash" data-flash-target="esp32c3">Flash this board</a>
                         </div>
                     </article>
                     <article class="board-card">
@@ -3909,24 +4150,7 @@
                             <li class="board-feat text-body-regular"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>GPIO0 is a boot strap pin, so keep it high on reset</li>
                         </ul>
                         <div class="board-card-cta">
-                            <a class="btn btn-outline btn-block" href="#flash">Flash this board</a>
-                        </div>
-                    </article>
-                    <article class="board-card">
-                        <div class="board-card-name text-body-medium">SSD1306 OLED, optional</div>
-                        <div class="board-card-price">
-                            <span class="price-num text-display-4-medium">128 × 64</span>
-                            <span class="price-per text-body-regular">I2C</span>
-                        </div>
-                        <p class="board-card-desc text-body-regular">A status display for the board. Reading and management work the same without it.</p>
-                        <ul class="board-feats">
-                            <li class="board-feat text-body-regular"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Defaults to GPIO1 (SDA) and GPIO0 (SCL)</li>
-                            <li class="board-feat text-body-regular"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Address 0x3C, then 0x3D</li>
-                            <li class="board-feat text-body-regular"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Shows the reading address, counts, storage and transfer progress</li>
-                            <li class="board-feat text-body-regular"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Missing display is not an error</li>
-                        </ul>
-                        <div class="board-card-cta">
-                            <a class="btn btn-outline btn-block" href="#docs-hardware">Wiring notes</a>
+                            <a class="btn btn-outline btn-block" href="#flash" data-flash-target="esp32s3">Flash this board</a>
                         </div>
                     </article>
                 </div>
@@ -3946,14 +4170,17 @@
                 <div class="flash-panel-stage">
                     <div class="flash-panel" id="flash-panel" data-reveal>
                         <div class="flash-panel-header">
-                            <span class="flash-panel-kicker text-caption-1-semibold">Web flasher</span>
+                            <div class="flash-panel-heading">
+                                <h3 class="flash-panel-title">Set up your board</h3>
+                                <p class="flash-panel-subtitle">Choose the board, add Wi-Fi if you want, then write the complete first-install image over USB.</p>
+                            </div>
                             <span class="chip chip--soft chip--caption">Chrome / Edge &middot; USB</span>
                         </div>
                         <div class="flash-step">
                             <div class="flash-step-head"><span class="step-num" aria-hidden="true">1</span>Choose the board</div>
                             <div class="flash-boards" role="radiogroup" aria-label="Board">
                                 <label class="radio-card">
-                                    <input type="radio" name="flash-target" value="esp32c3" checked>
+                                    <input id="flash-target-c3" type="radio" name="flash-target" value="esp32c3" checked>
                                     <span class="radio-card__body">
                                         <span class="radio-card__title text-body-medium">ESP32-C3</span>
                                         <span class="radio-card__desc text-body-regular">4 MB flash &middot; DevKitM-1</span>
@@ -3961,7 +4188,7 @@
                                     <span class="radio-dot" aria-hidden="true"></span>
                                 </label>
                                 <label class="radio-card">
-                                    <input type="radio" name="flash-target" value="esp32s3">
+                                    <input id="flash-target-s3" type="radio" name="flash-target" value="esp32s3">
                                     <span class="radio-card__body">
                                         <span class="radio-card__title text-body-medium">ESP32-S3</span>
                                         <span class="radio-card__desc text-body-regular">16 MB flash &middot; DevKitC-1</span>
@@ -3988,6 +4215,14 @@
                             </div>
                             <p class="flash-hint">2.4 GHz only. The details are written to the board's own configuration partition, never sent anywhere, so it is on your network as soon as it reboots. Leave both fields empty to set Wi-Fi later at <code>192.168.4.1/manage</code>.</p>
                         </div>
+                        <div class="flash-step">
+                            <div class="flash-step-head"><span class="step-num" aria-hidden="true">3</span>Choose library packs, optional</div>
+                            <p class="flash-hint">Selected packs are queued during flashing and installed by the board after it joins the 2.4 GHz network. Keep it powered and online while it downloads. The built-in guide is always included.</p>
+                            <div class="flash-pack-list-shell">
+                                <div id="flash-pack-list" class="flash-pack-list" aria-label="Optional library packs">Loading packs…</div>
+                            </div>
+                            <p id="flash-pack-total" class="flash-hint" aria-live="polite"></p>
+                        </div>
                         <div class="flash-actions">
                             <button class="btn btn-primary btn-lg" id="flash-start" type="button">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v10"/><path d="M8.5 9.5L12 13l3.5-3.5"/><path d="M5 15v3a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3v-3"/></svg>
@@ -3998,7 +4233,6 @@
                                 <span class="switch" aria-hidden="true"></span>
                                 Erase the whole flash first (clears installed packs and saved Wi-Fi)
                             </label>
-                            <p class="flash-hint">Leave this on for a first install or a clean slate: the whole flash is erased, which clears every installed pack, the saved Wi-Fi network, and all other settings. Turn it off to update the firmware in place and keep the packs already on the board.</p>
                         </div>
                         <div class="flash-status" id="flash-status" hidden>
                             <div class="flash-status-head">
@@ -4016,7 +4250,7 @@
                         <p class="flash-note" id="flash-note"></p>
                     </div>
                 </div>
-                <p class="section-note" data-reveal>When it finishes, join <code>PocketWiki</code> and open <code>http://192.168.4.1/</code>. If the port picker stays empty, use a data-capable USB cable and close any serial monitor.</p>
+                <p class="section-note" data-reveal>When it finishes, join <code>PocketWiki</code> and open <code>http://pocketwiki/</code>. If the port picker stays empty, use a data-capable USB cable and close any serial monitor.</p>
             </div>
         </section>
 
@@ -4118,11 +4352,17 @@
                     <span class="docs-tabs__underline" aria-hidden="true"></span>
                 </div>
       <div class="doc-pane" data-dpane="guide" id="docs-guide"><div class="doc-body">
-              <h3 class="text-title-1-semibold">Project guide</h3>
-              <p>PocketWiki turns an ESP32-C3 or ESP32-S3 into a small offline library. The device creates its own Wi-Fi network and serves a searchable library at <code>http://192.168.4.1/</code>. It can also join a 2.4 GHz network to download packs. After setup, reading works without an account, phone, or internet connection. Source code: <a href="https://github.com/bilawalriaz/pocketwiki" target="_blank" rel="noopener noreferrer">github.com/bilawalriaz/pocketwiki</a>.</p>
+              <div class="doc-guide-intro">
+                  <div>
+                      <h3 class="text-title-1-semibold">Project guide</h3>
+                      <p>PocketWiki turns an ESP32-C3 or ESP32-S3 into a small offline library. The device creates its own Wi-Fi network and serves a searchable library at <code>http://192.168.4.1/</code>. It can also join a 2.4 GHz network to download packs. After setup, reading works without an account, phone, or internet connection. Source code: <a href="https://github.com/bilawalriaz/pocketwiki" target="_blank" rel="noopener noreferrer">github.com/bilawalriaz/pocketwiki</a>.</p>
+                  </div>
+                  <figure class="doc-guide-intro__art">
+                      <img src="assets/illustrations/pocketwiki-device.webp" width="1374" height="1145" alt="Illustration of a compact board with a book icon on its OLED screen" loading="lazy" decoding="async">
+                  </figure>
+              </div>
               <h4 class="text-headline-semibold">What is in the repository</h4>
-              <ul><li><code>firmware/</code> holds ESP-IDF firmware for ESP32-C3 and ESP32-S3 boards.</li><li><code>android/</code> holds the Kotlin and Compose companion app.</li><li><code>tools/</code> holds the pack builder, the local preview server, the flash script, and the tools that stage firmware for the landing page.</li><li><code>assets/</code> holds the web assets the device serves and the landing-page screenshots.</li><li><code>articles/pocketwiki/</code> holds the built-in PocketWiki Guide.</li><li><code>docs/</code> holds the technical reference and the development guide.</li></ul><p>Article text for the optional packs is not here. It is adapted from English Wikipedia and licensed CC BY-SA 4.0, so it lives in the companion <code>pocketwiki-content</code> repository together with the pack manifest. Clone it beside this checkout:</p><pre><code>git clone https://github.com/bilawalriaz/pocketwiki.git
-git clone https://github.com/bilawalriaz/pocketwiki-content.git</code></pre>
+              <ul><li><code>firmware/</code> holds ESP-IDF firmware for ESP32-C3 and ESP32-S3 boards.</li><li><code>android/</code> holds the Kotlin and Compose companion app.</li><li><code>articles/pocketwiki/</code> holds the built-in guide; <code>articles/db-packs/</code> holds the source for catalogue packs.</li><li><code>tools/</code> holds the pack builder, local preview server, and flash script.</li><li><code>docs/</code> holds the technical reference and development guide.</li></ul>
               <h4 class="text-headline-semibold">Get started</h4>
               <p>For a local build, install Python 3.10 or later and PlatformIO or ESP-IDF 6.</p>
       <pre><code># Run the host tests.
@@ -4143,8 +4383,15 @@ git clone https://github.com/bilawalriaz/pocketwiki-content.git</code></pre>
               <h4 class="text-headline-semibold">Published firmware</h4>
               <p>The browser flasher downloads the current images for the selected board, checks their size and SHA-256, and writes them over USB.</p>
       <pre><code>curl -fsS https://packs.educated.space/firmware/index.json</code></pre>
-              <h4 class="text-headline-semibold">Create a pack</h4>
-              <p>Each input article must have one <code>h1</code> title. Build, check, and wrap the pack:</p>
+              <div class="doc-guide-pack">
+                  <div>
+                      <h4 class="text-headline-semibold">Create a pack</h4>
+                      <p>Each input article must have one <code>h1</code> title. Build, check, and wrap the pack:</p>
+                  </div>
+                  <figure class="doc-guide-pack__art">
+                      <img src="assets/illustrations/pocketwiki-packs.webp" width="1312" height="1199" alt="Illustration of three closed reference books" loading="lazy" decoding="async">
+                  </figure>
+              </div>
       <pre><code>python3 tools/pack_content.py build /path/to/articles build/my-pack
       python3 tools/pack_content.py verify build/my-pack
       python3 tools/pack_content.py pack-file build/my-pack my-pack.pwp</code></pre>
@@ -4319,16 +4566,16 @@ git clone https://github.com/bilawalriaz/pocketwiki-content.git</code></pre>
               <p>Open <code>http://localhost:8080/</code> to preview the reader and pack manager.</p>
             </div></div>
             <div class="doc-pane" data-dpane="catalogue" id="docs-catalogue" hidden><div class="doc-body">
-              <p>The <a href="https://packs.educated.space/index.json">public catalogue</a> lists downloadable <code>.pwp</code> packs. The Android app carries a copy for offline browsing and updates it when the phone has internet. The device can refresh its catalogue over Wi-Fi from <code>/manage</code>. Android checks each download's size and SHA-256; the device validates the pack again before installing it.</p>
+              <p>The public catalogue is <code>https://packs.educated.space/index.json</code>. It lists immutable <code>.pwp</code> files served by the PocketWiki Cloudflare Worker. The Android app ships a bundled fallback catalogue and refreshes the public one when the phone has internet; the <code>/manage</code> page can ask the device to refresh its own cached catalogue through station Wi-Fi. Before installation, Android checks the declared byte count and SHA-256. The device still performs its own size, CRC, header, and index checks.</p>
               <h4 class="text-headline-semibold">Publish a catalogue update</h4>
-              <p>The pack definitions live in <code>packs/catalog-source.json</code> in the <a href="https://github.com/bilawalriaz/pocketwiki-content">content repository</a>. Increase a pack's version when its articles change, then run:</p>
+              <p>Edit <code>packs/catalog-source.json</code>, increase the version of each changed pack, and run:</p>
       <pre><code>python3 tools/publish_pack_catalog.py</code></pre>
-              <p>The publisher builds and checks the packs, updates the Android catalogue, uploads the archives, and publishes <code>index.json</code> last. Pack IDs stay stable so existing links still point to the same pack.</p>
+              <p>The publisher builds and checks the packs, updates the Android catalogue, uploads the archives, and then publishes <code>index.json</code>. Pack IDs stay the same across updates so existing links still work.</p>
               <h4 class="text-headline-semibold">Rebuild source packs</h4>
-              <p>The content repository holds themed packs in <code>articles/db-packs/</code> and grouped shelves in <code>articles/cluster-packs/</code>. Its manifest records which articles belong to each pack. Wikipedia-derived articles retain their CC BY-SA attribution in the published packs.</p>
+              <p>The source collections are in <code>articles/db-packs/</code>. <code>tools/export_distilled.py</code> imports articles from a local wiki distill database. Wikipedia-derived articles retain their source and CC BY-SA attribution.</p>
             </div></div>
             <div class="doc-pane" data-dpane="flasher" id="docs-flasher" hidden><div class="doc-body">
-              <h3>Flashing</h3>
+              <h3>Flashers</h3>
               <h4 class="text-headline-semibold">Browser</h4>
               <p><a href="#flash">The flash panel</a> writes the same images over USB with <code>esptool-js</code> and the Web Serial API. Use Chrome or Edge on a desktop; Firefox and Safari do not expose serial ports to a page. WebUSB is not usable here, because the operating system claims the ESP32-C3/S3 USB-serial peripheral with its own CDC driver.</p>
               <p>The page reads the current <code>https://packs.educated.space/firmware/index.json</code> manifest from R2, checks every image against the byte count and SHA-256 recorded there, then writes it at the offset its partition table gives. When you supply Wi-Fi details it also builds and writes the <code>nvs</code> partition, which is the same <code>pocketwiki</code> namespace the device reads on boot.</p>
@@ -4372,15 +4619,16 @@ git clone https://github.com/bilawalriaz/pocketwiki-content.git</code></pre>
                 </nav>
                 <nav aria-label="Project" class="text-body-regular">
                     <h3 class="text-body-medium">Project</h3>
-                    <a href="https://github.com/bilawalriaz/pocketwiki" rel="noopener">Source on GitHub</a>
+                    <a href="https://github.com/bilawalriaz/pocketwiki" target="_blank" rel="noopener noreferrer">Source on GitHub</a>
                     <a href="#docs-catalogue">Catalogue releases</a>
                     <a href="#docs-flasher">Flashing guide</a>
-                                        <a href="#docs-license">MIT license</a>
+                    <a href="https://bilawal.net" rel="noopener">bilawal.net</a>
+                    <a href="#docs-license">MIT license</a>
                 </nav>
             </div>
             <div class="footer-legal">
                 <p class="text-caption-1-regular">&copy; 2026 PocketWiki · MIT licensed source</p>
-                <p class="text-caption-1-regular"><a class="footer-legal-link" href="https://github.com/bilawalriaz/pocketwiki" rel="noopener">github.com/bilawalriaz/pocketwiki</a></p>
+                <p class="text-caption-1-regular"><a class="footer-legal-link" href="https://bilawal.net" rel="noopener">bilawal.net</a></p>
             </div>
         </div>
     </footer>
@@ -4577,7 +4825,7 @@ git clone https://github.com/bilawalriaz/pocketwiki-content.git</code></pre>
                ESP32-C3 packs partition and the v9 catalogue. Search mirrors
                tl_prefix() over tl_normalize()d titles: a prefix match, the
                exact hit first and bold, capped at 20 across all libraries. */
-            var READER = { libraries: [{"name": "PocketWiki Guide", "articles": [{"title": "About PocketWiki", "body": ["PocketWiki is an offline library for two cheap ESP32 boards: the ESP32-C3 with 4 MB of flash and the ESP32-S3 with 16 MB. The board serves its own articles, and the code that serves them is the project."]}, {"title": "Bluetooth", "body": ["The device advertises a Bluetooth Low Energy service for as long as it is running. It exists so the Android app can find and set up a device that has no network yet."]}, {"title": "Connecting to Wi-Fi", "body": ["The device always runs its own access point so you can read. Connecting it to your home Wi-Fi as well is optional, and only needed when you want it to download packs by itself."]}, {"title": "Finding articles", "body": ["There are two ways to look for something: search, and browsing."]}, {"title": "First setup", "body": ["Out of the box the device has this guide on it and nothing else. Setting it up takes a couple of minutes."]}, {"title": "How it works offline", "body": ["Nothing about reading requires the internet, and nothing requires a service to stay up. The whole library is on the board."]}, {"title": "How much fits", "body": ["The number of articles a device can hold depends on the board and on the articles themselves.", "The manage page reports the same numbers after every install, and it refuses an install that would not fit rather than filling the filesystem."]}, {"title": "Installing packs", "body": ["A pack is a file containing a set of articles: a science library, a set of curated exam topics, a collection you built yourself. Installing one copies it onto the device, where it stays until you remove it."]}, {"title": "PocketWiki", "body": ["PocketWiki is a small offline library that lives on an ESP32 board. It serves its own articles over Wi-Fi, decodes them on the board itself, and keeps working with no internet connection at all.", "You are reading one of its articles now, which means the device is set up. What is on it:"]}, {"title": "Privacy", "body": ["The device is a library, not a service. It collects nothing about you and sends nothing about your reading anywhere."]}, {"title": "Reading articles", "body": ["The reader is a web page served by the device. It works in any browser, on any phone or computer joined to the device&#x27;s network, and it needs no app."]}, {"title": "The Android app", "body": ["The app is the companion for setting the device up and filling it with packs. The reader stays in the browser; the app is about everything around it."]}, {"title": "The OLED display", "body": ["A small screen is optional. Without one the device works exactly the same; the screen just saves you from guessing."]}, {"title": "The pack catalogue", "body": ["The catalogue is the list of packs that PocketWiki knows how to download. It lives at <code>packs.educated.space</code> and lists each pack&#x27;s name, its article count, its size, and a checksum."]}, {"title": "This guide", "body": ["The articles you are reading are themselves a pack: the one pack every PocketWiki has."]}, {"title": "Troubleshooting", "body": []}, {"title": "Updating the firmware", "body": ["The firmware is the program on the board. It changes rarely: the packs you install are what usually grow."]}]}, {"name": "Mathematical Thinking", "articles": [{"title": "Absolute value (algebra)", "body": ["In algebra, an <strong>absolute value</strong> on a field or integral domain D is a function |·| from D to the real numbers that generalises the ordinary absolute value on ℝ. It assigns a nonnegative &quot;size&quot; to every element and must obey four axioms, which then force a metric, a notion of limits, and a completion of D."]}, {"title": "Algebra", "body": []}, {"title": "Algebra of random variables", "body": ["In statistics, a <strong>random variable</strong> assigns a number to each outcome of a random process, and its <strong>probability distribution</strong> describes how likely each value is. The algebra of random variables collects symbolic rules for manipulating these variables and for computing the <strong>expected value</strong> (mean), <strong>variance</strong> (spread), and <strong>covariance</strong> (co-movement) of the result, without appealing to the full distribution each time. Two random variables are <strong>independent</strong> when knowing the value of one gives no information about the other."]}]}] };
+            var READER = { libraries: [{"name": "PocketWiki Guide", "articles": [{"title": "About PocketWiki", "body": ["PocketWiki is an offline library for two cheap ESP32 boards: the ESP32-C3 with 4 MB of flash and the ESP32-S3 with 16 MB. The board serves its own articles, and the code that serves them is the project."]}, {"title": "Bluetooth", "body": ["The device advertises a Bluetooth Low Energy service for as long as it is running. It exists so the Android app can find and set up a device that has no network yet."]}, {"title": "Connecting to Wi-Fi", "body": ["The device always runs its own access point so you can read. Connecting it to your home Wi-Fi as well is optional, and only needed when you want it to download packs by itself."]}, {"title": "Finding articles", "body": ["There are two ways to look for something: search, and browsing."]}, {"title": "First setup", "body": ["Out of the box the device has this guide on it and nothing else. Setting it up takes a couple of minutes."]}, {"title": "How it works offline", "body": ["Nothing about reading requires the internet, and nothing requires a service to stay up. The whole library is on the board."]}, {"title": "How much fits", "body": ["The number of articles a device can hold depends on the board and on the articles themselves.", "The manage page reports the same numbers after every install, and it refuses an install that would not fit rather than filling the filesystem."]}, {"title": "Installing packs", "body": ["A pack is a file containing a set of articles: a science library, a set of curated exam topics, a collection you built yourself. Installing one copies it onto the device, where it stays until you remove it."]}, {"title": "PocketWiki", "body": ["PocketWiki is a small offline library that lives on an ESP32 board. It serves its own articles over Wi-Fi, decodes them on the board itself, and keeps working with no internet connection at all.", "You are reading one of its articles now, which means the device is set up. What is on it:"]}, {"title": "Privacy", "body": ["The device is a library, not a service. It collects nothing about you and sends nothing about your reading anywhere."]}, {"title": "Reading articles", "body": ["The reader is a web page served by the device. It works in any browser, on any phone or computer joined to the device&#x27;s network, and it needs no app."]}, {"title": "The Android app", "body": ["The app is the companion for setting the device up and filling it with packs. The reader stays in the browser; the app is about everything around it."]}, {"title": "The OLED display", "body": ["A small screen is optional. Without one the device works exactly the same; the screen just saves you from guessing."]}, {"title": "The pack catalogue", "body": ["The catalogue is the list of packs that PocketWiki knows how to download. It lives at <code>packs.educated.space</code> and lists each pack&#x27;s name, its article count, its size, and a checksum."]}, {"title": "This guide", "body": ["The articles you are reading are themselves a pack — the one pack every PocketWiki has."]}, {"title": "Troubleshooting", "body": []}, {"title": "Updating the firmware", "body": ["The firmware is the program on the board. It changes rarely: the packs you install are what usually grow."]}]}, {"name": "Mathematical Thinking", "articles": [{"title": "Absolute value (algebra)", "body": ["In algebra, an <strong>absolute value</strong> on a field or integral domain D is a function |·| from D to the real numbers that generalises the ordinary absolute value on ℝ. It assigns a nonnegative &quot;size&quot; to every element and must obey four axioms, which then force a metric, a notion of limits, and a completion of D."]}, {"title": "Algebra", "body": []}, {"title": "Algebra of random variables", "body": ["In statistics, a <strong>random variable</strong> assigns a number to each outcome of a random process, and its <strong>probability distribution</strong> describes how likely each value is. The algebra of random variables collects symbolic rules for manipulating these variables and for computing the <strong>expected value</strong> (mean), <strong>variance</strong> (spread), and <strong>covariance</strong> (co-movement) of the result, without appealing to the full distribution each time. Two random variables are <strong>independent</strong> when knowing the value of one gives no information about the other."]}]}] };
             var READER_LIMIT = 20;
             var readerPages = Array.prototype.slice.call(document.querySelectorAll('[data-reader-page]'));
             var reader = document.querySelector('#reader');
@@ -4874,13 +5122,18 @@ git clone https://github.com/bilawalriaz/pocketwiki-content.git</code></pre>
 
             // Subtle device tilt
             var scene = document.querySelector('.device-scene'), dev = document.getElementById('device');
-            if (scene && dev && matchMedia('(pointer: fine)').matches && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            var tiltPointer = matchMedia('(min-width: 768px) and (hover: hover) and (pointer: fine)');
+            if (scene && dev && tiltPointer.matches && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
               scene.addEventListener('mousemove', function (e) {
+                if (!tiltPointer.matches) return;
                 var r = scene.getBoundingClientRect();
                 var x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
                 dev.style.transform = 'rotateY(' + (x * 10).toFixed(1) + 'deg) rotateX(' + (-y * 8).toFixed(1) + 'deg) translateY(-4px)';
               });
               scene.addEventListener('mouseleave', function () { dev.style.transform = ''; });
+              window.addEventListener('resize', function () {
+                if (!tiltPointer.matches) dev.style.transform = '';
+              });
             }
 
             /* ---------- Carousel (BoardUI carousel.tsx) ---------- */
@@ -5160,20 +5413,23 @@ git clone https://github.com/bilawalriaz/pocketwiki-content.git</code></pre>
         }
 
         /* Every staged image at its partition offset, then the credentials image. */
-        function flashPlan(target, images, credentials) {
+        function flashPlan(target, images, credentials, packIds) {
             const plan = [];
             let bytes = 0;
             for (const image of images) {
                 plan.push({ label: image.name, address: image.offset, bytes: image.bytes, data: image.data, before: bytes });
                 bytes += image.bytes;
             }
-            if (credentials) {
+            if (credentials || packIds.length) {
+                const settings = credentials
+                    ? [['wifi_ssid', credentials.ssid], ['wifi_pass', credentials.password]] : [];
+                if (packIds.length) settings.push(['flash_packs', packIds.join(',')]);
                 plan.push({
-                    label: 'Wi-Fi settings',
+                    label: 'Wi-Fi and pack settings',
                     address: target.nvs.offset,
                     bytes: target.nvs.size,
                     before: bytes,
-                    data: nvsImage(target.nvs.size, NVS_NAMESPACE, [['wifi_ssid', credentials.ssid], ['wifi_pass', credentials.password]]),
+                    data: nvsImage(target.nvs.size, NVS_NAMESPACE, settings),
                 });
                 bytes += target.nvs.size;
             }
@@ -5256,18 +5512,108 @@ git clone https://github.com/bilawalriaz/pocketwiki-content.git</code></pre>
                 result: document.getElementById('flash-result'),
                 error: document.getElementById('flash-error'),
                 note: document.getElementById('flash-note'),
+                packList: document.getElementById('flash-pack-list'),
+                packTotal: document.getElementById('flash-pack-total'),
             };
+            const boardLinks = Array.prototype.slice.call(document.querySelectorAll('[data-flash-target]'));
             const supported = typeof navigator !== 'undefined' && 'serial' in navigator;
             const staged = new Set();
             let busy = false;
             let lines = [];
+            let availablePacks = [];
+            const packCapacity = { esp32c3: 1978368, esp32s3: 14381056 };
 
-            ui.note.innerHTML = supported
-                ? 'Flashing uses the browser\u2019s Web Serial API, so use Chrome or Edge on a desktop. Nothing is uploaded: verified images come from R2 and travel straight down the USB cable.'
-                : 'This browser cannot open a USB serial port. Use Chrome or Edge on a desktop, or follow the <a href="https://github.com/bilawalriaz/pocketwiki/blob/main/docs/FLASHER.md" rel="noopener">local flashing guide</a>.';
+            function selectedPacks() {
+                return availablePacks.filter(function (pack) {
+                    const box = ui.packList.querySelector('input[value="' + pack.id + '"]');
+                    return box && box.checked;
+                });
+            }
+
+            function updatePackTotal() {
+                const radio = ui.radios.filter(function (input) { return input.checked; })[0];
+                const limit = radio ? packCapacity[radio.value] : 0;
+                const boxes = Array.prototype.slice.call(ui.packList.querySelectorAll('input[type="checkbox"]'));
+                let total = boxes.reduce(function (sum, box) {
+                    return sum + (box.checked ? Number(box.dataset.packBytes || 0) : 0);
+                }, 0);
+                let removed = 0;
+
+                /* A board change can make an existing selection too large. Trim
+                   from the end of the visible list so the next flash plan is
+                   always valid for the selected device. */
+                for (let index = boxes.length - 1; index >= 0 && total > limit; index -= 1) {
+                    const box = boxes[index];
+                    if (!box.checked) continue;
+                    box.checked = false;
+                    total -= Number(box.dataset.packBytes || 0);
+                    removed += 1;
+                }
+
+                boxes.forEach(function (box) {
+                    const option = box.closest('.flash-pack-option');
+                    const bytes = Number(box.dataset.packBytes || 0);
+                    const blocked = !box.checked && total + bytes > limit;
+                    box.disabled = busy || blocked;
+                    box.title = blocked ? 'Not enough pack storage for this board' : '';
+                    if (option) option.classList.toggle('is-capacity-disabled', blocked);
+                });
+
+                const selected = selectedPacks();
+                ui.packTotal.textContent = selected.length + ' selected · ' + Math.ceil(total / 1024) + ' KB of ' + Math.floor(limit / 1024) + ' KB available' + (removed ? ' · ' + removed + ' pack' + (removed === 1 ? '' : 's') + ' removed to fit' : '');
+                ui.packTotal.style.color = removed ? 'var(--color-notification-error-foreground)' : '';
+            }
+
+            fetch('https://packs.educated.space/index.json', { cache: 'no-store' }).then(function (response) {
+                if (!response.ok) throw new Error('Catalogue unavailable');
+                return response.json();
+            }).then(function (catalogue) {
+                if (catalogue.schema !== 1 || !Array.isArray(catalogue.packs)) throw new Error('Catalogue unavailable');
+                availablePacks = catalogue.packs.filter(function (pack) {
+                    return pack.id !== 'pocketwiki' && /^[a-z0-9-]{1,40}$/.test(pack.id) && Number.isSafeInteger(pack.bytes);
+                });
+                ui.packList.textContent = '';
+                availablePacks.forEach(function (pack) {
+                    const label = document.createElement('label');
+                    label.className = 'flash-pack-option';
+                    const box = document.createElement('input');
+                    box.type = 'checkbox'; box.value = pack.id; box.dataset.packBytes = String(pack.bytes);
+                    const copy = document.createElement('span');
+                    const title = document.createElement('strong'); title.textContent = pack.name;
+                    const detail = document.createElement('small');
+                    detail.textContent = pack.articles + ' articles · ' + Math.ceil(pack.bytes / 1024) + ' KB';
+                    copy.append(title, detail); label.append(box, copy); ui.packList.append(label);
+                });
+                updatePackTotal();
+            }).catch(function () { ui.packList.textContent = 'Packs could not be loaded. You can add them later in Manage.'; });
+            ui.packList.addEventListener('change', updatePackTotal);
+            ui.radios.forEach(function (radio) { radio.addEventListener('change', updatePackTotal); });
+
+            function selectBoard(targetId) {
+                const radio = ui.radios.filter(function (input) { return input.value === targetId; })[0];
+                if (!radio || radio.disabled) return false;
+                radio.checked = true;
+                updatePackTotal();
+                return true;
+            }
+
+            boardLinks.forEach(function (link) {
+                link.addEventListener('click', function () {
+                    const targetId = link.getAttribute('data-flash-target');
+                    if (!selectBoard(targetId)) return;
+                    window.requestAnimationFrame(function () {
+                        const radio = ui.radios.filter(function (input) { return input.value === targetId; })[0];
+                        if (radio) radio.focus({ preventScroll: true });
+                    });
+                });
+            });
+
             if (!supported) {
+                ui.note.innerHTML = 'This browser cannot open a USB serial port. Use Chrome or Edge on a desktop, or follow the <a href="https://github.com/bilawalriaz/pocketwiki/blob/main/docs/FLASHER.md" target="_blank" rel="noopener noreferrer">local flashing guide</a>.';
                 ui.start.disabled = true;
                 ui.start.setAttribute('aria-disabled', 'true');
+            } else {
+                ui.note.hidden = true;
             }
 
             function escapeHtml(text) {
@@ -5318,6 +5664,7 @@ git clone https://github.com/bilawalriaz/pocketwiki-content.git</code></pre>
                 ui.ssid.disabled = busy;
                 ui.password.disabled = busy;
                 ui.erase.disabled = busy;
+                ui.packList.querySelectorAll('input').forEach(function (box) { box.disabled = busy; });
                 let available = false;
                 ui.radios.forEach(function (radio) {
                     radio.disabled = busy || (staged.size > 0 && !staged.has(radio.value));
@@ -5325,6 +5672,7 @@ git clone https://github.com/bilawalriaz/pocketwiki-content.git</code></pre>
                 });
                 ui.start.disabled = busy || !supported || !available;
                 ui.start.setAttribute('aria-disabled', String(ui.start.disabled));
+                updatePackTotal();
             }
 
             /* The board decides which image it needs. A mismatch used to fail the
@@ -5345,6 +5693,7 @@ git clone https://github.com/bilawalriaz/pocketwiki-content.git</code></pre>
                         radio.checked = false;
                         match.checked = true;
                     }
+                    updatePackTotal();
                     log('The board reports ' + chipName + ', so the board selection moved to ' + detected.label + '.', true);
                 }
                 return detected;
@@ -5368,6 +5717,11 @@ git clone https://github.com/bilawalriaz/pocketwiki-content.git</code></pre>
                     const radio = ui.radios.filter(function (input) { return input.checked; })[0];
                     if (!radio) throw new Error('Choose a board first.');
                     const credentials = validateCredentials(ui.ssid.value.trim(), ui.password.value);
+                    const packs = selectedPacks();
+                    const packBytes = packs.reduce(function (sum, pack) { return sum + pack.bytes; }, 0);
+                    if (packs.length && !credentials) throw new Error('Enter a 2.4 GHz Wi-Fi network to install selected packs after flashing.');
+                    if (packs.map(function (pack) { return pack.id; }).join(',').length >= 2048)
+                        throw new Error('Select fewer packs for one flash.');
 
                     showStatus('Reading the board\u2026', 0, '0%');
                     serial = new esptool.Transport(port);
@@ -5384,13 +5738,14 @@ git clone https://github.com/bilawalriaz/pocketwiki-content.git</code></pre>
                     const description = await loader.main();
                     log('Detected ' + description, true);
                     const target = targetFor(manifest, loader.chip.CHIP_NAME, radio);
+                    if (packBytes > packCapacity[target.id]) throw new Error('Selected packs exceed this board’s pack storage. Choose fewer packs.');
                     const flashSize = await loader.detectFlashSize();
                     if (flashSizeBytes(flashSize) < target.flash_bytes) {
                         throw new Error('The board reports ' + flashSize + ' of flash, but this image needs ' + target.flash_size + '. Check the module, then choose the matching board profile and try again.');
                     }
 
                     showStatus('Downloading ' + target.label + ' firmware\u2026', 0, '0%');
-                    const plan = flashPlan(target, await fetchImages(target), credentials);
+                    const plan = flashPlan(target, await fetchImages(target), credentials, packs.map(function (pack) { return pack.id; }));
 
                     showStatus('Writing ' + plan[0].label + '\u2026', 0, '0%');
                     await loader.writeFlash({
@@ -5424,7 +5779,7 @@ git clone https://github.com/bilawalriaz/pocketwiki-content.git</code></pre>
                     showStatus('Board restarted.', 1, '100%');
                     ui.result.innerHTML = '<strong>PocketWiki is on the board.</strong> ' + (credentials
                         ? 'It will join &ldquo;' + escapeHtml(credentials.ssid) + '&rdquo; on boot. '
-                        : 'Join its own <code>PocketWiki</code> network. ') + 'Open <a href="http://192.168.4.1/">192.168.4.1</a> to read, or <code>192.168.4.1/manage</code> to add packs.';
+                        : 'Join its own <code>PocketWiki</code> network. ') + (packs.length ? 'It will install ' + packs.length + ' selected pack' + (packs.length === 1 ? '' : 's') + ' after connecting. ' : '') + 'Open <a href="http://pocketwiki/">pocketwiki/</a> to read, or <code>pocketwiki/manage</code> to manage packs.';
                     log('Done.', true);
                 } catch (error) {
                     const message = error && error.message ? error.message : String(error);

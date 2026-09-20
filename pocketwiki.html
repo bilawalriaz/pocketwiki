@@ -4,18 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PocketWiki: A library that stays with you</title>
-    <meta name="description" content="An offline reference library on an ESP32 board. Plug it in, join its Wi-Fi, and read on any phone or laptop nearby. No account, no cloud, no internet.">
+    <title>PocketWiki: An offline library on an ESP32</title>
+    <meta name="description" content="Flash PocketWiki to an ESP32-C3 or ESP32-S3, join its Wi-Fi, and read locally on your phone or computer.">
     <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
     <meta name="theme-color" content="#f5f5f7" media="(prefers-color-scheme: light)">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="PocketWiki">
-    <meta property="og:title" content="PocketWiki: A library that stays with you">
-    <meta property="og:description" content="An offline reference library on an ESP32 board. Choose from a growing catalogue of curated packs and carry only what you need.">
+    <meta property="og:title" content="PocketWiki: An offline library on an ESP32">
+    <meta property="og:description" content="Flash an ESP32-C3 or ESP32-S3 from your browser. Read the built-in guide and add article packs to the board.">
     <meta property="og:url" content="https://educated.space/pocketwiki">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="PocketWiki: A library that stays with you">
-    <meta name="twitter:description" content="An offline reference library on an ESP32 board. Choose from a growing catalogue of curated packs and carry only what you need.">
+    <meta name="twitter:title" content="PocketWiki: An offline library on an ESP32">
+    <meta name="twitter:description" content="Flash an ESP32-C3 or ESP32-S3 from your browser. Read the built-in guide and add article packs to the board.">
     <link rel="canonical" href="https://educated.space/pocketwiki">
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23000000'/%3E%3Ctext x='32' y='45' font-family='system-ui,sans-serif' font-size='40' font-weight='700' fill='%232db89a' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E">
     <script>
@@ -3601,7 +3601,7 @@
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
                     </button>
                 </div>
-                <a class="btn btn-primary btn-sm nav-cta" href="#docs-guide">Get started</a>
+                <a class="btn btn-primary btn-sm nav-cta" href="#flash">Flash a board</a>
                 <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-overlay" aria-label="Open menu">
                     <span></span><span></span>
                 </button>
@@ -3617,18 +3617,18 @@
         <a href="#flash" style="--i:4">Flash</a>
         <a href="#faq" style="--i:5">FAQ</a>
         <a href="#docs" style="--i:6">Docs</a>
-        <a class="btn btn-primary btn-lg" href="#docs-guide" style="--i:7">Get started</a>
+        <a class="btn btn-primary btn-lg" href="#flash" style="--i:7">Flash a board</a>
     </div>
 
     <main id="main" tabindex="-1">
         <!-- ================= Hero ================= -->
         <section class="hero" id="top" aria-labelledby="hero-title">
             <div class="container">
-                <h1 id="hero-title" class="text-display-2-semibold" data-reveal>A library that fits<br>in your pocket.</h1>
-                <p class="hero-sub text-title-3-regular" data-reveal>An offline reference library on an ESP32 board. Plug it into USB, join its Wi-Fi, and read on any phone or laptop nearby. Start with the PocketWiki Guide it ships with, then add libraries from the catalogue as they grow.</p>
+                <h1 id="hero-title" class="text-display-2-semibold" data-reveal>An offline library<br>on a small board.</h1>
+                <p class="hero-sub text-title-3-regular" data-reveal>Turn a supported ESP32 into a library that works without a signal. Plug it into USB, flash it from Chrome or Edge, join its Wi-Fi, and start reading on any phone or laptop nearby.</p>
                 <div class="hero-cta" data-reveal>
                     <a class="btn btn-primary btn-lg" href="#flash">Flash a board</a>
-                    <a class="btn btn-link text-headline-medium" href="#docs-guide">Get started
+                    <a class="btn btn-link text-headline-medium" href="https://github.com/bilawalriaz/pocketwiki" target="_blank" rel="noopener noreferrer">Browse the source
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
                     </a>
                 </div>
@@ -3723,7 +3723,7 @@
                       <span class="device-screw"></span>
                     </div>
                   </div>
-                  <div class="float-card float-b"><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span><strong>Free, forever</strong></span></div>
+                  <div class="float-card float-b"><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span><strong>No account needed</strong></span></div>
                 </div>
                 </div>
             </div>
@@ -3733,8 +3733,8 @@
         <section class="section" id="packs" aria-labelledby="packs-title">
             <div class="container">
                 <div class="section-head" data-reveal>
-                    <h2 id="packs-title" class="text-display-4-semibold">A growing catalogue. Carry what matters.</h2>
-                    <p class="text-headline-regular">Click any pack to browse its article titles, then choose your own combination. Install one, several, or all of them; every pack joins the same search and stays available offline.</p>
+                    <h2 id="packs-title" class="text-display-4-semibold">Browse the pack catalogue</h2>
+                    <p class="text-headline-regular">Select a pack to see its article titles and install size. Installed packs appear together in the device’s search.</p>
                 </div>
                 <div class="marquee-bleed">
                     <div class="pack-marquee-stack" id="pack-marquee-stack" aria-label="PocketWiki catalogue packs">
@@ -3748,7 +3748,7 @@
                 </div>
                 <div class="pack-explorer" id="pack-explorer" aria-live="polite" aria-atomic="true">
                     <div class="pack-explorer__empty">
-                        <strong>Explore what’s inside</strong>
+                        <strong>Browse article titles</strong>
                         <span>Choose a pack above to see the article titles it contains.</span>
                     </div>
                 </div>
@@ -3759,27 +3759,27 @@
         <section class="section" id="how" aria-labelledby="how-title">
             <div class="container">
                 <div class="section-head" data-reveal>
-                    <h2 id="how-title" class="text-display-4-semibold">Plug in, join Wi-Fi, read</h2>
-                    <p class="text-headline-regular">Two things you already know how to do: plug in a cable, join a Wi-Fi network.</p>
+                    <h2 id="how-title" class="text-display-4-semibold">From an empty board to an offline library</h2>
+                    <p class="text-headline-regular">Flash the board, join its Wi-Fi network, and open the reader.</p>
                 </div>
                 <div class="steps" data-reveal>
                     <article class="step-card">
                         <span class="step-num" aria-hidden="true">1</span>
-                        <h3 class="step-name text-title-3-semibold">Flash it once</h3>
-                        <p class="step-desc text-body-regular">Plug the board into USB and flash it from this page, or run one script that writes the bootloader, partitions, firmware and the starter library.</p>
-                        <span class="step-chip">Chrome, Edge, or Python</span>
+                        <h3 class="step-name text-title-3-semibold">Flash the board</h3>
+                        <p class="step-desc text-body-regular">Use a data-capable USB cable and the browser flasher below. It writes the bootloader, partitions, firmware, and PocketWiki Guide in one pass.</p>
+                        <span class="step-chip">Chrome or Edge on desktop</span>
                     </article>
                     <article class="step-card">
                         <span class="step-num" aria-hidden="true">2</span>
                         <h3 class="step-name text-title-3-semibold">Join its Wi-Fi</h3>
-                        <p class="step-desc text-body-regular">Open the PocketWiki network, then <code>192.168.4.1</code>. The access point starts open, so set a password in Manage before you share the board.</p>
-                        <span class="step-chip">No app required</span>
+                        <p class="step-desc text-body-regular">Join the <code>PocketWiki</code> network and open <code>http://192.168.4.1/</code>. The access point starts open; set a password in Manage before sharing the board.</p>
+                        <span class="step-chip">Open 192.168.4.1</span>
                     </article>
                     <article class="step-card">
                         <span class="step-num" aria-hidden="true">3</span>
                         <h3 class="step-name text-title-3-semibold">Read, then add packs</h3>
-                        <p class="step-desc text-body-regular">Start with the PocketWiki Guide already on the board. Add more from the catalogue, an upload, or the Android app. Reading never needs a connection.</p>
-                        <span class="step-chip">Offline after setup</span>
+                        <p class="step-desc text-body-regular">The PocketWiki Guide is ready on first boot. Add packs from Manage or the Android app, then read everything locally—even with the internet off.</p>
+                        <span class="step-chip">Stored on the board</span>
                     </article>
                 </div>
             </div>
@@ -3789,8 +3789,8 @@
         <section class="section" id="in-action" aria-labelledby="in-action-title">
             <div class="container">
                 <div class="section-head" data-reveal>
-                    <h2 id="in-action-title" class="text-display-4-semibold">A calm reader, right in the browser</h2>
-                    <p class="text-headline-regular">Search, browse, read and manage packs from one place. Nothing to install, nothing to sign in to.</p>
+                    <h2 id="in-action-title" class="text-display-4-semibold">The reader in your browser</h2>
+                    <p class="text-headline-regular">The board serves these pages over its own Wi-Fi network. Open them in a browser on your phone or computer.</p>
                 </div>
                 <div class="carousel" data-reveal aria-roledescription="carousel" aria-label="PocketWiki in action">
                     <div class="carousel__controls">
@@ -3806,8 +3806,8 @@
                         <figure class="shot">
                             <img src="assets/screenshots/libraries.png" alt="PocketWiki web reader showing six enabled libraries" loading="lazy" decoding="async">
                             <figcaption>
-                                <h3>Six shelves, ready to read</h3>
-                                <p>Installed collections appear the moment the board is running.</p>
+                                <h3>Installed libraries</h3>
+                                <p>Choose a library to browse its articles.</p>
                             </figcaption>
                         </figure>
                         </div>
@@ -3825,7 +3825,7 @@
                             <img src="assets/screenshots/browse.png" alt="PocketWiki article browser listing mathematics titles such as Algebra" loading="lazy" decoding="async">
                             <figcaption>
                                 <h3>Browse by title</h3>
-                                <p>A sorted title list scrolls as fast offline as on.</p>
+                                <p>Browse the titles in an installed library.</p>
                             </figcaption>
                         </figure>
                         </div>
@@ -3833,8 +3833,8 @@
                         <figure class="shot">
                             <img src="assets/screenshots/search.png" alt="PocketWiki search results for theory across mathematical and natural science libraries" loading="lazy" decoding="async">
                             <figcaption>
-                                <h3>One search, every shelf</h3>
-                                <p>Search any title across the packs you have installed.</p>
+                                <h3>Search across libraries</h3>
+                                <p>Results include titles from every installed pack.</p>
                             </figcaption>
                         </figure>
                         </div>
@@ -3842,8 +3842,8 @@
                         <figure class="shot">
                             <img src="assets/screenshots/packs.png" alt="PocketWiki library pack manager showing install and update actions" loading="lazy" decoding="async">
                             <figcaption>
-                                <h3>Add a pack in a minute</h3>
-                                <p>Install or update curated packs from the local manager.</p>
+                                <h3>Install more packs</h3>
+                                <p>Install or update packs from the device’s Manage page.</p>
                             </figcaption>
                         </figure>
                         </div>
@@ -3851,8 +3851,8 @@
                         <figure class="shot">
                             <img src="assets/screenshots/install.png" alt="PocketWiki pack manager showing local file, secure URL, and Wi-Fi options" loading="lazy" decoding="async">
                             <figcaption>
-                                <h3>Setup stays yours</h3>
-                                <p>Upload a pack, fetch one over HTTPS, or set Wi-Fi. All from the board.</p>
+                                <h3>Manage the device</h3>
+                                <p>Upload a pack, fetch one from a URL, or connect the board to your Wi-Fi network.</p>
                             </figcaption>
                         </figure>
                         </div>
@@ -3873,8 +3873,8 @@
         <section class="section" id="hardware" aria-labelledby="hardware-title">
             <div class="container">
                 <div class="section-head" data-reveal>
-                    <h2 id="hardware-title" class="text-display-4-semibold">A small board, and nothing you do not need</h2>
-                    <p class="text-headline-regular">A 4&nbsp;MB ESP32-C3 is all you need to start reading. The 16&nbsp;MB S3 holds the whole catalogue. The OLED is optional.</p>
+                    <h2 id="hardware-title" class="text-display-4-semibold">Boards and storage</h2>
+                    <p class="text-headline-regular">PocketWiki supports a 4&nbsp;MB ESP32-C3 and a 16&nbsp;MB ESP32-S3. The display is optional.</p>
                 </div>
                 <div class="boards-grid" data-reveal>
                     <article class="board-card highlight">
@@ -3884,7 +3884,7 @@
                             <span class="price-num text-display-4-medium">4 MB</span>
                             <span class="price-per text-body-regular">flash</span>
                         </div>
-                        <p class="board-card-desc text-body-regular">The board the firmware is written for. 1.5 MB of application, the built-in library, and room left over for packs.</p>
+                        <p class="board-card-desc text-body-regular">The 4 MB layout leaves about 1.94 MB for optional packs.</p>
                         <ul class="board-feats">
                             <li class="board-feat text-body-regular"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>448 KB content and 64 KB index for the built-in guide</li>
                             <li class="board-feat text-body-regular"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>About 1.94 MB for installed packs</li>
@@ -3901,7 +3901,7 @@
                             <span class="price-num text-display-4-medium">16 MB</span>
                             <span class="price-per text-body-regular">flash</span>
                         </div>
-                        <p class="board-card-desc text-body-regular">The same firmware with a far larger store, so the whole catalogue can live on the board.</p>
+                        <p class="board-card-desc text-body-regular">The 16 MB layout leaves about 13.9 MB for optional packs.</p>
                         <ul class="board-feats">
                             <li class="board-feat text-body-regular"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>512 KB content and 64 KB index for the built-in guide</li>
                             <li class="board-feat text-body-regular"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>About 13.9 MB for installed packs</li>
@@ -3940,14 +3940,14 @@
         <section class="section" id="flash" aria-labelledby="flash-title">
             <div class="container">
                 <div class="section-head" data-reveal>
-                    <h2 id="flash-title" class="text-display-4-semibold">Write the firmware from this page</h2>
-                    <p class="text-headline-regular">Plug in an ESP32-C3 or ESP32-S3, pick the board, and the browser writes the bootloader, partition table, firmware and built-in guide over USB. Add your Wi-Fi once and the board joins it on its first boot.</p>
+                    <h2 id="flash-title" class="text-display-4-semibold">Go from blank board to PocketWiki</h2>
+                    <p class="text-headline-regular">Plug in an ESP32-C3 or ESP32-S3, pick the board, and the browser writes the complete first-install image over USB. Add your 2.4&nbsp;GHz Wi-Fi once and the board joins it on its first boot.</p>
                 </div>
                 <div class="flash-panel-stage">
                     <div class="flash-panel" id="flash-panel" data-reveal>
                         <div class="flash-panel-header">
                             <span class="flash-panel-kicker text-caption-1-semibold">Web flasher</span>
-                            <span class="chip chip--soft chip--caption">USB &middot; local</span>
+                            <span class="chip chip--soft chip--caption">Chrome / Edge &middot; USB</span>
                         </div>
                         <div class="flash-step">
                             <div class="flash-step-head"><span class="step-num" aria-hidden="true">1</span>Choose the board</div>
@@ -4016,7 +4016,7 @@
                         <p class="flash-note" id="flash-note"></p>
                     </div>
                 </div>
-                <p class="section-note" data-reveal>If the port picker stays empty, the USB cable may be charge-only or a serial monitor still holds the port.</p>
+                <p class="section-note" data-reveal>When it finishes, join <code>PocketWiki</code> and open <code>http://192.168.4.1/</code>. If the port picker stays empty, use a data-capable USB cable and close any serial monitor.</p>
             </div>
         </section>
 
@@ -4119,12 +4119,12 @@
                 </div>
       <div class="doc-pane" data-dpane="guide" id="docs-guide"><div class="doc-body">
               <h3 class="text-title-1-semibold">Project guide</h3>
-              <p>PocketWiki turns an ESP32-C3 or ESP32-S3 into a small offline library. The device creates its own Wi-Fi network and serves a searchable library at <code>http://192.168.4.1/</code>. It can also join a 2.4 GHz network to download packs. After setup, reading works without an account, phone, or internet connection.</p>
+              <p>PocketWiki turns an ESP32-C3 or ESP32-S3 into a small offline library. The device creates its own Wi-Fi network and serves a searchable library at <code>http://192.168.4.1/</code>. It can also join a 2.4 GHz network to download packs. After setup, reading works without an account, phone, or internet connection. Source code: <a href="https://github.com/bilawalriaz/pocketwiki" target="_blank" rel="noopener noreferrer">github.com/bilawalriaz/pocketwiki</a>.</p>
               <h4 class="text-headline-semibold">What is in the repository</h4>
               <ul><li><code>firmware/</code> holds ESP-IDF firmware for ESP32-C3 and ESP32-S3 boards.</li><li><code>android/</code> holds the Kotlin and Compose companion app.</li><li><code>tools/</code> holds the pack builder, the local preview server, the flash script, and the tools that stage firmware for the landing page.</li><li><code>assets/</code> holds the web assets the device serves and the landing-page screenshots.</li><li><code>articles/pocketwiki/</code> holds the built-in PocketWiki Guide.</li><li><code>docs/</code> holds the technical reference and the development guide.</li></ul><p>Article text for the optional packs is not here. It is adapted from English Wikipedia and licensed CC BY-SA 4.0, so it lives in the companion <code>pocketwiki-content</code> repository together with the pack manifest. Clone it beside this checkout:</p><pre><code>git clone https://github.com/bilawalriaz/pocketwiki.git
 git clone https://github.com/bilawalriaz/pocketwiki-content.git</code></pre>
               <h4 class="text-headline-semibold">Get started</h4>
-              <p>You need Python 3.10 or later, PlatformIO or ESP-IDF 6, and a supported board.</p>
+              <p>For a local build, install Python 3.10 or later and PlatformIO or ESP-IDF 6.</p>
       <pre><code># Run the host tests.
       python3 -m pytest -q
 
@@ -4141,14 +4141,14 @@ git clone https://github.com/bilawalriaz/pocketwiki-content.git</code></pre>
               <p>After the board starts, join the <code>PocketWiki</code> Wi-Fi network and open <code>http://192.168.4.1/</code>. The default network is open. Set a password before you use the device in a shared place.</p>
               <p><code>flash_all.py</code> writes the bootloader, partition table, firmware, and included library. Use it for the first flash and when the included library changes.</p>
               <h4 class="text-headline-semibold">Published firmware</h4>
-              <p>The browser flasher below reads the current verified image manifest from R2 and downloads the matching bootloader, partition table, firmware, and starter library directly over HTTPS. The manifest is updated atomically, while each image is immutable.</p>
+              <p>The browser flasher downloads the current images for the selected board, checks their size and SHA-256, and writes them over USB.</p>
       <pre><code>curl -fsS https://packs.educated.space/firmware/index.json</code></pre>
               <h4 class="text-headline-semibold">Create a pack</h4>
               <p>Each input article must have one <code>h1</code> title. Build, check, and wrap the pack:</p>
       <pre><code>python3 tools/pack_content.py build /path/to/articles build/my-pack
       python3 tools/pack_content.py verify build/my-pack
       python3 tools/pack_content.py pack-file build/my-pack my-pack.pwp</code></pre>
-              <p>Packs are built as v3: each article is an independent DEFLATE stream compressed against one shared trained dictionary, which is what lets the 4 MB board hold around 825 articles and the 16 MB board around 6,022, at about 2.4 KB per article. Every board decodes the same file, so one pack serves the whole fleet, and the published catalogue is built this way. A build refuses a pack it cannot decode instead of failing one article at a time. The packer removes active content and remote resources, rewrites accepted internal links, and builds a sorted title index. The device checks a pack before it installs it.</p>
+              <p>The packer compresses each article separately with a shared dictionary. Typical packs average roughly 2.4 KB per article, though sizes vary with the content. It removes active content and remote resources, rewrites accepted internal links, and sorts the title index. The device validates each pack before installing it.</p>
               <h4 class="text-headline-semibold">Android app</h4>
               <p>Build the debug app with <code>cd android &amp;&amp; ./gradlew assembleDebug</code>. The app guides you through Device, Wi-Fi, and Library. It uses BLE for setup and management; pack bytes travel over Wi-Fi when possible and fall back to BLE.</p>
             </div></div>
@@ -4286,12 +4286,12 @@ git clone https://github.com/bilawalriaz/pocketwiki-content.git</code></pre>
             </div></div>
             <div class="doc-pane" data-dpane="development" id="docs-development" hidden><div class="doc-body">
               <h3 class="text-title-1-semibold">Development</h3>
-              <p>Local workflow only: never commit generated firmware, archives, downloaded content, <code>sdkconfig</code>, or managed components. You need Python 3.10+, <code>pytest</code>, and PlatformIO with <code>espressif32@7.0.1</code> (or ESP-IDF 6.0.1).</p>
+              <p>To build from source, install Python 3.10+, <code>pytest</code>, and PlatformIO with <code>espressif32@7.0.1</code>, or ESP-IDF 6.0.1. The commands below run from the repository root.</p>
               <h4 class="text-headline-semibold">Test the host tools</h4>
       <pre><code>python3 -m pytest -q</code></pre>
               <p>The suite checks archive validation, deterministic pack output, sanitization, link rewriting, title normalization parity, and reference server routes.</p>
               <h4 class="text-headline-semibold">Build firmware</h4>
-              <p>PlatformIO prepares the stylesheet, catalogue, and starter pack before each build, packing it as v3 (DEFLATE plus a trained dictionary, read by every board), then stages flash ready files in <code>firmware/dist/&lt;environment&gt;/</code>.</p>
+              <p>PlatformIO builds the firmware and built-in guide, then puts the flash images in <code>firmware/dist/&lt;environment&gt;/</code>.</p>
       <pre><code># 4 MB ESP32-C3
       pio run -d firmware -e esp32-c3
 
@@ -4316,29 +4316,27 @@ git clone https://github.com/bilawalriaz/pocketwiki-content.git</code></pre>
               <h4 class="text-headline-semibold">Preview the web interface</h4>
       <pre><code>python3 tools/pack_content.py build articles/pocketwiki build/preview
       python3 tools/reference_server.py build/preview --port 8080</code></pre>
-              <p>The reference server helps you check routes and layout. It does not model device memory, BLE, flash latency, or interrupted uploads.</p>
-              <h4 class="text-headline-semibold">Before you open a pull request</h4>
-              <ol><li>Run <code>python3 -m pytest -q</code>.</li><li>Build firmware if you changed <code>firmware/</code>, CMake, Kconfig, or partitions.</li><li>Preview HTML or CSS changes at desktop and phone widths.</li><li>Keep archive readers and writers compatible, or change the format version.</li><li>State the user-visible change and the checks you ran.</li></ol>
+              <p>Open <code>http://localhost:8080/</code> to preview the reader and pack manager.</p>
             </div></div>
             <div class="doc-pane" data-dpane="catalogue" id="docs-catalogue" hidden><div class="doc-body">
-              <p>The public catalogue is <code>https://packs.educated.space/index.json</code>. It lists immutable <code>.pwp</code> files served by the PocketWiki Cloudflare Worker. The Android app ships a bundled fallback catalogue and refreshes the public one when the phone has internet; the <code>/manage</code> page can ask the device to refresh its own cached catalogue through station Wi-Fi. Before installation, Android checks the declared byte count and SHA-256. The device still performs its own size, CRC, header, and index checks.</p>
+              <p>The <a href="https://packs.educated.space/index.json">public catalogue</a> lists downloadable <code>.pwp</code> packs. The Android app carries a copy for offline browsing and updates it when the phone has internet. The device can refresh its catalogue over Wi-Fi from <code>/manage</code>. Android checks each download's size and SHA-256; the device validates the pack again before installing it.</p>
               <h4 class="text-headline-semibold">Publish a catalogue update</h4>
-              <ol><li>Edit <code>packs/catalog-source.json</code> in the content checkout.</li><li>Keep each pack <code>id</code> stable.</li><li>Increase the pack <code>version</code> when its content changes.</li><li>Authenticate Wrangler with the correct Cloudflare account.</li><li>Run the publisher:</li></ol>
+              <p>The pack definitions live in <code>packs/catalog-source.json</code> in the <a href="https://github.com/bilawalriaz/pocketwiki-content">content repository</a>. Increase a pack's version when its articles change, then run:</p>
       <pre><code>python3 tools/publish_pack_catalog.py</code></pre>
-              <p>The publisher builds and checks every archive, updates Android's fallback catalogue, uploads immutable pack objects, and uploads <code>index.json</code> last. That final upload makes the new release visible as one catalogue update. Use <code>--deploy-worker</code> only when the Worker code or configuration also changed. Run <code>python3 -m pytest -q</code> after you change the catalogue.</p>
+              <p>The publisher builds and checks the packs, updates the Android catalogue, uploads the archives, and publishes <code>index.json</code> last. Pack IDs stay stable so existing links still point to the same pack.</p>
               <h4 class="text-headline-semibold">Rebuild source packs</h4>
-              <p>Two kinds of pack are built from the corpus. The themed packs under <code>articles/db-packs/</code> draw their articles from a directory by an explicit list recorded in the manifest. The shelves under <code>articles/cluster-packs/</code> were grouped by embedding similarity and then named by subject; <code>manifest.json</code> records every shelf and its article ids. Each article carries a CC BY-SA attribution footer, and the publisher copies it into the pack unchanged.</p>
+              <p>The content repository holds themed packs in <code>articles/db-packs/</code> and grouped shelves in <code>articles/cluster-packs/</code>. Its manifest records which articles belong to each pack. Wikipedia-derived articles retain their CC BY-SA attribution in the published packs.</p>
             </div></div>
             <div class="doc-pane" data-dpane="flasher" id="docs-flasher" hidden><div class="doc-body">
               <h3>Flashing</h3>
               <h4 class="text-headline-semibold">Browser</h4>
               <p><a href="#flash">The flash panel</a> writes the same images over USB with <code>esptool-js</code> and the Web Serial API. Use Chrome or Edge on a desktop; Firefox and Safari do not expose serial ports to a page. WebUSB is not usable here, because the operating system claims the ESP32-C3/S3 USB-serial peripheral with its own CDC driver.</p>
               <p>The page reads the current <code>https://packs.educated.space/firmware/index.json</code> manifest from R2, checks every image against the byte count and SHA-256 recorded there, then writes it at the offset its partition table gives. When you supply Wi-Fi details it also builds and writes the <code>nvs</code> partition, which is the same <code>pocketwiki</code> namespace the device reads on boot.</p>
-              <pre><code># Build both boards, then stage the deployment copies.
+              <pre><code># Build images for both boards.
       pio run -d firmware -e esp32-c3
       pio run -d firmware -e esp32-s3
       python3 tools/stage_web_firmware.py</code></pre>
-              <p>The staging tool refuses to write a manifest when an image overflows its partition, so a layout change cannot produce a flash plan that silently fails to boot.</p>
+              <p>The staging tool checks each image against its partition size before writing the manifest.</p>
             </div></div>
             <div class="doc-pane" data-dpane="license" id="docs-license" hidden><div class="doc-body">
               <h3 class="text-title-1-semibold">License</h3>
@@ -4358,7 +4356,7 @@ git clone https://github.com/bilawalriaz/pocketwiki-content.git</code></pre>
                         <span class="nav-logo" aria-hidden="true">P</span>
                         PocketWiki
                     </a>
-                    <p>An offline reference library on an ESP32 board. Source under MIT, articles under CC BY-SA, nothing to sign up for.</p>
+                    <p>An offline reference library on an ESP32 board. Source code is MIT licensed; Wikipedia-derived articles retain CC BY-SA attribution.</p>
                     <a class="btn btn-outline btn-sm" href="https://packs.educated.space/index.json" rel="noopener">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h10l6 6v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/><path d="M14 5v6h6"/></svg>
                         Pack catalogue

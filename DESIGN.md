@@ -286,7 +286,7 @@ Measured on a 120 Hz phone from `dumpsys gfxinfo`: release build, 2 766 frames a
 
 ### Icons
 
-One set, one weight: Material Symbols Rounded, fill 1, on the 24 dp grid. The app ships only the glyphs it draws, generated into `PocketIcons` by `tools/generate_android_icons.py`, so no icon pack sits in the APK and no two sets can drift apart. Icons never stand in for text that carries meaning, decorative ones stay undescribed, and every interactive one names its action.
+One set, one weight: Material Symbols Rounded, fill 1, on the 24 dp grid. The app ships only the glyphs it draws, generated into `PocketIcons` by `tools/generate_android_icons.py` in the [app repository](https://github.com/bilawalriaz/pocketwiki-android), so no icon pack sits in the APK and no two sets can drift apart. Icons never stand in for text that carries meaning, decorative ones stay undescribed, and every interactive one names its action.
 
 ### Progress Indicator
 

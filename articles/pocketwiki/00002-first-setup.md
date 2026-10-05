@@ -12,7 +12,7 @@ two. There is no power button and no setup mode to enter.
 
 On a phone, tablet, or laptop, join the Wi-Fi network named `PocketWiki`. It is
 open by default, so no password is needed. You may see a "no internet"
-warning. That is expected, because the network only contains the library. Stay
+warning — that is expected, because the network only contains the library. Stay
 connected to it.
 
 ## 3. Open the reader

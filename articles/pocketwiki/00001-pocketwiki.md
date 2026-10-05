@@ -8,7 +8,7 @@ You are reading one of its articles now, which means the device is set up.
 What is on it:
 
 - **This guide**, built into the board's flash. It explains the device, and it
-  cannot be deleted, so if you ever get lost it is still there.
+  cannot be deleted — if you ever get lost, it is still there.
 - **Optional packs**: libraries of articles you install from the catalogue at
   `packs.educated.space` or upload from your
   phone. Around 900 articles fit on the 4 MB board and about 6,000 on the

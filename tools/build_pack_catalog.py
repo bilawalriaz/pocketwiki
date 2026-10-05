@@ -10,7 +10,6 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-import os
 from pathlib import Path
 import shutil
 import sys
@@ -113,12 +112,13 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--source", type=Path, default=content_paths.CATALOG)
     parser.add_argument("--output", type=Path, default=ROOT / "dist" / "packs")
-    parser.add_argument("--android-asset", type=Path,
-                        default=ROOT / "android" / "app" / "src" / "main" / "assets" / "pack_catalog.json")
+    parser.add_argument("--snapshot", type=Path,
+                        default=ROOT / "firmware" / "catalog" / "pack_catalog.json",
+                        help="firmware snapshot of the published index to refresh")
     args = parser.parse_args()
     catalog = build_catalog(args.source, args.output)
-    args.android_asset.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(args.output / "index.json", args.android_asset)
+    args.snapshot.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(args.output / "index.json", args.snapshot)
     print(json.dumps(catalog, indent=2, sort_keys=True))
     return 0
 

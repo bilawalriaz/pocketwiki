@@ -1,6 +1,6 @@
 # This guide
 
-The articles you are reading are themselves a pack: the one pack every
+The articles you are reading are themselves a pack — the one pack every
 PocketWiki has.
 
 ## Built in, not installed

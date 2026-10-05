@@ -29,19 +29,25 @@ and one pack serves both boards. See
 archive, the pack store, BLE, and the HTTP server. A bad optional pack does not
 stop the device. A bad built-in archive still allows diagnostic routes to run.
 
+The browser flasher can leave catalogue pack names in NVS. A task in
+`web_server.c` installs them through the normal install route once the station
+uplink is up, and keeps the ones that fail for a later boot.
+
 Key modules:
 
 - `content_archive.c` validates and reads built-in and portable archives.
 - `pack_store.c` manages the FAT-backed `/packs` filesystem and staged writes.
 - `title_lookup.c` provides byte-stable normalization and binary search.
 - `web_server.c` serves reading, search, Wi-Fi, and pack-management routes.
-- `wifi_ap.c` manages the access point and saved station credentials.
+- `wifi_ap.c` manages the access point and saved station credentials. It also
+  answers the name `pocketwiki` for clients on that network.
 - `ble_provisioning.c` provides setup and pack management over GATT.
 - `oled_display.c` provides optional device status and transfer progress.
 
 The web reader is local to the device. Its access-point address is
-`http://192.168.4.1/`; station Wi-Fi is used only when the user asks the
-device to refresh or download a catalogue pack.
+`http://192.168.4.1/`, and `http://pocketwiki/` resolves to the same address.
+Station Wi-Fi is used only when the user asks the device to refresh or download
+a catalogue pack.
 
 ## HTTP routes
 

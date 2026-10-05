@@ -4,31 +4,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PocketWiki — A library that stays with you</title>
+    <title>PocketWiki: A library that stays with you</title>
     <meta name="description" content="Turn a supported ESP32-C3 or ESP32-S3 into an offline reference library. Flash it from Chrome or Edge, join its Wi-Fi, and read without an account, cloud, or internet.">
     <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
     <meta name="theme-color" content="#f5f5f7" media="(prefers-color-scheme: light)">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="PocketWiki">
-    <meta property="og:title" content="PocketWiki — A library that stays with you">
+    <meta property="og:title" content="PocketWiki: A library that stays with you">
     <meta property="og:description" content="Flash a supported ESP32 from your browser, start with the built-in guide, and carry curated reference libraries offline.">
     <meta property="og:url" content="https://educated.space/pocketwiki">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="PocketWiki — A library that stays with you">
+    <meta name="twitter:title" content="PocketWiki: A library that stays with you">
     <meta name="twitter:description" content="Flash a supported ESP32 from your browser, start with the built-in guide, and carry curated reference libraries offline.">
     <link rel="canonical" href="https://educated.space/pocketwiki">
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23000000'/%3E%3Ctext x='32' y='45' font-family='system-ui,sans-serif' font-size='40' font-weight='700' fill='%232db89a' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E">
     <script>
         /* Set the stored theme before first paint. */
         try {
-            var pocketWikiPath = window.location.pathname.replace(/\/+$/, '');
-            document.documentElement.dataset.variant = /(?:^|\/)pocketwiki2(?:\/|$)/.test(pocketWikiPath) ? 'boardui' : 'classic';
-            var storedTheme = localStorage.getItem('pocketwiki-theme');
+            var storedTheme = localStorage.getItem('educated-theme') || localStorage.getItem('pocketwiki-theme');
             if (storedTheme) document.documentElement.dataset.theme = storedTheme;
         } catch (e) { /* storage unavailable */ }
     </script>
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/inter/index.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/manrope/index.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/jetbrains-mono/index.css">
 
     <style>
@@ -127,7 +125,7 @@
             --color-accent-950: var(--color-teal-950);
 
             /* --- type --- */
-            --font-sans: 'Inter Variable', 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+            --font-sans: 'Manrope Variable', 'Manrope', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
             --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', monospace;
 
             /* --- radii --- */
@@ -235,6 +233,15 @@
             --color-input-disabled-text: var(--color-neutral-300);
             --color-code-surface: var(--color-neutral-100);
 
+            /* --- high-contrast field and disclosure surfaces --- */
+            --color-field-surface-start: #202b25;
+            --color-field-surface-end: #080b09;
+            --color-field-border: #45564b;
+            --color-field-text: #f3faf6;
+            --color-field-placeholder: #aec0b5;
+            --color-faq-open-background: var(--color-neutral-100);
+            --color-faq-open-border: var(--color-neutral-300);
+
             /* --- button gradients (BoardUI recipe, accent ramp) --- */
             --gradient-button-primary-default: linear-gradient(180deg, var(--color-accent-600) 0%, var(--color-accent-700) 100%);
             --gradient-button-primary-hover: linear-gradient(180deg, var(--color-accent-500) 0%, var(--color-accent-600) 100%);
@@ -319,6 +326,14 @@
             --color-switch-off-chip-end: var(--color-background-tertiary-default);
             --color-input-disabled-text: color-mix(in srgb, var(--color-neutral-500) 40%, transparent);
             --color-code-surface: var(--color-neutral-950);
+
+            --color-field-surface-start: #202b25;
+            --color-field-surface-end: #080b09;
+            --color-field-border: #45564b;
+            --color-field-text: #f3faf6;
+            --color-field-placeholder: #aec0b5;
+            --color-faq-open-background: var(--color-neutral-900);
+            --color-faq-open-border: var(--color-neutral-700);
 
             --shadow-2xs: 0 1px rgb(0 0 0 / 0.16);
             --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.18);
@@ -421,6 +436,7 @@
             font-size: 0.875rem;
             line-height: 1.25rem;
             font-variant-ligatures: contextual;
+            font-optical-sizing: auto;
             font-kerning: normal;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
@@ -525,7 +541,7 @@
         }
 
         /* ============================================================
-           4. Buttons — BoardUI button.tsx
+           4. Buttons: BoardUI button.tsx
            Medium 36/8/10 · Small 32/8/8 · Icon-only square
            ============================================================ */
         .btn {
@@ -903,7 +919,11 @@
             display: flex;
             align-items: center;
             gap: 4px;
-            padding: 6px;
+            /* Same bar geometry as the Educated navigation: one 1100px
+               column, a 58px tall pill, 16px radius. The 10px vertical
+               padding plus the 36px controls lands on that height. */
+            width: min(1100px, calc(100% - 48px));
+            padding: 10px 10px 10px 4px;
             border-radius: var(--r-2xl);
             border: 1px solid var(--color-border-button-default);
             background: color-mix(in srgb, var(--color-background-primary-default) 82%, transparent);
@@ -928,6 +948,39 @@
 
         .nav-brand:hover {
             background: var(--color-background-secondary-hover);
+        }
+
+        /* Way back to the parent site. Icon only until the pill is wide
+           enough to carry the label next to the theme toggle and CTA. */
+        .nav-back {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            height: 36px;
+            padding: 0 10px;
+            border-radius: var(--r-2lg);
+            color: var(--color-text-secondary);
+            font-size: 0.875rem;
+            line-height: 1.25rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: background-color 150ms ease, color 150ms ease;
+        }
+
+        .nav-back:hover {
+            background: var(--color-background-secondary-hover);
+            color: var(--color-text-primary);
+        }
+
+        .nav-back svg {
+            width: 15px;
+            height: 15px;
+            flex: none;
+        }
+
+        .nav-back span {
+            display: none;
         }
 
         .nav-links {
@@ -964,6 +1017,7 @@
             display: flex;
             align-items: center;
             gap: 4px;
+            margin-left: auto;
         }
 
         .nav-cta {
@@ -1005,7 +1059,7 @@
             transform: rotate(-45deg);
         }
 
-        /* theme toggle — BoardUI theme-toggle, segmented appearance */
+        /* theme toggle: BoardUI theme-toggle, segmented appearance */
         .theme-toggle {
             position: relative;
             display: inline-flex;
@@ -1110,6 +1164,10 @@
             background: var(--color-background-secondary-hover);
         }
 
+        .nav-overlay a.nav-overlay-back {
+            color: var(--color-text-secondary);
+        }
+
         .nav-overlay .btn {
             margin-top: 16px;
             opacity: 0;
@@ -1157,7 +1215,7 @@
         }
 
         /* ------------------------------------------------------------
-           Reader preview — the original component, re-tokenised.
+           Reader preview: the original component, re-tokenised.
            ------------------------------------------------------------ */
         .device-stage {
             max-width: 660px;
@@ -1290,8 +1348,8 @@
             font: 16px/1.62 var(--reader-sans);
             box-shadow: inset 0 0 0 1px var(--color-neutral-700);
             /* The reader is a separate document: undo the landing page's own
-               body and base rules — centred hero text, balanced headings,
-               antialiased glyphs, the site selection colour and focus ring —
+               body and base rules: centred hero text, balanced headings,
+               antialiased glyphs, the site selection colour and focus ring,
                so the preview renders what the board actually serves. */
             text-align: left;
             text-wrap: wrap;
@@ -1317,7 +1375,7 @@
         }
 
         /* ------------------------------------------------------------
-           Reader preview — the interface the firmware serves
+           Reader preview: the interface the firmware serves
            ------------------------------------------------------------
            The class names below are the ones assets/style.css styles, so the
            preview and the board cannot drift apart: header, brand, brand-mark,
@@ -1685,6 +1743,26 @@
             border-bottom: 0;
         }
 
+        .pack-list .pack-row {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            flex-wrap: wrap;
+            margin: 0;
+            padding: 11px 14px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .pack-list .pack-row:last-child {
+            border-bottom: 0;
+        }
+
+        .pack-row-copy {
+            min-width: 0;
+            flex: 1 1 220px;
+            overflow-wrap: anywhere;
+        }
+
         .inline-action {
             display: inline-flex;
             align-items: center;
@@ -1831,68 +1909,6 @@
                 inset 0 -1px 0 0 rgb(255 255 255 / 0.12);
         }
 
-        .float-card {
-            position: absolute;
-            z-index: 3;
-            display: flex;
-            gap: 9px;
-            align-items: center;
-            padding: 7px 15px 7px 7px;
-            border: 1px solid var(--color-border-button-default);
-            border-radius: var(--r-full);
-            background: var(--color-background-primary-default);
-            box-shadow: var(--shadow-sidebar);
-            color: var(--color-text-secondary);
-            font-size: 0.8125rem;
-            line-height: 1.125rem;
-            animation: float 7s ease-in-out infinite;
-        }
-
-        .float-card strong {
-            display: block;
-            color: var(--color-text-primary);
-            font-size: 0.875rem;
-            font-weight: 600;
-        }
-
-        .float-card .ic {
-            display: grid;
-            place-items: center;
-            width: 26px;
-            height: 26px;
-            flex: none;
-            border-radius: var(--r-full);
-            background: color-mix(in srgb, var(--color-accent-500) 22%, transparent);
-            color: var(--color-accent-700);
-        }
-
-        .float-card .ic svg {
-            width: 14px;
-            height: 14px;
-        }
-
-        [data-theme="dark"] .float-card .ic {
-            color: var(--color-accent-300);
-        }
-
-        /* Top right of the reader preview, clear of the headline above it. */
-        .float-b {
-            top: 0;
-            right: -2px;
-            animation-delay: -2.5s;
-        }
-
-        @keyframes float {
-            0%,
-            100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-9px);
-            }
-        }
-
         /* ============================================================
            9. Sections
            ============================================================ */
@@ -2036,7 +2052,7 @@
         }
 
         /* ============================================================
-           12. Carousel — BoardUI carousel.tsx
+           12. Carousel: BoardUI carousel.tsx
            ============================================================ */
         .carousel {
             margin-top: 40px;
@@ -2160,26 +2176,8 @@
             box-shadow: var(--shadow-nav-selected);
         }
 
-        .board-badge {
-            display: inline-flex;
-            align-items: center;
-            align-self: flex-start;
-            padding: 1px 4px;
-            border-radius: var(--r-sm);
-            background: var(--color-accent-100);
-            color: var(--color-accent-700);
-            font-size: 0.75rem;
-            line-height: 1rem;
-            font-weight: 600;
-        }
-
-        [data-theme="dark"] .board-badge {
-            background: var(--color-accent-950);
-            color: var(--color-accent-300);
-        }
-
         .board-card-name {
-            margin-top: 16px;
+            margin-top: 0;
             color: var(--color-text-secondary);
         }
 
@@ -2375,7 +2373,7 @@
             font-variant-numeric: tabular-nums;
         }
 
-        /* radio-card — BoardUI radio/radio-card */
+        /* radio-card: BoardUI radio/radio-card */
         .flash-boards {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2488,7 +2486,7 @@
             opacity: 1;
         }
 
-        /* input — BoardUI input.tsx */
+        /* input: BoardUI input.tsx */
         .flash-fields {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2510,24 +2508,26 @@
             display: flex;
             align-items: center;
             min-height: 44px;
-            border: 1px solid var(--color-separator-border);
+            border: 1px solid var(--color-field-border);
             border-radius: 12px;
-            background: var(--color-background-tertiary-default);
-            box-shadow: inset 0 0 0 1px transparent;
-            transition: background-color var(--input-transition-ms) ease, box-shadow var(--input-transition-ms) ease;
-        }
-
-        [data-theme="dark"] .field__control {
-            border-color: var(--color-border-button-default);
+            background: linear-gradient(180deg, var(--color-field-surface-start) 0%, var(--color-field-surface-end) 100%);
+            box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.12), 0 1px 2px rgb(0 0 0 / 0.16);
+            transition: background var(--input-transition-ms) ease, border-color var(--input-transition-ms) ease, box-shadow var(--input-transition-ms) ease;
         }
 
         .field__control:hover {
-            box-shadow: inset 0 0 0 1px var(--color-border-button-hover);
+            border-color: #64786b;
+            box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.16), 0 2px 5px rgb(0 0 0 / 0.18);
         }
 
         .field__control:focus-within {
-            border-color: var(--color-border-button-active);
-            box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent-500) 18%, transparent);
+            border-color: var(--color-accent-400);
+            box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent-500) 24%, transparent), inset 0 1px 0 rgb(255 255 255 / 0.16);
+        }
+
+        .field__control:has(input:disabled) {
+            opacity: 0.58;
+            cursor: not-allowed;
         }
 
         .field input {
@@ -2536,14 +2536,15 @@
             padding: 0 12px 0 12px;
             border: 0;
             background: none;
-            color: var(--color-text-primary);
+            color: var(--color-field-text);
             font-size: 0.875rem;
             line-height: 1.25rem;
             outline: none;
         }
 
         .field input::placeholder {
-            color: var(--color-text-placeholder);
+            color: var(--color-field-placeholder);
+            opacity: 1;
         }
 
         .field input:disabled {
@@ -2585,6 +2586,20 @@
             background: var(--color-code-surface);
             font-family: var(--font-mono);
             font-size: 0.9em;
+        }
+
+        .flash-address-badge {
+            margin: 8px 4px 4px;
+        }
+
+        .flash-address-badge code {
+            padding: 0 4px;
+            border: 1px solid var(--color-separator-border);
+            border-radius: var(--r-md);
+            background: var(--color-code-surface);
+            font-family: var(--font-mono);
+            font-size: 0.9em;
+            color: var(--color-text-primary);
         }
 
         .flash-pack-list-shell {
@@ -2638,7 +2653,7 @@
 
         .flash-actions .btn { min-height: 46px; }
 
-        /* switch — BoardUI switch.tsx, medium */
+        /* switch: BoardUI switch.tsx, medium */
         .flash-check {
             display: inline-flex;
             align-items: center;
@@ -2767,7 +2782,7 @@
             white-space: pre-wrap;
         }
 
-        /* notification — BoardUI notification.tsx */
+        /* notification: BoardUI notification.tsx */
         .notification {
             position: relative;
             margin: 16px 0 0;
@@ -2869,6 +2884,11 @@
             background: var(--color-background-secondary-hover);
         }
 
+        .faq-item.open {
+            background: var(--color-faq-open-background);
+            border-color: var(--color-faq-open-border);
+        }
+
         .faq-q {
             display: flex;
             align-items: center;
@@ -2903,11 +2923,16 @@
             transition: max-height 400ms var(--ease-out);
         }
 
+        .faq-item.open .faq-panel {
+            border-top: 1px solid var(--color-faq-open-border);
+        }
+
         .faq-panel p {
+            padding-top: 14px;
             padding-bottom: 16px;
             margin: 0;
             max-width: 62ch;
-            color: var(--color-text-secondary);
+            color: var(--color-text-primary);
         }
 
         .faq-panel code {
@@ -3130,7 +3155,7 @@
             white-space: pre;
         }
 
-        /* table — BoardUI table.tsx (.bui-table) */
+        /* table: BoardUI table.tsx (.bui-table) */
         .bui-table {
             width: 100%;
             margin: 16px 0;
@@ -3254,6 +3279,10 @@
             .nav-cta {
                 display: inline-flex;
             }
+
+            .nav-back span {
+                display: inline;
+            }
         }
 
         @media (min-width: 768px) {
@@ -3299,10 +3328,6 @@
             .flash-panel-stage::before {
                 top: -60px;
                 bottom: -60px;
-            }
-
-            .float-card {
-                display: none;
             }
 
             .steps,
@@ -3473,7 +3498,7 @@
            ------------------------------------------------------------
            The marquee cards keep the exact tokens they were designed
            against, scoped here so nothing on the rest of the page can
-           shift them. Values are unchanged from index.html.
+           shift them.
            ------------------------------------------------------------ */
         .pack-marquee-stack {
             --hover: #272727;
@@ -3811,6 +3836,7 @@
                 height: 320px;
             }
         }
+
     </style>
 </head>
 
@@ -3829,11 +3855,16 @@
                 <a href="#how">How it works</a>
                 <a href="#in-action">In action</a>
                 <a href="#hardware">Hardware</a>
+                <a href="#app">App</a>
                 <a href="#flash">Flash</a>
                 <a href="#docs">Docs</a>
                 <a href="#faq">FAQ</a>
             </div>
             <div class="nav-actions">
+                <a class="nav-back" href="https://educated.space/" aria-label="Back to Educated" title="Back to Educated">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+                    <span>Educated</span>
+                </a>
                 <div class="theme-toggle" role="group" aria-label="Theme">
                     <span class="theme-toggle__thumb" aria-hidden="true"></span>
                     <button type="button" data-theme-set="light" aria-label="Use light mode" aria-pressed="true" title="Light mode">
@@ -3852,14 +3883,15 @@
     </header>
 
     <div class="nav-overlay" id="nav-overlay" aria-hidden="true">
-        <a href="#packs" style="--i:0">Packs</a>
-        <a href="#how" style="--i:1">How it works</a>
-        <a href="#in-action" style="--i:2">In action</a>
-        <a href="#hardware" style="--i:3">Hardware</a>
-        <a href="#flash" style="--i:4">Flash</a>
-        <a href="#faq" style="--i:5">FAQ</a>
-        <a href="#docs" style="--i:6">Docs</a>
-        <a class="btn btn-primary btn-lg" href="#flash" style="--i:7">Flash a board</a>
+        <a class="nav-overlay-back" href="https://educated.space/" style="--i:0">← Educated</a>
+        <a href="#packs" style="--i:1">Packs</a>
+        <a href="#how" style="--i:2">How it works</a>
+        <a href="#in-action" style="--i:3">In action</a>
+        <a href="#hardware" style="--i:4">Hardware</a>
+        <a href="#flash" style="--i:5">Flash</a>
+        <a href="#faq" style="--i:6">FAQ</a>
+        <a href="#docs" style="--i:7">Docs</a>
+        <a class="btn btn-primary btn-lg" href="#flash" style="--i:8">Flash a board</a>
     </div>
 
     <main id="main" tabindex="-1">
@@ -3929,7 +3961,7 @@
                           <p class="storage-status" data-installable="1767"><strong>1767 KB available</strong> for new packs &middot; 216 KB used of 1984 KB</p>
                           <div class="storage-meter" role="progressbar" aria-label="Flash storage used" aria-valuemin="0" aria-valuemax="100" aria-valuenow="10"><span style="width:10%"></span></div>
                           <div class="list pack-list">
-                            <div class="pack-row" data-builtin="1"><strong>PocketWiki Guide</strong> &middot; 17 articles &middot; built in and always available <span class="inline-action">Hide from libraries</span></div>
+                            <div class="pack-row" data-builtin="1"><span class="pack-row-copy"><strong>PocketWiki Guide</strong> &middot; 17 articles &middot; built in and always available</span><span class="inline-action">Hide from libraries</span></div>
                             <p data-pack-name="mathematical-thinking"><strong>Mathematical Thinking</strong> &middot; 100 articles &middot; installed <span class="inline-action danger">Remove</span></p>
                           </div>
                           <section class="manager-section">
@@ -3964,7 +3996,6 @@
                       <span class="device-screw"></span>
                     </div>
                   </div>
-                  <div class="float-card float-b"><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span><strong>No account needed</strong></span></div>
                 </div>
                 </div>
             </div>
@@ -4013,13 +4044,13 @@
                     <article class="step-card">
                         <span class="step-num" aria-hidden="true">2</span>
                         <h3 class="step-name text-title-3-semibold">Join its Wi-Fi</h3>
-                        <p class="step-desc text-body-regular">Join the <code>PocketWiki</code> network and open <code>http://192.168.4.1/</code>. The access point starts open; set a password in Manage before sharing the board.</p>
-                        <span class="step-chip">Open 192.168.4.1</span>
+                        <p class="step-desc text-body-regular">Join the <code>PocketWiki</code> network, then open <code>http://pocketwiki/</code>. The access point starts open. Set a password in Manage before sharing the board.</p>
+                        <span class="step-chip">Open http://pocketwiki/</span>
                     </article>
                     <article class="step-card">
                         <span class="step-num" aria-hidden="true">3</span>
                         <h3 class="step-name text-title-3-semibold">Read, then add packs</h3>
-                        <p class="step-desc text-body-regular">The PocketWiki Guide is ready on first boot. Add packs from Manage or the Android app, then read everything locally—even with the internet off.</p>
+                        <p class="step-desc text-body-regular">The PocketWiki Guide is ready on first boot. Add packs from Manage or the Android app, then read everything locally, even with the internet off.</p>
                         <span class="step-chip">Stored on the board</span>
                     </article>
                 </div>
@@ -4119,7 +4150,6 @@
                 </div>
                 <div class="boards-grid" data-reveal>
                     <article class="board-card highlight">
-                        <span class="board-badge">Start here</span>
                         <div class="board-card-name text-body-medium">ESP32-C3 DevKitM-1 compatible</div>
                         <div class="board-card-price">
                             <span class="price-num text-display-4-medium">4 MB</span>
@@ -4156,6 +4186,55 @@
                 </div>
 
                 <p class="section-note" data-reveal>Both images carry the bootloader, partition table, firmware and the built-in library, and write from offset 0. Pins and layouts are in the <a class="link-inline" href="#docs-hardware">hardware notes</a>.</p>
+
+            </div>
+        </section>
+
+        <!-- ================= Android app ================= -->
+        <section class="section" id="app" aria-labelledby="app-title">
+            <div class="container">
+                <div class="section-head" data-reveal>
+                    <h2 id="app-title" class="text-display-4-semibold">Install from a phone</h2>
+                    <p class="text-headline-regular">The Android app finds the board, saves your Wi&#8209;Fi, and installs packs from the catalogue. Reading stays in the browser, where it belongs.</p>
+                </div>
+                <div class="boards-grid" data-reveal>
+                    <article class="board-card highlight">
+                        <div class="board-card-name text-body-medium">PocketWiki for Android</div>
+                        <div class="board-card-price">
+                            <span class="price-num text-display-4-medium">APK</span>
+                            <span class="price-per text-body-regular">Android 10+</span>
+                        </div>
+                        <p class="board-card-desc text-body-regular">Every release is signed with the same key, so a newer APK installs straight over your copy and keeps your saved devices.</p>
+                        <ul class="board-feats">
+                            <li class="board-feat text-body-regular"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Finds the board over Bluetooth, so there is no address to type</li>
+                            <li class="board-feat text-body-regular"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Saves a 2.4&nbsp;GHz network on the board for you</li>
+                            <li class="board-feat text-body-regular"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Sends pack bytes over Wi&#8209;Fi, and falls back to Bluetooth</li>
+                            <li class="board-feat text-body-regular"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Ships the catalogue, so the pack list works with no network</li>
+                        </ul>
+                        <div class="board-card-cta">
+                            <a class="btn btn-primary btn-block" href="https://github.com/bilawalriaz/pocketwiki-android/releases/latest">Download the APK</a>
+                        </div>
+                    </article>
+                    <article class="board-card">
+                        <div class="board-card-name text-body-medium">Open source</div>
+                        <div class="board-card-price">
+                            <span class="price-num text-display-4-medium">MIT</span>
+                            <span class="price-per text-body-regular">license</span>
+                        </div>
+                        <p class="board-card-desc text-body-regular">Kotlin and Jetpack Compose. Read the code, build it yourself, or open an issue when something is wrong.</p>
+                        <ul class="board-feats">
+                            <li class="board-feat text-body-regular"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Bluetooth Low Energy for discovery and setup</li>
+                            <li class="board-feat text-body-regular"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Material 3 in light and dark</li>
+                            <li class="board-feat text-body-regular"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>No account, no ads, and no tracking</li>
+                            <li class="board-feat text-body-regular"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Install steps and answers in the project wiki</li>
+                        </ul>
+                        <div class="board-card-cta">
+                            <a class="btn btn-outline btn-block" href="https://github.com/bilawalriaz/pocketwiki-android/wiki">Read the wiki</a>
+                        </div>
+                    </article>
+                </div>
+
+                <p class="section-note" data-reveal>The app is a separate repository, so it releases on its own schedule. Source, build steps and release notes: <a class="link-inline" href="https://github.com/bilawalriaz/pocketwiki-android">github.com/bilawalriaz/pocketwiki-android</a>.</p>
 
             </div>
         </section>
@@ -4213,7 +4292,7 @@
                                     </span>
                                 </label>
                             </div>
-                            <p class="flash-hint">2.4 GHz only. The details are written to the board's own configuration partition, never sent anywhere, so it is on your network as soon as it reboots. Leave both fields empty to set Wi-Fi later at <code>192.168.4.1/manage</code>.</p>
+                            <p class="flash-hint">2.4 GHz only. The details are written to the board's own configuration partition, never sent anywhere, so it is on your network as soon as it reboots. Leave both fields empty to set Wi-Fi later at <code>http://pocketwiki/manage</code>.</p>
                         </div>
                         <div class="flash-step">
                             <div class="flash-step-head"><span class="step-num" aria-hidden="true">3</span>Choose library packs, optional</div>
@@ -4248,9 +4327,10 @@
                         </div>
                         <p class="notification notification--error" id="flash-error" role="alert" hidden></p>
                         <p class="flash-note" id="flash-note"></p>
+                        <p class="flash-note flash-next-step">After flashing, join the <code>PocketWiki</code> network and open <a href="http://pocketwiki/">http://pocketwiki/</a>. If the port picker stays empty, use a data-capable USB cable and close any serial monitor.</p>
+                        <span class="chip chip--soft chip--caption flash-address-badge">Fallback address: <code>192.168.4.1</code></span>
                     </div>
                 </div>
-                <p class="section-note" data-reveal>When it finishes, join <code>PocketWiki</code> and open <code>http://pocketwiki/</code>. If the port picker stays empty, use a data-capable USB cable and close any serial monitor.</p>
             </div>
         </section>
 
@@ -4263,11 +4343,11 @@
                 <div class="faq-list" data-reveal>
                     <div class="faq-item">
                         <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-p1">
-                            Do I need internet or an account?
+                            Can I use PocketWiki without internet or an account?
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
                         </button>
                         <div class="faq-panel" id="faq-p1" role="region">
-                            <p>No. The board makes its own Wi-Fi network and serves the library at <code>192.168.4.1</code>. Reading works with no router and no connection. Joining a 2.4&nbsp;GHz network only fetches optional packs and catalogue updates.</p>
+                            <p>Yes. The board makes its own Wi-Fi network and serves the library at <code>http://pocketwiki/</code>. Reading works with no router or internet connection. Joining a 2.4&nbsp;GHz network only fetches optional packs and catalogue updates.</p>
                         </div>
                     </div>
                     <div class="faq-item">
@@ -4281,11 +4361,11 @@
                     </div>
                     <div class="faq-item">
                         <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-p2b">
-                            Can I flash the board without installing anything?
+                            Can I flash it from the browser?
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
                         </button>
                         <div class="faq-panel" id="faq-p2b" role="region">
-                            <p>Yes. <a href="#flash">The flash panel</a> writes the firmware over USB from Chrome or Edge on a desktop, and it can store your Wi-Fi details at the same time so the board is on your network the moment it reboots. Everything else needs no internet, no account and no driver beyond what the board's USB bridge requires.</p>
+                            <p>Yes. <a href="#flash">The flash panel</a> writes firmware over USB from Chrome or Edge on a desktop. It can save your Wi-Fi details at the same time, so the board joins your network when it reboots. You do not need an account or an internet connection.</p>
                         </div>
                     </div>
                     <div class="faq-item">
@@ -4303,12 +4383,21 @@
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
                         </button>
                         <div class="faq-panel" id="faq-p4" role="region">
-                            <p>Open <code>/manage</code> to install from the catalogue, upload a <code>.pwp</code> file, or fetch one from a secure URL. The Android app does the same over BLE, sending pack bytes over Wi-Fi when it can reach the board.</p>
+                            <p>Open <code>http://pocketwiki/manage</code> to install from the catalogue, upload a <code>.pwp</code> file, or fetch one from a secure URL. The Android app does the same over BLE, sending pack bytes over Wi-Fi when it can reach the board.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-p4b">
+                            How do I get the Android app?
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+                        </button>
+                        <div class="faq-panel" id="faq-p4b" role="region">
+                            <p>Download the APK from the <a href="https://github.com/bilawalriaz/pocketwiki-android/releases/latest">app releases</a> and open it on the phone. Android 10 or newer is enough, and the app has no account. The <a href="https://github.com/bilawalriaz/pocketwiki-android/wiki">app wiki</a> covers the install and the first run.</p>
                         </div>
                     </div>
                     <div class="faq-item">
                         <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-p5">
-                            What happens if a pack upload fails?
+                            What happens if a pack fails to install?
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
                         </button>
                         <div class="faq-panel" id="faq-p5" role="region">
@@ -4355,14 +4444,14 @@
               <div class="doc-guide-intro">
                   <div>
                       <h3 class="text-title-1-semibold">Project guide</h3>
-                      <p>PocketWiki turns an ESP32-C3 or ESP32-S3 into a small offline library. The device creates its own Wi-Fi network and serves a searchable library at <code>http://192.168.4.1/</code>. It can also join a 2.4 GHz network to download packs. After setup, reading works without an account, phone, or internet connection. Source code: <a href="https://github.com/bilawalriaz/pocketwiki" target="_blank" rel="noopener noreferrer">github.com/bilawalriaz/pocketwiki</a>.</p>
+                      <p>PocketWiki turns an ESP32-C3 or ESP32-S3 into a small offline library. The device creates its own Wi-Fi network and serves a searchable library at <code>http://pocketwiki/</code>. It can also join a 2.4 GHz network to download packs. After setup, reading works without an account, phone, or internet connection. Source code: <a href="https://github.com/bilawalriaz/pocketwiki" target="_blank" rel="noopener noreferrer">github.com/bilawalriaz/pocketwiki</a>.</p>
                   </div>
                   <figure class="doc-guide-intro__art">
                       <img src="assets/illustrations/pocketwiki-device.webp" width="1374" height="1145" alt="Illustration of a compact board with a book icon on its OLED screen" loading="lazy" decoding="async">
                   </figure>
               </div>
               <h4 class="text-headline-semibold">What is in the repository</h4>
-              <ul><li><code>firmware/</code> holds ESP-IDF firmware for ESP32-C3 and ESP32-S3 boards.</li><li><code>android/</code> holds the Kotlin and Compose companion app.</li><li><code>articles/pocketwiki/</code> holds the built-in guide; <code>articles/db-packs/</code> holds the source for catalogue packs.</li><li><code>tools/</code> holds the pack builder, local preview server, and flash script.</li><li><code>docs/</code> holds the technical reference and development guide.</li></ul>
+              <ul><li><code>firmware/</code> holds ESP-IDF firmware for ESP32-C3 and ESP32-S3 boards.</li><li><code>firmware/catalog/</code> holds the published pack catalogue the firmware embeds.</li><li><code>articles/pocketwiki/</code> holds the built-in guide; <code>articles/db-packs/</code> holds the source for catalogue packs.</li><li><code>tools/</code> holds the pack builder, local preview server, and flash script.</li><li><code>docs/</code> holds the technical reference and development guide.</li></ul>
               <h4 class="text-headline-semibold">Get started</h4>
               <p>For a local build, install Python 3.10 or later and PlatformIO or ESP-IDF 6.</p>
       <pre><code># Run the host tests.
@@ -4378,7 +4467,7 @@
       <pre><code>python3 tools/flash_all.py --port /dev/cu.usbmodemXXXX --chip esp32s3 \
         --partitions firmware/dist/esp32-s3/partitions.csv \
         --fw-dir firmware/dist/esp32-s3</code></pre>
-              <p>After the board starts, join the <code>PocketWiki</code> Wi-Fi network and open <code>http://192.168.4.1/</code>. The default network is open. Set a password before you use the device in a shared place.</p>
+              <p>After the board starts, join the <code>PocketWiki</code> Wi-Fi network and open <code>http://pocketwiki/</code>. The default network is open. Set a password before you use the device in a shared place.</p>
               <p><code>flash_all.py</code> writes the bootloader, partition table, firmware, and included library. Use it for the first flash and when the included library changes.</p>
               <h4 class="text-headline-semibold">Published firmware</h4>
               <p>The browser flasher downloads the current images for the selected board, checks their size and SHA-256, and writes them over USB.</p>
@@ -4397,7 +4486,7 @@
       python3 tools/pack_content.py pack-file build/my-pack my-pack.pwp</code></pre>
               <p>The packer compresses each article separately with a shared dictionary. Typical packs average roughly 2.4 KB per article, though sizes vary with the content. It removes active content and remote resources, rewrites accepted internal links, and sorts the title index. The device validates each pack before installing it.</p>
               <h4 class="text-headline-semibold">Android app</h4>
-              <p>Build the debug app with <code>cd android &amp;&amp; ./gradlew assembleDebug</code>. The app guides you through Device, Wi-Fi, and Library. It uses BLE for setup and management; pack bytes travel over Wi-Fi when possible and fall back to BLE.</p>
+              <p>The app lives in its own repository. Build it from that checkout with <code>./gradlew assembleDebug</code>, or install the signed APK from its releases. The app guides you through permissions, the Bluetooth connection, and a 2.4 GHz network; pack bytes travel over Wi-Fi when possible and fall back to Bluetooth. Source, install steps and the wiki: <a class="link-inline" href="https://github.com/bilawalriaz/pocketwiki-android">github.com/bilawalriaz/pocketwiki-android</a>.</p>
             </div></div>
             <div class="doc-pane" data-dpane="architecture" id="docs-architecture" hidden><div class="doc-body">
               <h3 class="text-title-1-semibold">System architecture</h3>
@@ -4528,7 +4617,7 @@
               <h4 class="text-headline-semibold">Flash layout</h4>
               <p>The C3 layout reserves 1.5 MB for firmware, 448 KB for the built-in guide, 64 KB for its index, and about 1.94 MB for installed packs. The S3 layout reserves 1.5 MB for firmware, 512 KB for content, 64 KB for its index, and about 13.9 MB for installed packs. The <code>packs</code> partition uses FAT with wear levelling, with an 8 KB reserve so a nearly full filesystem can still update metadata safely.</p>
               <h4 class="text-headline-semibold">First boot</h4>
-              <ol><li>Flash the board with the command in the <a href="#docs-development">development guide</a>.</li><li>Join the <code>PocketWiki</code> network.</li><li>Open <code>http://192.168.4.1/</code>.</li><li>Use <code>/manage</code> to connect station Wi-Fi or install a pack.</li></ol>
+              <ol><li>Flash the board with the command in the <a href="#docs-development">development guide</a>.</li><li>Join the <code>PocketWiki</code> network.</li><li>Open <code>http://pocketwiki/</code>.</li><li>Use <code>http://pocketwiki/manage</code> to connect station Wi-Fi or install a pack.</li></ol>
               <p>The default access point is open. Configure a WPA2 password before shared use.</p>
             </div></div>
             <div class="doc-pane" data-dpane="development" id="docs-development" hidden><div class="doc-body">
@@ -4638,11 +4727,12 @@
         "@context": "https://schema.org",
         "@type": "FAQPage",
         "mainEntity": [
-            { "@type": "Question", "name": "Do I need internet or an account?", "acceptedAnswer": { "@type": "Answer", "text": "No. The board makes its own Wi-Fi network and serves the library at 192.168.4.1. Reading works with no router and no connection. Joining a 2.4 GHz network only fetches optional packs and catalogue updates." } },
+            { "@type": "Question", "name": "Do I need internet or an account?", "acceptedAnswer": { "@type": "Answer", "text": "No. The board makes its own Wi-Fi network and serves the library at http://pocketwiki/. Reading works with no router and no connection. Joining a 2.4 GHz network only fetches optional packs and catalogue updates." } },
             { "@type": "Question", "name": "Which boards are supported?", "acceptedAnswer": { "@type": "Answer", "text": "ESP32-C3 DevKitM-1 boards with 4 MB of flash, and ESP32-S3 DevKitC-1 boards with 16 MB. Both are 2.4 GHz Wi-Fi only, and the access point shares that radio with the station connection." } },
             { "@type": "Question", "name": "Can I flash the board without installing anything?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The flash panel writes the firmware over USB from Chrome or Edge on a desktop, and it can store your Wi-Fi details at the same time so the board is on your network the moment it reboots." } },
             { "@type": "Question", "name": "Do I need the OLED display?", "acceptedAnswer": { "@type": "Answer", "text": "No. It is an optional 128 x 64 SSD1306 panel over I2C that shows the reading address, library counts and transfer progress. Without one, the library and the web interface work unchanged." } },
-            { "@type": "Question", "name": "How do I add more packs?", "acceptedAnswer": { "@type": "Answer", "text": "Open /manage to install from the catalogue, upload a .pwp file, or fetch one from a secure URL. The Android app does the same over BLE, sending pack bytes over Wi-Fi when it can reach the board." } },
+            { "@type": "Question", "name": "How do I get the Android app?", "acceptedAnswer": { "@type": "Answer", "text": "Download the APK from the app releases page at https://github.com/bilawalriaz/pocketwiki-android/releases/latest and open it on the phone. Android 10 or newer is enough, and the app needs no account." } },
+            { "@type": "Question", "name": "How do I add more packs?", "acceptedAnswer": { "@type": "Answer", "text": "Open http://pocketwiki/manage to install from the catalogue, upload a .pwp file, or fetch one from a secure URL. The Android app does the same over Bluetooth, sending pack bytes over Wi-Fi when it can reach the board." } },
             { "@type": "Question", "name": "What happens if a pack upload fails?", "acceptedAnswer": { "@type": "Answer", "text": "Uploads land in a temporary file and are renamed only after the board checks size, CRC, headers, offsets and index. Your previous pack stays in place, and the built-in library is never part of that write." } },
             { "@type": "Question", "name": "Can I build my own packs?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Give each article one h1 title, and the included tooling builds, verifies and wraps a deterministic pack from Markdown or safe HTML." } },
             { "@type": "Question", "name": "How much fits on the device?", "acceptedAnswer": { "@type": "Answer", "text": "The 4 MB C3 layout keeps about 1.5 MB for firmware, 448 KB for the built-in library, 64 KB for its index and roughly 1.94 MB for installed packs. The 16 MB S3 leaves about 13.9 MB for packs." } }
@@ -4671,7 +4761,7 @@
 
             function applyTheme(theme) {
                 root.dataset.theme = theme;
-                try { localStorage.setItem('pocketwiki-theme', theme); } catch (e) { /* storage unavailable */ }
+                try { localStorage.setItem('pocketwiki-theme', theme); localStorage.setItem('educated-theme', theme); } catch (e) { /* storage unavailable */ }
                 syncThemeControls();
             }
 
@@ -4825,7 +4915,7 @@
                ESP32-C3 packs partition and the v9 catalogue. Search mirrors
                tl_prefix() over tl_normalize()d titles: a prefix match, the
                exact hit first and bold, capped at 20 across all libraries. */
-            var READER = { libraries: [{"name": "PocketWiki Guide", "articles": [{"title": "About PocketWiki", "body": ["PocketWiki is an offline library for two cheap ESP32 boards: the ESP32-C3 with 4 MB of flash and the ESP32-S3 with 16 MB. The board serves its own articles, and the code that serves them is the project."]}, {"title": "Bluetooth", "body": ["The device advertises a Bluetooth Low Energy service for as long as it is running. It exists so the Android app can find and set up a device that has no network yet."]}, {"title": "Connecting to Wi-Fi", "body": ["The device always runs its own access point so you can read. Connecting it to your home Wi-Fi as well is optional, and only needed when you want it to download packs by itself."]}, {"title": "Finding articles", "body": ["There are two ways to look for something: search, and browsing."]}, {"title": "First setup", "body": ["Out of the box the device has this guide on it and nothing else. Setting it up takes a couple of minutes."]}, {"title": "How it works offline", "body": ["Nothing about reading requires the internet, and nothing requires a service to stay up. The whole library is on the board."]}, {"title": "How much fits", "body": ["The number of articles a device can hold depends on the board and on the articles themselves.", "The manage page reports the same numbers after every install, and it refuses an install that would not fit rather than filling the filesystem."]}, {"title": "Installing packs", "body": ["A pack is a file containing a set of articles: a science library, a set of curated exam topics, a collection you built yourself. Installing one copies it onto the device, where it stays until you remove it."]}, {"title": "PocketWiki", "body": ["PocketWiki is a small offline library that lives on an ESP32 board. It serves its own articles over Wi-Fi, decodes them on the board itself, and keeps working with no internet connection at all.", "You are reading one of its articles now, which means the device is set up. What is on it:"]}, {"title": "Privacy", "body": ["The device is a library, not a service. It collects nothing about you and sends nothing about your reading anywhere."]}, {"title": "Reading articles", "body": ["The reader is a web page served by the device. It works in any browser, on any phone or computer joined to the device&#x27;s network, and it needs no app."]}, {"title": "The Android app", "body": ["The app is the companion for setting the device up and filling it with packs. The reader stays in the browser; the app is about everything around it."]}, {"title": "The OLED display", "body": ["A small screen is optional. Without one the device works exactly the same; the screen just saves you from guessing."]}, {"title": "The pack catalogue", "body": ["The catalogue is the list of packs that PocketWiki knows how to download. It lives at <code>packs.educated.space</code> and lists each pack&#x27;s name, its article count, its size, and a checksum."]}, {"title": "This guide", "body": ["The articles you are reading are themselves a pack — the one pack every PocketWiki has."]}, {"title": "Troubleshooting", "body": []}, {"title": "Updating the firmware", "body": ["The firmware is the program on the board. It changes rarely: the packs you install are what usually grow."]}]}, {"name": "Mathematical Thinking", "articles": [{"title": "Absolute value (algebra)", "body": ["In algebra, an <strong>absolute value</strong> on a field or integral domain D is a function |·| from D to the real numbers that generalises the ordinary absolute value on ℝ. It assigns a nonnegative &quot;size&quot; to every element and must obey four axioms, which then force a metric, a notion of limits, and a completion of D."]}, {"title": "Algebra", "body": []}, {"title": "Algebra of random variables", "body": ["In statistics, a <strong>random variable</strong> assigns a number to each outcome of a random process, and its <strong>probability distribution</strong> describes how likely each value is. The algebra of random variables collects symbolic rules for manipulating these variables and for computing the <strong>expected value</strong> (mean), <strong>variance</strong> (spread), and <strong>covariance</strong> (co-movement) of the result, without appealing to the full distribution each time. Two random variables are <strong>independent</strong> when knowing the value of one gives no information about the other."]}]}] };
+            var READER = { libraries: [{"name": "PocketWiki Guide", "articles": [{"title": "About PocketWiki", "body": ["PocketWiki is an offline library for two cheap ESP32 boards: the ESP32-C3 with 4 MB of flash and the ESP32-S3 with 16 MB. The board serves its own articles, and the code that serves them is the project."]}, {"title": "Bluetooth", "body": ["The device advertises a Bluetooth Low Energy service for as long as it is running. It exists so the Android app can find and set up a device that has no network yet."]}, {"title": "Connecting to Wi-Fi", "body": ["The device always runs its own access point so you can read. Connecting it to your home Wi-Fi as well is optional, and only needed when you want it to download packs by itself."]}, {"title": "Finding articles", "body": ["There are two ways to look for something: search, and browsing."]}, {"title": "First setup", "body": ["Out of the box the device has this guide on it and nothing else. Setting it up takes a couple of minutes."]}, {"title": "How it works offline", "body": ["Nothing about reading requires the internet, and nothing requires a service to stay up. The whole library is on the board."]}, {"title": "How much fits", "body": ["The number of articles a device can hold depends on the board and on the articles themselves.", "The manage page reports the same numbers after every install, and it refuses an install that would not fit rather than filling the filesystem."]}, {"title": "Installing packs", "body": ["A pack is a file containing a set of articles: a science library, a set of curated exam topics, a collection you built yourself. Installing one copies it onto the device, where it stays until you remove it."]}, {"title": "PocketWiki", "body": ["PocketWiki is a small offline library that lives on an ESP32 board. It serves its own articles over Wi-Fi, decodes them on the board itself, and keeps working with no internet connection at all.", "You are reading one of its articles now, which means the device is set up. What is on it:"]}, {"title": "Privacy", "body": ["The device is a library, not a service. It collects nothing about you and sends nothing about your reading anywhere."]}, {"title": "Reading articles", "body": ["The reader is a web page served by the device. It works in any browser, on any phone or computer joined to the device&#x27;s network, and it needs no app."]}, {"title": "The Android app", "body": ["The app is the companion for setting the device up and filling it with packs. The reader stays in the browser; the app is about everything around it."]}, {"title": "The OLED display", "body": ["A small screen is optional. Without one the device works exactly the same; the screen just saves you from guessing."]}, {"title": "The pack catalogue", "body": ["The catalogue is the list of packs that PocketWiki knows how to download. It lives at <code>packs.educated.space</code> and lists each pack&#x27;s name, its article count, its size, and a checksum."]}, {"title": "This guide", "body": ["The articles you are reading are themselves a pack: the one pack every PocketWiki has."]}, {"title": "Troubleshooting", "body": []}, {"title": "Updating the firmware", "body": ["The firmware is the program on the board. It changes rarely: the packs you install are what usually grow."]}]}, {"name": "Mathematical Thinking", "articles": [{"title": "Absolute value (algebra)", "body": ["In algebra, an <strong>absolute value</strong> on a field or integral domain D is a function |·| from D to the real numbers that generalises the ordinary absolute value on ℝ. It assigns a nonnegative &quot;size&quot; to every element and must obey four axioms, which then force a metric, a notion of limits, and a completion of D."]}, {"title": "Algebra", "body": []}, {"title": "Algebra of random variables", "body": ["In statistics, a <strong>random variable</strong> assigns a number to each outcome of a random process, and its <strong>probability distribution</strong> describes how likely each value is. The algebra of random variables collects symbolic rules for manipulating these variables and for computing the <strong>expected value</strong> (mean), <strong>variance</strong> (spread), and <strong>covariance</strong> (co-movement) of the result, without appealing to the full distribution each time. Two random variables are <strong>independent</strong> when knowing the value of one gives no information about the other."]}]}] };
             var READER_LIMIT = 20;
             var readerPages = Array.prototype.slice.call(document.querySelectorAll('[data-reader-page]'));
             var reader = document.querySelector('#reader');

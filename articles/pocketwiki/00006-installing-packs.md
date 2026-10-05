@@ -34,5 +34,5 @@ install never leaves you with half a pack.
 ## Removing a pack
 
 Remove a pack from the manage page; the space it used comes back immediately.
-This guide cannot be removed, because it is built into the device's flash. See
+This guide cannot be removed — it is built into the device's flash. See
 [This guide](00009-this-guide).

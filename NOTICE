@@ -34,10 +34,8 @@ espressif/cjson
 AndroidX, Jetpack Compose, Material 3, AndroidX Lifecycle, AndroidX Navigation 3,
 Kotlin, kotlinx.coroutines
   License:  Apache-2.0
-  Used by:  the Android companion app in android/
-  Note:     resolved by Gradle from the versions in
-            android/gradle/libs.versions.toml; license texts ship inside the
-            resolved artifacts
+  Used by:  the Android companion app, which now lives in its own repository:
+            https://github.com/bilawalriaz/pocketwiki-android
 
 esptool-js
   Version:  0.6.1

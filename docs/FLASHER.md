@@ -22,7 +22,12 @@ password, erases the flash, and writes:
 | `firmware.bin` | `0x10000` |
 | `content/content.bin` | `0x190000` |
 | `content/index.bin` | `0x200000` / `0x210000` |
-| `nvs` (Wi-Fi, only when asked) | `0x9000` |
+| `nvs` (Wi-Fi and pack choices, only when asked) | `0x9000` |
+
+The panel can also carry pack choices into the same `nvs` image. The firmware
+installs those packs after it boots, once the station uplink is up, using the
+same validated install path as `/manage`. A pack that fails stays queued for a
+later boot or a manual retry.
 
 Nothing is uploaded: the images come from the verified R2 firmware release.
 The page checks every image against the byte count and SHA-256 recorded in the

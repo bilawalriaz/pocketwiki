@@ -21,14 +21,29 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--deploy-worker", action="store_true",
                         help="also deploy the R2-serving Worker and custom-domain route")
+    parser.add_argument("--app-catalog", type=Path,
+                        default=ROOT.parent / "pocketwiki-android" / "app" / "src" / "main"
+                        / "assets" / "pack_catalog.json",
+                        help="Android app snapshot to refresh; skip it with --skip-app-catalog")
+    parser.add_argument("--skip-app-catalog", action="store_true",
+                        help="do not write the Android app's bundled copy")
     args = parser.parse_args()
 
     source = CATALOG
     output = ROOT / "dist" / "packs"
     catalog = build_catalog(source, output)
-    asset = ROOT / "android" / "app" / "src" / "main" / "assets" / "pack_catalog.json"
-    asset.parent.mkdir(parents=True, exist_ok=True)
-    asset.write_bytes((output / "index.json").read_bytes())
+    published = (output / "index.json").read_bytes()
+
+    # The firmware embeds this snapshot, so it must live in this repository.
+    firmware_snapshot = ROOT / "firmware" / "catalog" / "pack_catalog.json"
+    firmware_snapshot.parent.mkdir(parents=True, exist_ok=True)
+    firmware_snapshot.write_bytes(published)
+
+    # The app bundles the same bytes for its offline fallback.
+    if not args.skip_app_catalog:
+        args.app_catalog.parent.mkdir(parents=True, exist_ok=True)
+        args.app_catalog.write_bytes(published)
+        print(f"Updated the Android snapshot at {args.app_catalog}")
 
     # Publish immutable pack objects first. The short-lived index is the
     # release pointer and is deliberately uploaded last.

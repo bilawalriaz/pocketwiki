@@ -20,7 +20,7 @@ web interface, BLE setup, and an optional SSD1306 OLED.
 | --- | --- |
 | `firmware/main/` | ESP-IDF firmware modules. |
 | `articles/pocketwiki/` | Source of the built-in PocketWiki Guide. |
-| `android/` | Android companion app. |
+| `firmware/catalog/` | Published pack catalogue the firmware embeds. |
 | `tools/` | Packer, sanitizer, preview server, and flash tools. |
 | `tests/` | Python tests and C harnesses. |
 | `case/` | 3D-printed case models. |

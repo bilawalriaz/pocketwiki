@@ -2,7 +2,8 @@
 
 PocketWiki turns an ESP32-C3 or ESP32-S3 into a small offline library. The
 device creates its own Wi-Fi network and serves a searchable library at
-`http://192.168.4.1/`. It can also join a 2.4 GHz network to download packs.
+`http://pocketwiki/` or `http://192.168.4.1/`. It can also join a 2.4 GHz
+network to download packs.
 
 After setup, the device works without an account, phone, or internet connection
 for reading.
@@ -10,7 +11,7 @@ for reading.
 ## What is in the repository
 
 - `firmware/` contains ESP-IDF firmware for ESP32-C3 and ESP32-S3 boards.
-- `android/` contains the Kotlin and Compose companion app.
+- `firmware/catalog/` holds the published pack catalogue the firmware embeds.
 - `tools/` contains the pack builder, the local preview server, the flash
   script, and the tools that stage firmware for the landing page.
 - `assets/` contains the web assets the device serves and the landing-page
@@ -31,6 +32,12 @@ and the firmware build find it at `../pocketwiki-content`, or wherever
 git clone https://github.com/bilawalriaz/pocketwiki.git
 git clone https://github.com/bilawalriaz/pocketwiki-content.git
 ```
+
+The Android companion app has its own repository,
+[bilawalriaz/pocketwiki-android](https://github.com/bilawalriaz/pocketwiki-android).
+It releases a signed APK, and its
+[wiki](https://github.com/bilawalriaz/pocketwiki-android/wiki) covers install
+and use.
 
 ## Get started
 
@@ -62,9 +69,9 @@ python3 tools/flash_all.py --port /dev/cu.usbmodemXXXX --chip esp32s3 \
 ```
 
 After the board starts, join the `PocketWiki` Wi-Fi network and open
-`http://192.168.4.1/`. The default network is open. Set a password before you
+`http://pocketwiki/`. The default network is open. Set a password before you
 use the device in a shared place. Library installation and Wi-Fi settings are
-available at `http://192.168.4.1/manage`. Reading does not need internet access;
+available at `http://pocketwiki/manage`. Reading does not need internet access;
 the station Wi-Fi connection is only used for optional pack downloads and
 catalogue refreshes.
 
@@ -133,18 +140,20 @@ python3 tools/build_pack_browser.py   # writes packs.html into the content check
 
 ## Android app
 
-Build the debug app with:
+The app is in [bilawalriaz/pocketwiki-android](https://github.com/bilawalriaz/pocketwiki-android).
+Download the APK from its
+[releases](https://github.com/bilawalriaz/pocketwiki-android/releases/latest),
+or build it from that checkout with `./gradlew assembleDebug`.
 
-```sh
-cd android
-./gradlew assembleDebug
-```
+The app guides you through permissions, the Bluetooth connection, and a 2.4 GHz
+network. It then shows what the device holds, and installs the packs you pick
+from the catalogue in one go. Pack bytes use Wi-Fi when the phone can reach the
+device and Bluetooth when it cannot. The free space the device reports bounds
+the whole selection.
 
-The app guides you through Device, Wi-Fi, and Library. It uses BLE for setup
-and management. Pack bytes use Wi-Fi when possible and use BLE as a fallback.
-Choose one or more packs from the catalogue and install them in one go: the
-free space the device reports bounds the whole selection, and the app puts the
-link back on its own if a transfer costs it.
+The app bundles a copy of the catalogue, so the pack list works without a
+network. `tools/publish_pack_catalog.py` refreshes that copy and the firmware's
+embedded copy together when the catalogue changes.
 
 ## Read more
 

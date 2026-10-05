@@ -35,6 +35,14 @@ no-PSRAM DevKitC-1. The firmware and partition table are intended for a
 16 MB S3 deployment, but that capacity and any PSRAM must be confirmed on the
 actual module; they are not measured facts for the current build host.
 
+## Device name
+
+The access point runs a small DNS responder, so a client on the PocketWiki
+network can open `http://pocketwiki/` instead of the address. The responder
+answers `pocketwiki` and `pocketwiki.lan` with the access point address, and it
+sends no answer for any other name. The numeric address always works, and it is
+the one the OLED shows.
+
 ## Display wiring
 
 PocketWiki supports a 128 x 64 SSD1306 OLED over I2C.
@@ -79,9 +87,9 @@ usable bytes and 14,381,056 bytes after that reserve. These values are generated
 from the repository partition tables with IDF FAT geometry; confirm mounted
 capacity on the target module.
 
-The current staged firmware images measure 1,224,416 bytes (C3) and 1,144,240
-bytes (S3). The C3 app therefore has 348,448 bytes of image headroom; the S3
-has 428,624 bytes.
+The current staged firmware images measure 1,227,184 bytes (C3) and 1,146,672
+bytes (S3). The C3 app therefore has 345,680 bytes of image headroom; the S3
+has 426,192 bytes.
 
 The `packs` partition uses FAT with wear levelling. Measured pack density and
 what that puts in each store is in [DEVICE_BENCHMARK.md](DEVICE_BENCHMARK.md).
@@ -91,7 +99,7 @@ what that puts in each store is in [DEVICE_BENCHMARK.md](DEVICE_BENCHMARK.md).
 1. Flash the board with the command in the [development guide](DEVELOPMENT.md).
 2. Join the `PocketWiki` network. With an OLED attached, press BOOT once for
    a QR code that offers to join it, or twice for the reader address.
-3. Open `http://192.168.4.1/`.
+3. Open `http://pocketwiki/` or `http://192.168.4.1/`.
 4. Use `/manage` to set station Wi-Fi or install a pack.
 
 The default access point is open. Configure a WPA2 password before shared use.

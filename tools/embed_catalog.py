@@ -3,13 +3,12 @@
 
 The catalogue served at https://packs.educated.space/index.json is built from
 packs/catalog-source.json (in the pocketwiki-content checkout) and published by
-tools/publish_pack_catalog.py,
-which also copies the exact published bytes to
-android/app/src/main/assets/pack_catalog.json. That checked-in copy is the
-repo's snapshot of the LIVE catalogue, so it is the correct source for the
-firmware: the device verifies downloaded pack sizes and SHA-256s against it,
-and those must match the packs actually served. Rebuilding from
-catalog-source.json would embed unpublished packs and stale sizes.
+tools/publish_pack_catalog.py, which also copies the exact published bytes to
+firmware/catalog/pack_catalog.json and to the Android app's bundled assets.
+That checked-in snapshot is the repo's copy of the LIVE catalogue, so it is the
+correct source for the firmware: the device verifies downloaded pack sizes and
+SHA-256s against it, and those must match the packs actually served. Rebuilding
+from catalog-source.json would embed unpublished packs and stale sizes.
 
 The /manage dashboard prefers the live remote index and falls back to this
 device-local copy when the browser itself cannot reach packs.educated.space
@@ -28,7 +27,7 @@ ROOT = Path(__file__).resolve().parents[1]
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--source", type=Path,
-                        default=ROOT / "android" / "app" / "src" / "main" / "assets" / "pack_catalog.json")
+                        default=ROOT / "firmware" / "catalog" / "pack_catalog.json")
     parser.add_argument("--output", type=Path, default=ROOT / "firmware" / "main" / "catalog_asset.c")
     args = parser.parse_args()
 

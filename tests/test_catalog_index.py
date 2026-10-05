@@ -11,7 +11,6 @@ over-long value, and truncation.
 
 import hashlib
 import json
-import shutil
 import subprocess
 from pathlib import Path
 
@@ -22,8 +21,7 @@ FIRMWARE_MAIN = ROOT / "firmware" / "main"
 # The catalogue the device ships with. It is a real published index.json, so
 # the field shapes and value lengths exercised here are the ones the reader has
 # to accept.
-SOURCE_CATALOG = (ROOT / "android" / "app" / "src" / "main" / "assets"
-                  / "pack_catalog.json")
+SOURCE_CATALOG = ROOT / "firmware" / "catalog" / "pack_catalog.json"
 
 
 def sha_of(name: str) -> str:

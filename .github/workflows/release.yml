@@ -5,7 +5,7 @@ name: Release
 #
 # The firmware job needs only this repository: the built-in guide it packs
 # lives in articles/pocketwiki/, and the embedded catalogue is the published
-# snapshot committed under android/app/src/main/assets/.
+# snapshot committed under firmware/catalog/.
 
 on:
   push:

@@ -101,7 +101,7 @@ the generator, not the page.
 `tools/embed_catalog.py` embeds the published catalogue in the firmware, which
 is what the `/manage` page falls back to when the browser cannot reach
 `packs.educated.space`. The one it embeds is
-`android/app/src/main/assets/pack_catalog.json`, the exact bytes the publisher
+`firmware/catalog/pack_catalog.json`, the exact bytes the publisher
 uploaded, because the device verifies downloaded pack sizes and SHA-256s against
 that list. Those values have to match the packs actually served, so the embedded
 copy is a snapshot of the live catalogue rather than a rebuild from

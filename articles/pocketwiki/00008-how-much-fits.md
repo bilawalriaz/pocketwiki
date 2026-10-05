@@ -14,8 +14,8 @@ an install that would not fit rather than filling the filesystem.
 ## Why the estimate moves
 
 An article costs about 2.4 KB once packed. Long articles with tables cost more;
-short ones cost less. A pack also carries a shared dictionary of a few kilobytes
-of common phrases, which pays for itself as soon as a pack holds more than a
+short ones cost less. A pack also carries a shared dictionary — a few kilobytes
+of common phrases — which pays for itself as soon as a pack holds more than a
 handful of articles.
 
 Because of that, a hundred 100-article packs fit slightly fewer articles in
@@ -32,5 +32,5 @@ with every pack deleted, the reader still has something to open.
 ## Running out of room
 
 When pack storage is full the device says so, with the numbers, and suggests
-removing a pack. Removing one frees its space immediately, and there is no
+removing a pack. Removing one frees its space immediately — there is no
 reformatting step and no need to reinstall anything else.

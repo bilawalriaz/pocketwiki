@@ -54,7 +54,7 @@
       "filesystem_overhead_percent": 2.620967741935484,
       "reserved_free_bytes": 8192,
       "usable_pack_budget": 1970176,
-      "firmware_image_bytes": 1224416,
+      "firmware_image_bytes": 1227184,
       "geometry_note": "Host IDF WLFATFS generated geometry, 4096-byte sectors/clusters, two FATs, 512 root entries; confirm actual mounted volume.",
       "worst_case_cluster_slack": {
         "1": 4095,
@@ -117,7 +117,7 @@
       "filesystem_overhead_percent": 1.097972972972973,
       "reserved_free_bytes": 8192,
       "usable_pack_budget": 14381056,
-      "firmware_image_bytes": 1144240,
+      "firmware_image_bytes": 1146672,
       "geometry_note": "Host IDF WLFATFS generated geometry, 4096-byte sectors/clusters, two FATs, 512 root entries; confirm actual mounted volume.",
       "worst_case_cluster_slack": {
         "1": 4095,

@@ -162,7 +162,11 @@ hr{margin:1.5em 0;border:0;border-top:1px solid var(--line)}
 .list a:hover{background:var(--accent-soft);color:var(--accent-dark)}
 .list p{margin:0;padding:11px 14px;border-bottom:1px solid var(--line)}
 .list p:last-child{border-bottom:0}
-.pack-list p{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.pack-list p,.pack-list .pack-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.pack-list .pack-row{padding:12px 14px;border-bottom:1px solid var(--line)}
+.pack-list .pack-row:last-child{border-bottom:0}
+.pack-list .inline-form{display:inline-flex;margin:0 0 0 auto}
+.pack-list .inline-form .inline-action{margin-left:0}
 .pack-list{box-shadow:none}
 .library-shelf{
   overflow:hidden;
@@ -381,8 +385,10 @@ hr{margin:1.5em 0;border:0;border-top:1px solid var(--line)}
 .catalog-action:disabled{opacity:.6;cursor:wait}
 .install-other{margin-top:28px}
 .upload{display:grid;gap:10px;margin:16px 0 22px}
+.upload{max-width:680px;padding:16px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
 .upload label{display:grid;gap:7px;color:var(--muted);font-size:14px;font-weight:650}
 .upload input{
+  display:block;
   width:100%;
   min-height:48px;
   padding:10px 12px;

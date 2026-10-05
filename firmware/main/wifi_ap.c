@@ -15,6 +15,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "lwip/inet.h"
+#include "lwip/sockets.h"
 #include "nvs.h"
 
 #include "oled_display.h"
@@ -32,6 +33,61 @@ static esp_timer_handle_t s_uplink_timer;
 static uint32_t s_reconnect_attempts;
 static bool s_sta_suspended;
 static uint8_t s_weak_samples;
+
+/* Resolve the device name for clients on PocketWiki's own Wi-Fi. The answer
+ * contains only the AP address; other names get NXDOMAIN. */
+static void local_dns_task(void *arg)
+{
+    (void)arg;
+    int fd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+    if (fd < 0) { ESP_LOGW(TAG, "local DNS socket unavailable"); vTaskDelete(NULL); return; }
+    struct sockaddr_in bind_addr = { .sin_family = AF_INET, .sin_port = htons(53),
+                                      .sin_addr.s_addr = INADDR_ANY };
+    if (bind(fd, (struct sockaddr *)&bind_addr, sizeof bind_addr) != 0) {
+        ESP_LOGW(TAG, "local DNS bind unavailable"); close(fd); vTaskDelete(NULL); return;
+    }
+    uint8_t packet[256];
+    for (;;) {
+        struct sockaddr_in peer;
+        socklen_t peer_len = sizeof peer;
+        int n = recvfrom(fd, packet, sizeof packet, 0, (struct sockaddr *)&peer, &peer_len);
+        if (n < 18 || (packet[2] & 0x80) || packet[4] != 0 || packet[5] != 1) continue;
+        size_t end = 12;
+        char name[64];
+        size_t pos = 0;
+        while (end < (size_t)n && packet[end] && packet[end] < 64 &&
+               end + 1 + packet[end] < (size_t)n) {
+            uint8_t len = packet[end++];
+            if (pos && pos < sizeof name - 1) name[pos++] = '.';
+            if (pos + len >= sizeof name) break;
+            for (uint8_t i = 0; i < len; i++) {
+                char c = (char)packet[end++];
+                name[pos++] = c >= 'A' && c <= 'Z' ? c + 32 : c;
+            }
+        }
+        if (end >= (size_t)n || packet[end++] != 0 || end + 4 > (size_t)n) continue;
+        name[pos] = 0;
+        bool match = strcmp(name, "pocketwiki") == 0 ||
+                     strcmp(name, "pocketwiki.lan") == 0;
+        bool a_query = packet[end] == 0 && packet[end + 1] == 1 &&
+                       packet[end + 2] == 0 && packet[end + 3] == 1;
+        size_t question_end = end + 4;
+        if (question_end + 16 > sizeof packet) continue;
+        packet[2] = 0x81;
+        packet[3] = match && a_query ? 0x80 : 0x83;
+        packet[6] = 0; packet[7] = match && a_query ? 1 : 0;
+        memset(packet + 8, 0, 4);
+        if (match && a_query) {
+            esp_netif_ip_info_t ip;
+            if (esp_netif_get_ip_info(s_ap_netif, &ip) != ESP_OK) continue;
+            uint8_t answer[] = { 0xc0, 0x0c, 0, 1, 0, 1, 0, 0, 0, 30, 0, 4 };
+            memcpy(packet + question_end, answer, sizeof answer);
+            memcpy(packet + question_end + sizeof answer, &ip.ip.addr, 4);
+            question_end += sizeof answer + 4;
+        }
+        sendto(fd, packet, question_end, 0, (struct sockaddr *)&peer, peer_len);
+    }
+}
 
 /* Station retry pacing. The access point and the station share one radio, so
  * every esp_wifi_connect() attempt scans channels while the AP is off the air
@@ -284,7 +340,13 @@ esp_err_t wifi_ap_init(void)
         esp_netif_str_to_ip4(CONFIG_POCKETWIKI_AP_IP, &ip.gw) != ESP_OK) return ESP_ERR_INVALID_ARG;
     esp_netif_dhcps_stop(s_ap_netif);
     ESP_RETURN_ON_ERROR(esp_netif_set_ip_info(s_ap_netif, &ip), TAG, "AP IP");
+    esp_netif_dns_info_t dns = { .ip.type = ESP_IPADDR_TYPE_V4 };
+    dns.ip.u_addr.ip4 = ip.ip;
+    ESP_RETURN_ON_ERROR(esp_netif_set_dns_info(s_ap_netif, ESP_NETIF_DNS_MAIN, &dns), TAG, "AP DNS");
     ESP_RETURN_ON_ERROR(esp_netif_dhcps_start(s_ap_netif), TAG, "DHCP");
+    if (xTaskCreate(local_dns_task, "pw_dns", 3072, NULL, 3, NULL) != pdPASS) {
+        ESP_LOGW(TAG, "local DNS task unavailable; use the AP IP address");
+    }
     ESP_RETURN_ON_ERROR(esp_wifi_start(), TAG, "wifi start");
 
 #if CONFIG_IDF_TARGET_ESP32C3

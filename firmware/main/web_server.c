@@ -38,6 +38,7 @@
 #include "esp_system.h"
 #include "esp_task_wdt.h"
 #include "esp_timer.h"
+#include "nvs.h"
 #include "catalog_index.h"
 #include "cJSON.h"
 #include "miniz.h"
@@ -2224,7 +2225,7 @@ static esp_err_t handle_packs_page(httpd_req_t *req)
                     s_render_title_esc, sizeof s_render_title_esc) == 0) {
         strlcpy(s_render_title_esc, "PocketWiki Guide", sizeof s_render_title_esc);
     }
-    snprintf(buf, sizeof buf, "<p data-builtin=\"1\"%s><strong>",
+    snprintf(buf, sizeof buf, "<div class=\"pack-row\" data-builtin=\"1\"%s><strong>",
              built_in_updated ? " data-pack-name=\"" PW_BUILTIN_PACK_NAME "\"" : "");
     send_body(req, buf, strlen(buf));
     send_body(req, s_render_title_esc, strlen(s_render_title_esc));
@@ -2246,7 +2247,7 @@ static esp_err_t handle_packs_page(httpd_req_t *req)
         SEND_LITERAL(req, " <button class=\"inline-action danger\" data-action=\"delete\" "
                           "data-name=\"" PW_BUILTIN_PACK_NAME "\">Remove update</button>");
     }
-    SEND_LITERAL(req, "</p>");
+    SEND_LITERAL(req, "</div>");
     if (n > 0) {
         for (int i = 0; i < n; i++) {
             pack_display_name(items[i].name, (char *)s_render_title, sizeof s_render_title);
@@ -2321,6 +2322,70 @@ static esp_err_t handle_legacy_packs_page(httpd_req_t *req)
 
 /* ---- init ---- */
 
+/* The browser flasher stores catalogue IDs in NVS. Install them after boot,
+ * once the optional station uplink is ready, through the same validated web
+ * install path used by Manage. Keep failed IDs for a later reboot/retry. */
+static void flash_pack_queue_task(void *arg)
+{
+    (void)arg;
+    /* Kept off the task stack: the NVS call below descends through the flash
+     * HAL (~1.5 KiB of frames), so ~3 KiB of locals on a 4 KiB task overflows.
+     * Created once per boot, so static storage is safe. */
+    static char queue[2048];
+    queue[0] = 0;
+    nvs_handle_t nvs;
+    size_t cap = sizeof queue;
+    if (nvs_open("pocketwiki", NVS_READWRITE, &nvs) != ESP_OK) { vTaskDelete(NULL); return; }
+    if (nvs_get_str(nvs, "flash_packs", queue, &cap) != ESP_OK || !queue[0]) {
+        nvs_close(nvs); vTaskDelete(NULL); return;
+    }
+    while (queue[0]) {
+        wifi_station_status_t station;
+        do {
+            wifi_ap_get_station(&station);
+            if (!station.connected) vTaskDelay(pdMS_TO_TICKS(3000));
+        } while (!station.connected);
+        char *comma = strchr(queue, ',');
+        size_t id_len = comma ? (size_t)(comma - queue) : strlen(queue);
+        char id[PW_PACK_NAME_MAX + 1];
+        if (id_len == 0 || id_len > PW_PACK_NAME_MAX) break;
+        memcpy(id, queue, id_len); id[id_len] = 0;
+        pw_catalog_pack_t pack;
+        if (!catalog_find(id, NULL, &pack)) { ESP_LOGW(TAG, "queued pack %s missing from catalogue", id); break; }
+        static char request[640];
+        int request_len = snprintf(request, sizeof request,
+            "POST /api/packs/install?url=%s&name=%s HTTP/1.0\r\nHost: 127.0.0.1\r\nContent-Length: 0\r\n\r\n",
+            pack.url, id);
+        if (request_len <= 0 || request_len >= sizeof request) break;
+        int fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+        struct sockaddr_in addr = { .sin_family = AF_INET, .sin_port = htons(80) };
+        addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+        bool ok = false;
+        if (fd >= 0 && connect(fd, (struct sockaddr *)&addr, sizeof addr) == 0 &&
+            send(fd, request, request_len, 0) == request_len) {
+            static char response[256];
+            unsigned marker = 0;
+            int got;
+            while ((got = recv(fd, response, sizeof response - 1, 0)) > 0) {
+                for (int i = 0; i < got; i++) {
+                    char c = response[i];
+                    if (marker == 2 && c == ':') ok = true;
+                    marker = c == 'O' ? 1 : (marker == 1 && c == 'K' ? 2 : 0);
+                }
+            }
+        }
+        if (fd >= 0) close(fd);
+        if (!ok) { ESP_LOGW(TAG, "queued pack %s failed; retry from Manage or reboot", id); break; }
+        memmove(queue, comma ? comma + 1 : queue + strlen(queue),
+                strlen(comma ? comma + 1 : queue + strlen(queue)) + 1);
+        if (queue[0]) nvs_set_str(nvs, "flash_packs", queue);
+        else nvs_erase_key(nvs, "flash_packs");
+        nvs_commit(nvs);
+    }
+    nvs_close(nvs);
+    vTaskDelete(NULL);
+}
+
 esp_err_t web_server_init(void)
 {
     httpd_config_t cfg = HTTPD_DEFAULT_CONFIG();
@@ -2385,6 +2450,7 @@ esp_err_t web_server_init(void)
 
     ESP_LOGI(TAG, "HTTP server ready (%d sockets, heap=%lu)", cfg.max_open_sockets,
              (unsigned long)esp_get_free_heap_size());
+    if (xTaskCreate(flash_pack_queue_task, "pw_flash_packs", 4096, NULL, 3, NULL) != pdPASS)
+        ESP_LOGW(TAG, "flasher pack queue task unavailable");
     return ESP_OK;
 }
-

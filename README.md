@@ -162,8 +162,6 @@ embedded copy together when the catalogue changes.
 - [Hardware guide](docs/HARDWARE.md)
 - [Archive format](docs/ARCHIVE_FORMAT.md)
 - [Pack catalogue release guide](docs/PACK_CATALOG.md)
-- [Device benchmark](docs/DEVICE_BENCHMARK.md)
-- [Roadmap](docs/ROADMAP.md)
 - [Flashing guide](docs/FLASHER.md)
 
 Source code is MIT-licensed. Bundled Wikipedia-derived content retains the

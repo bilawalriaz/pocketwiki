@@ -91,8 +91,9 @@ The current staged firmware images measure 1,227,184 bytes (C3) and 1,146,672
 bytes (S3). The C3 app therefore has 345,680 bytes of image headroom; the S3
 has 426,192 bytes.
 
-The `packs` partition uses FAT with wear levelling. Measured pack density and
-what that puts in each store is in [DEVICE_BENCHMARK.md](DEVICE_BENCHMARK.md).
+The `packs` partition uses FAT with wear levelling. `tools/benchmark_flash_budget.py`
+measures the packer over the corpus and writes `benchmarks/flash_budget.json`,
+which carries the pack density and the pack-store budget for each board.
 
 ## First boot
 

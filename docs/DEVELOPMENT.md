@@ -44,8 +44,8 @@ pio run -d firmware -e esp32-s3
 
 The current PlatformIO board declaration reports an 8 MB, no-PSRAM DevKitC-1.
 The 16 MB S3 layout is the deployment model and has been validated on a 16 MB
-module; check the module before flashing something else. Measured capacity and
-image sizes for both boards are in [DEVICE_BENCHMARK.md](DEVICE_BENCHMARK.md).
+module; check the module before flashing something else. The current staged
+image sizes are in [HARDWARE.md](HARDWARE.md).
 
 You can also use ESP-IDF:
 

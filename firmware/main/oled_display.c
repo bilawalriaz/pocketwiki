@@ -11,6 +11,7 @@
 #include "esp_check.h"
 #include "esp_log.h"
 #include "esp_timer.h"
+#include "esp_wifi_types.h"
 #include "qr_code.h"
 
 static const char *TAG = "oled";
@@ -248,9 +249,28 @@ void oled_show_boot(const char *line)
     flush();
 }
 
+/* Short word for the station's last disconnect reason. The panel fits 21
+ * characters per line, so every word here stays well inside that. */
+static void wifi_reason_text(uint8_t reason, char *out, size_t cap)
+{
+    switch (reason) {
+    case WIFI_REASON_NO_AP_FOUND:     strlcpy(out, "NO AP FOUND", cap); break;
+    case WIFI_REASON_BEACON_TIMEOUT:  strlcpy(out, "NO SIGNAL", cap); break;
+    case WIFI_REASON_AUTH_EXPIRE:
+    case WIFI_REASON_AUTH_FAIL:
+    case WIFI_REASON_4WAY_HANDSHAKE_TIMEOUT:
+    case WIFI_REASON_HANDSHAKE_TIMEOUT:
+    case WIFI_REASON_CONNECTION_FAIL: strlcpy(out, "AUTH FAILED", cap); break;
+    case WIFI_REASON_ASSOC_FAIL:      strlcpy(out, "REFUSED", cap); break;
+    case 0:                           out[0] = 0; break;
+    default:                          snprintf(out, cap, "FAIL %u", (unsigned)reason); break;
+    }
+}
+
 void oled_show_status(const char *ssid, const char *ip, uint32_t article_count,
                       uint32_t pack_count, size_t flash_used, size_t flash_total,
-                      bool online, unsigned cpu_pct, uint32_t queued_packs)
+                      bool online, unsigned cpu_pct, uint32_t queued_packs,
+                      uint8_t disconnect_reason)
 {
     if (!s_ok) return;
     (void)cpu_pct;
@@ -264,14 +284,22 @@ void oled_show_status(const char *ssid, const char *ip, uint32_t article_count,
     draw_text(0, 10, buf);
 
     /* While the flasher's pack queue is outstanding the reader address is
-     * already on the OPEN/LAN line, so spend this line on the queue instead. */
+     * already on the OPEN/LAN line, so spend this line on the queue instead,
+     * and name the uplink failure when there is one. */
+    char note[32];
     if (queued_packs > 0) {
-        snprintf(buf, sizeof buf, online ? "QUEUE %lu PENDING" : "QUEUE %lu WAIT WIFI",
-                 (unsigned long)queued_packs);
-        draw_text(0, 20, buf);
+        char why[16];
+        wifi_reason_text(disconnect_reason, why, sizeof why);
+        snprintf(note, sizeof note, "QUEUE %lu %.11s", (unsigned long)queued_packs,
+                 online ? "PENDING" : (why[0] ? why : "WAIT WIFI"));
+    } else if (!online && disconnect_reason != 0) {
+        char why[16];
+        wifi_reason_text(disconnect_reason, why, sizeof why);
+        snprintf(note, sizeof note, "WIFI: %s", why);
     } else {
-        draw_text(0, 20, "READ: 192.168.4.1");
+        strlcpy(note, "READ: 192.168.4.1", sizeof note);
     }
+    draw_text(0, 20, note);
 
     snprintf(buf, sizeof buf, online ? "LAN: %s" : "OPEN: %s",
              ip == NULL ? "192.168.4.1" : ip);

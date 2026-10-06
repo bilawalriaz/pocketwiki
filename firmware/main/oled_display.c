@@ -250,7 +250,7 @@ void oled_show_boot(const char *line)
 
 void oled_show_status(const char *ssid, const char *ip, uint32_t article_count,
                       uint32_t pack_count, size_t flash_used, size_t flash_total,
-                      bool online, unsigned cpu_pct)
+                      bool online, unsigned cpu_pct, uint32_t queued_packs)
 {
     if (!s_ok) return;
     (void)cpu_pct;
@@ -263,7 +263,15 @@ void oled_show_status(const char *ssid, const char *ip, uint32_t article_count,
              ssid == NULL ? "POCKETWIKI" : ssid);
     draw_text(0, 10, buf);
 
-    draw_text(0, 20, "READ: 192.168.4.1");
+    /* While the flasher's pack queue is outstanding the reader address is
+     * already on the OPEN/LAN line, so spend this line on the queue instead. */
+    if (queued_packs > 0) {
+        snprintf(buf, sizeof buf, online ? "QUEUE %lu PENDING" : "QUEUE %lu WAIT WIFI",
+                 (unsigned long)queued_packs);
+        draw_text(0, 20, buf);
+    } else {
+        draw_text(0, 20, "READ: 192.168.4.1");
+    }
 
     snprintf(buf, sizeof buf, online ? "LAN: %s" : "OPEN: %s",
              ip == NULL ? "192.168.4.1" : ip);

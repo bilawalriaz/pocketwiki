@@ -15,10 +15,12 @@ extern "C" {
 esp_err_t oled_init(void);
 
 /* Show live state. online is true when the station-side Wi-Fi connection is
- * active; the setup access point remains available in either state. */
+ * active; the setup access point remains available in either state.
+ * queued_packs > 0 replaces the reader-address line with the pack queue state,
+ * so a device parked on the station uplink says so instead of looking idle. */
 void oled_show_status(const char *ssid, const char *ip, uint32_t article_count,
                       uint32_t pack_count, size_t flash_used, size_t flash_total,
-                      bool online, unsigned cpu_pct);
+                      bool online, unsigned cpu_pct, uint32_t queued_packs);
 
 void oled_show_transfer(const char *pack, size_t received, size_t total,
                         size_t flash_used, size_t flash_total);

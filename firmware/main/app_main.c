@@ -67,6 +67,7 @@ static void oled_status_task(void *arg)
     size_t last_used = SIZE_MAX;
     bool last_online = false;
     bool last_suppressed = false;
+    uint32_t last_queued = UINT32_MAX;
 
     for (;;) {
         /* A pack transfer or a QR screen owns the display; do not overwrite it.
@@ -83,6 +84,7 @@ static void oled_status_task(void *arg)
             last_packs = -1;
             last_used = SIZE_MAX;
             last_online = false;
+            last_queued = UINT32_MAX;
         }
         int packs = pack_store_count() + 1;
         size_t flash_total = 0, flash_used = 0;
@@ -92,18 +94,20 @@ static void oled_status_task(void *arg)
             count = pack_store_total_articles();
         }
         uint32_t cpu = cpu_pct();
+        uint32_t queued = web_server_pack_queue_pending();
         wifi_station_status_t station;
         wifi_ap_get_station(&station);
         if (count != last_count || packs != last_packs || flash_used != last_used ||
-                station.connected != last_online) {
+                station.connected != last_online || queued != last_queued) {
             oled_show_status(station.connected ? station.ssid : CONFIG_POCKETWIKI_AP_SSID,
                              station.connected && station.ip[0] ? station.ip : ip,
                              count, (uint32_t)packs, flash_used, flash_total,
-                             station.connected, cpu);
+                             station.connected, cpu, queued);
             last_count = count;
             last_packs = packs;
             last_used = flash_used;
             last_online = station.connected;
+            last_queued = queued;
         }
         static unsigned log_ticks;
         if (++log_ticks % 10 == 0) {
@@ -173,7 +177,8 @@ void app_main(void)
         size_t flash_total = 0, flash_used = 0;
         pack_store_usage(&flash_total, &flash_used);
         oled_show_status(CONFIG_POCKETWIKI_AP_SSID, ip, pack_store_total_articles(),
-                         (uint32_t)(pack_store_count() + 1), flash_used, flash_total, false, 0);
+                         (uint32_t)(pack_store_count() + 1), flash_used, flash_total, false, 0,
+                         web_server_pack_queue_pending());
         if (oled_ready) {
             BaseType_t created = xTaskCreate(oled_status_task, "oled_status",
                                              PW_OLED_STATUS_STACK_BYTES,

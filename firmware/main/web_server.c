@@ -2322,6 +2322,21 @@ static esp_err_t handle_legacy_packs_page(httpd_req_t *req)
 
 /* ---- init ---- */
 
+/* Ids still waiting to install. Read by the OLED status loop so the panel can
+ * say the queue is parked on the uplink instead of just showing the built-in
+ * pack count. Single writer (the queue task), word-sized, so no lock. */
+static volatile uint32_t s_queue_pending;
+
+static uint32_t queue_id_count(const char *list)
+{
+    if (list == NULL || list[0] == 0) return 0;
+    uint32_t n = 1;
+    for (const char *p = list; *p; p++) {
+        if (*p == ',') n++;
+    }
+    return n;
+}
+
 /* The browser flasher stores catalogue IDs in NVS. Install them after boot,
  * once the optional station uplink is ready, through the same validated web
  * install path used by Manage. Keep failed IDs for a later reboot/retry. */
@@ -2339,11 +2354,19 @@ static void flash_pack_queue_task(void *arg)
     if (nvs_get_str(nvs, "flash_packs", queue, &cap) != ESP_OK || !queue[0]) {
         nvs_close(nvs); vTaskDelete(NULL); return;
     }
+    s_queue_pending = queue_id_count(queue);
     while (queue[0]) {
         wifi_station_status_t station;
+        unsigned waited = 0;
         do {
             wifi_ap_get_station(&station);
-            if (!station.connected) vTaskDelay(pdMS_TO_TICKS(3000));
+            if (!station.connected) {
+                if (++waited % 10 == 1) {
+                    ESP_LOGI(TAG, "pack queue: %lu pending, waiting for the station uplink",
+                             (unsigned long)s_queue_pending);
+                }
+                vTaskDelay(pdMS_TO_TICKS(3000));
+            }
         } while (!station.connected);
         char *comma = strchr(queue, ',');
         size_t id_len = comma ? (size_t)(comma - queue) : strlen(queue);
@@ -2357,6 +2380,7 @@ static void flash_pack_queue_task(void *arg)
             "POST /api/packs/install?url=%s&name=%s HTTP/1.0\r\nHost: 127.0.0.1\r\nContent-Length: 0\r\n\r\n",
             pack.url, id);
         if (request_len <= 0 || request_len >= sizeof request) break;
+        ESP_LOGI(TAG, "pack queue: installing %s", id);
         int fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
         struct sockaddr_in addr = { .sin_family = AF_INET, .sin_port = htons(80) };
         addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
@@ -2378,12 +2402,18 @@ static void flash_pack_queue_task(void *arg)
         if (!ok) { ESP_LOGW(TAG, "queued pack %s failed; retry from Manage or reboot", id); break; }
         memmove(queue, comma ? comma + 1 : queue + strlen(queue),
                 strlen(comma ? comma + 1 : queue + strlen(queue)) + 1);
+        s_queue_pending = queue_id_count(queue);
         if (queue[0]) nvs_set_str(nvs, "flash_packs", queue);
         else nvs_erase_key(nvs, "flash_packs");
         nvs_commit(nvs);
     }
     nvs_close(nvs);
     vTaskDelete(NULL);
+}
+
+uint32_t web_server_pack_queue_pending(void)
+{
+    return s_queue_pending;
 }
 
 esp_err_t web_server_init(void)

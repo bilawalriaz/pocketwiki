@@ -168,7 +168,7 @@ The palette is a restrained Primary + Neutral system: forest green supplies ever
 **Body Font:** Platform system sans serif
 **Label/Mono Font:** Platform monospace, reserved for the `P` mark and code
 
-**Character:** Typography is native, direct, and compact enough for embedded delivery. Weight and spacing create hierarchy; no downloaded font or ornamental display face is required by the shipped product surfaces. The landing page alone loads Manrope Variable from a CDN, with the platform sans serif as its fallback.
+**Character:** Typography is native, direct, and compact enough for embedded delivery. Weight and spacing create hierarchy; no downloaded font or ornamental display face is required by the shipped product surfaces. The landing page alone loads DM Sans Variable from a CDN, with the platform sans serif as its fallback.
 
 ### Hierarchy
 
@@ -300,7 +300,7 @@ The page at `educated.space/pocketwiki` is a presentation surface, not a product
 
 - **Canvas:** OLED dark, so nothing above the true-black canvas reads as grey: `#000000` canvas, `#0a0a0a` panels (setup steps, flash panel, board cards), `#121212` cards (FAQ, docs, notices, the reader card), `#1c1c1c` fields and chips, with `#2a2a2a` separators and `#363636` control outlines doing the containment that a grey fill used to. Light mode is unchanged: `#ffffff` canvas and cards, `#f7f7f7` panels, `#ebebeb` fields. Text runs `#fafafa` / `#a1a1a1` / `#8f8f8f`, each clearing 4.5:1 on all four dark surfaces including the small meta line.
 - **Signal:** one teal accent and no second one: `accent-500` (`#2db89a`) is the brand signal, `accent-600` (`#009689`) is accent text at rest on paper, and dark-theme accent text on a raised surface steps up to `accent-300`/`accent-400` so it holds on near-black.
-- **Type:** Manrope Variable from the `@fontsource-variable/manrope` CDN, falling back to the platform sans serif; code uses the platform monospace.
+- **Type:** DM Sans Variable from the `@fontsource-variable/dm-sans` CDN, falling back to the platform sans serif; code uses the platform monospace.
 - **Shape:** 8 px controls, 12–24 px containers, and a full radius only for chips and pills. The navigation island uses 14 px with 12 px link radii.
 - **Motion:** 150–500 ms transitions on `cubic-bezier(0.32, 0.72, 0, 1)`, section reveals on scroll, and digit pop-in on the hero statistics. The theme toggle wipes in 320 ms from the button that was pressed, and expresses that circle in percentages: the view-transition box is measured in device pixels, so lengths there would open the wipe at half offset on a 2× display.
 - **Browser surfaces:** selection, caret, focus ring, scrollbars, underline offset and tabular numerals are themed from the landing tokens rather than left at browser defaults.

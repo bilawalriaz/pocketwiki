@@ -74,7 +74,11 @@ static void local_dns_task(void *arg)
         size_t question_end = end + 4;
         if (question_end + 16 > sizeof packet) continue;
         packet[2] = 0x81;
-        packet[3] = match && a_query ? 0x80 : 0x83;
+        /* Our own name answers NOERROR for every type, with an address only
+         * for A. NXDOMAIN on the AAAA query phones send alongside A means "this
+         * name does not exist" (RFC 8020), and some resolvers then discard the
+         * A answer too, so http://pocketwiki/ would not resolve. */
+        packet[3] = match ? 0x80 : 0x83;
         packet[6] = 0; packet[7] = match && a_query ? 1 : 0;
         memset(packet + 8, 0, 4);
         if (match && a_query) {

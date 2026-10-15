@@ -21,7 +21,8 @@ web interface, BLE setup, and an optional SSD1306 OLED.
 | `firmware/main/` | ESP-IDF firmware modules. |
 | `articles/pocketwiki/` | Source of the built-in PocketWiki Guide. |
 | `firmware/catalog/` | Published pack catalogue the firmware embeds. |
-| `tools/` | Packer, sanitizer, preview server, and flash tools. |
+| `tools/` | Packer, sanitizer, preview server, simulator front end, and flash tools. |
+| `sim/` | Host stand-ins for ESP-IDF that let the firmware run as a local device. |
 | `tests/` | Python tests and C harnesses. |
 | `case/` | 3D-printed case models. |
 
@@ -61,8 +62,13 @@ catalogue tests skip when it is absent.
 
 ## Verification
 
-Run `python3 -m pytest -q` for every change. Build the affected PlatformIO
-target when firmware, CMake, Kconfig, partition, or embedded asset files change:
+Run `python3 -m pytest -q` for every change; it includes
+`tests/test_device_sim.py`, which runs the firmware's web server, archive
+reader and pack store on the host. To try a firmware change by hand, run
+`python3 tools/pwsim.py run` and open `http://127.0.0.1:8080/`. Add a
+simulator test for any route or pack-store behaviour you change. Build the
+affected PlatformIO target when firmware, CMake, Kconfig, partition, or
+embedded asset files change:
 
 ```sh
 pio run -d firmware -e esp32-c3

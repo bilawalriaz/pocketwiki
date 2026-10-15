@@ -118,8 +118,8 @@ Every article is stored as an independent DEFLATE stream compressed against one
 shared trained dictionary. The device loads that dictionary into the 32 KiB
 inflate ring it already owns, so dictionary density costs no static RAM on
 either board. Across the catalogue the average pack costs 2,388 bytes per
-article, which puts roughly 825 articles in the ESP32-C3's 1.9 MB pack store
-and roughly 6,022 in the S3's 13.9 MB; `tools/benchmark_flash_budget.py`
+article, which puts roughly 980 articles in the ESP32-C3's 2.3 MB pack store
+and roughly 6,200 in the S3's 14.8 MB; `tools/benchmark_flash_budget.py`
 reproduces that measurement as `benchmarks/flash_budget.json`. One pack serves
 every board. The packer removes active content and remote resources, rewrites
 accepted internal links, and builds a sorted title index; the device checks a

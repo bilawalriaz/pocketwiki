@@ -36,7 +36,7 @@ DEFAULT_MANIFEST = content_paths.SHELF_MANIFEST
 DEFAULT_OUTPUT = content_paths.CATALOGUE_BROWSER
 
 # Pack-store capacity on each supported board, from firmware/partitions*.csv.
-STORE_BYTES = {"c3": 0x1F0000, "s3": 0xDE0000}
+STORE_BYTES = {"c3": 0x24C000, "s3": 0xE4C000}
 
 CLUSTERED_DIR = "cluster-packs"
 

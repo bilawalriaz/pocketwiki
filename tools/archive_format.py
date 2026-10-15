@@ -71,6 +71,27 @@ def normalize_title(raw: bytes | str) -> bytes:
     return bytes(out)
 
 
+def _word_byte(b: int) -> bool:
+    return b >= 0x80 or chr(b).isalnum() or b == 0x27   # 0x27 is the apostrophe
+
+
+def word_start_match(norm: bytes, needle: bytes) -> bool:
+    """True if needle begins a word of norm other than the first.
+
+    Byte-exact contract (mirrored in firmware title_lookup.c): a word starts
+    after any ASCII byte that is not a letter, digit or apostrophe. A title
+    that already starts with needle is a prefix hit and does not count.
+    """
+    if not needle or norm.startswith(needle):
+        return False
+    i = norm.find(needle, 1)
+    while i > 0:
+        if not _word_byte(norm[i - 1]):
+            return True
+        i = norm.find(needle, i + 1)
+    return False
+
+
 def same_normalized(a: bytes | str, b: bytes | str) -> bool:
     return normalize_title(a) == normalize_title(b)
 
@@ -349,8 +370,23 @@ class Archive:
             lo += 1
         return out
 
+    def find_word_start(self, title: bytes | str, limit: int = 20) -> list[dict]:
+        """Titles where the needle starts a later word, in index order.
+
+        Mirror of tl_word_start in firmware/main/title_lookup.c."""
+        needle = normalize_title(title)
+        if not needle:
+            return []
+        out = []
+        for e in self.entries:
+            if word_start_match(e["norm"], needle):
+                out.append(e)
+                if len(out) >= limit:
+                    break
+        return out
+
     def search(self, title: bytes | str, limit: int = 20) -> list[dict]:
-        """Exact match first, then prefix matches, deduplicated, capped at limit."""
+        """Exact match, then prefix matches, then word-start matches, capped at limit."""
         needle = normalize_title(title)
         if not needle:
             return []
@@ -363,6 +399,8 @@ class Archive:
                 out.append(e)
             if len(out) >= limit:
                 break
+        if len(out) < limit:
+            out.extend(self.find_word_start(needle, limit - len(out)))
         return out[:limit]
 
 # --- partitions.csv ---------------------------------------------------------

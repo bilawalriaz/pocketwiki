@@ -164,30 +164,70 @@ static void flush(void)
     }
 }
 
-esp_err_t oled_init(void)
+/* The pins the display answered on, so the boot button can stay off them. */
+static int s_sda = -1;
+static int s_scl = -1;
+
+/* Open an I2C bus on one pin pair and look for the panel at the configured
+ * address, then the common alternative. The bus is released when nothing
+ * answers, so the next pair can claim the same port. */
+static bool find_display(int sda, int scl, i2c_master_bus_handle_t *bus_out, uint8_t *addr_out)
 {
     i2c_master_bus_config_t bus_cfg = {
         .i2c_port = I2C_NUM_0,
-        .sda_io_num = CONFIG_POCKETWIKI_OLED_SDA,
-        .scl_io_num = CONFIG_POCKETWIKI_OLED_SCL,
+        .sda_io_num = sda,
+        .scl_io_num = scl,
         .clk_source = I2C_CLK_SRC_DEFAULT,
         .glitch_ignore_cnt = 7,
         .flags.enable_internal_pullup = true,
     };
     i2c_master_bus_handle_t bus = NULL;
-    if (i2c_new_master_bus(&bus_cfg, &bus) != ESP_OK) {
-        ESP_LOGW(TAG, "I2C bus init failed; continuing without OLED");
-        return ESP_FAIL;
-    }
-
-    /* Probe the configured address first, then the common alternative. */
+    if (i2c_new_master_bus(&bus_cfg, &bus) != ESP_OK) return false;
     uint8_t addr = CONFIG_POCKETWIKI_OLED_I2C_ADDR;
     if (i2c_master_probe(bus, addr, 50) != ESP_OK) {
         addr = (addr == 0x3C) ? 0x3D : 0x3C;
         if (i2c_master_probe(bus, addr, 50) != ESP_OK) {
-            ESP_LOGW(TAG, "no display found on I2C; continuing without OLED");
-            return ESP_FAIL;
+            i2c_del_master_bus(bus);
+            return false;
         }
+    }
+    *bus_out = bus;
+    *addr_out = addr;
+    return true;
+}
+
+bool oled_uses_gpio(int gpio)
+{
+    return s_ok && (gpio == s_sda || gpio == s_scl);
+}
+
+esp_err_t oled_init(void)
+{
+    /* The configured pins first. On the S3 the default SCL is GPIO0, the BOOT
+     * strap, and the documented wiring for a custom board is GPIO1/GPIO2 -
+     * which builders connect either way round - so those pairs are tried too
+     * rather than leaving a correctly wired panel dark. */
+    static const int8_t pairs[][2] = {
+        { CONFIG_POCKETWIKI_OLED_SDA, CONFIG_POCKETWIKI_OLED_SCL },
+#if CONFIG_IDF_TARGET_ESP32S3
+        { 1, 2 },
+        { 2, 1 },
+#endif
+    };
+    i2c_master_bus_handle_t bus = NULL;
+    uint8_t addr = 0;
+    bool found = false;
+    for (size_t i = 0; i < sizeof pairs / sizeof pairs[0] && !found; i++) {
+        if (i > 0 && pairs[i][0] == pairs[0][0] && pairs[i][1] == pairs[0][1]) continue;
+        found = find_display(pairs[i][0], pairs[i][1], &bus, &addr);
+        if (found) {
+            s_sda = pairs[i][0];
+            s_scl = pairs[i][1];
+        }
+    }
+    if (!found) {
+        ESP_LOGW(TAG, "no display found on I2C; continuing without OLED");
+        return ESP_FAIL;
     }
 
     esp_lcd_panel_io_i2c_config_t io_cfg = {
@@ -230,7 +270,7 @@ esp_err_t oled_init(void)
     }
 
     s_ok = true;
-    ESP_LOGI(TAG, "SSD1306 ready at 0x%02x", addr);
+    ESP_LOGI(TAG, "SSD1306 ready at 0x%02x (SDA GPIO%d, SCL GPIO%d)", addr, s_sda, s_scl);
     return ESP_OK;
 }
 

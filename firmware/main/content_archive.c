@@ -243,6 +243,7 @@ static esp_err_t validate_index(const pw_archive_source_t *src, uint32_t *count,
 esp_err_t ca_init(void)
 {
     memset(&s_ca, 0, sizeof s_ca);
+    s_reject_reason = NULL;
 
     const esp_partition_t *content =
         esp_partition_find_first(ESP_PARTITION_TYPE_DATA, 0x40, "content");
@@ -302,11 +303,16 @@ static esp_err_t probe_pack_file(FILE *fh, pw_file_ctx_t *content_ctx,
                                  pw_file_ctx_t *index_ctx, content_archive_t *out)
 {
     uint8_t hdr[PW_PACK_HEADER_SIZE];
+    /* Each validation explains only its own refusal. */
+    s_reject_reason = NULL;
     if (fseek(fh, 0, SEEK_SET) != 0 || fread(hdr, 1, sizeof hdr, fh) != sizeof hdr) {
         return ESP_ERR_INVALID_SIZE;
     }
     uint8_t pack_ver = hdr[4];
-    if (rd32(hdr) != PW_PACK_MAGIC || pack_ver != PW_FORMAT_VERSION) {
+    if (rd32(hdr) != PW_PACK_MAGIC) return ESP_ERR_INVALID_VERSION;
+    if (pack_ver != PW_FORMAT_VERSION) {
+        reject("That pack is an older or unknown format; rebuild it with the "
+               "current packer.");
         return ESP_ERR_INVALID_VERSION;
     }
     uint32_t content_len = rd32(hdr + 8);
@@ -395,7 +401,7 @@ static uint32_t s_index_ram_size = 0;
 static esp_err_t mem_read(void *ctx, uint32_t off, uint8_t *buf, size_t len)
 {
     const uint8_t *base = (const uint8_t *)ctx;
-    if (off + len > s_index_ram_size) {
+    if (off > s_index_ram_size || len > s_index_ram_size - off) {
         return ESP_ERR_INVALID_ARG;
     }
     memcpy(buf, base + off, len);

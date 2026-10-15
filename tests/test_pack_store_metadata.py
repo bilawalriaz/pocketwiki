@@ -40,13 +40,18 @@ def test_metadata_cache_lifecycle(tmp_path):
  static inline int esp_vfs_fat_info(const char *a, uint64_t *t, uint64_t *u)
  { *t=1000000; *u=900000; return 0; }
  """,
-        "freertos/FreeRTOS.h": "#define portMAX_DELAY 0\n#define pdTRUE 1\n",
+        "freertos/FreeRTOS.h": "#define portMAX_DELAY 0xffffffffu\n#define pdTRUE 1\n"
+                               "typedef unsigned TickType_t;\n#define pdMS_TO_TICKS(ms) (ms)\n",
         "freertos/semphr.h": """#include <pthread.h>
+ #include <stdlib.h>
  typedef pthread_mutex_t *SemaphoreHandle_t;
- static pthread_mutex_t test_mutex = PTHREAD_MUTEX_INITIALIZER;
- static inline SemaphoreHandle_t xSemaphoreCreateMutex(void) { return &test_mutex; }
- static inline int xSemaphoreTake(SemaphoreHandle_t m, int t)
- { return pthread_mutex_lock(m) == 0; }
+ static inline SemaphoreHandle_t xSemaphoreCreateMutex(void) {
+     pthread_mutex_t *m = malloc(sizeof *m);
+     if (m) pthread_mutex_init(m, NULL);
+     return m;
+ }
+ static inline int xSemaphoreTake(SemaphoreHandle_t m, TickType_t t)
+ { (void)t; return pthread_mutex_lock(m) == 0; }
  static inline void xSemaphoreGive(SemaphoreHandle_t m) { pthread_mutex_unlock(m); }
  """,
     }

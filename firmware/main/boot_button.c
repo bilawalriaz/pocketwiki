@@ -140,9 +140,10 @@ esp_err_t boot_button_init(void)
     return ESP_ERR_NOT_SUPPORTED;
 #else
     /* The default S3 BOOT pin (GPIO0) is also the default OLED SCL pin. The
-     * panel wins: sharing it would put I2C traffic on the button line. */
-    if (CONFIG_POCKETWIKI_BUTTON_GPIO == CONFIG_POCKETWIKI_OLED_SDA ||
-        CONFIG_POCKETWIKI_BUTTON_GPIO == CONFIG_POCKETWIKI_OLED_SCL) {
+     * panel wins: sharing it would put I2C traffic on the button line. The
+     * check is against the pins the display was found on, which on the S3
+     * may be GPIO1/GPIO2 rather than the configured pair. */
+    if (oled_uses_gpio(CONFIG_POCKETWIKI_BUTTON_GPIO)) {
         ESP_LOGW(TAG, "button GPIO %d is used by the OLED I2C bus; move the display "
                       "to GPIO1/GPIO2 or pick another button GPIO",
                  CONFIG_POCKETWIKI_BUTTON_GPIO);

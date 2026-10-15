@@ -17,6 +17,7 @@ on:
       - 'assets/**'
       - 'articles/**'
       - 'tools/**'
+      - 'sim/**'
       - '.github/workflows/firmware.yml'
   pull_request:
     paths:
@@ -24,6 +25,7 @@ on:
       - 'assets/**'
       - 'articles/**'
       - 'tools/**'
+      - 'sim/**'
 
 jobs:
   build:
@@ -65,6 +67,11 @@ jobs:
         run: |
           pio run -e esp32-s3
           pio run -e esp32-c3
+
+      - name: Install device simulator dependencies
+        # tests/test_device_sim.py builds the firmware's web server for the
+        # host (sim/, tools/pwsim.py); its HTTP client stand-in uses libcurl.
+        run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev
 
       - name: Run repo Python tests
         run: python -m pytest tests/ -q

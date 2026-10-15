@@ -6,7 +6,8 @@ immutable `.pwp` files served by the PocketWiki Cloudflare Worker.
 The catalogue is a release, not the whole shelf pool: 50 clustered shelves plus
 the built-in guide and the four UK curriculum packs, published as catalogue
 version 10 (12.2 MB of packs, 5,452 articles). The whole release fits the 16 MB
-board's 14 MB pack store; a 4 MB board holds about seven packs of it.
+board's 14.8 MB pack store; a 4 MB board's 2.3 MB store holds about ten
+average-sized packs of it.
 
 Each entry carries a `collection`, and the document carries a `collections`
 array of `{id, name, description}` records, so a client can group what it is

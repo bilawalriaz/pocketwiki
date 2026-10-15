@@ -21,7 +21,7 @@ password, erases the flash, and writes:
 | `partitions.bin` | `0x8000` |
 | `firmware.bin` | `0x10000` |
 | `content/content.bin` | `0x190000` |
-| `content/index.bin` | `0x200000` / `0x210000` |
+| `content/index.bin` | `0x1B0000` |
 | `nvs` (Wi-Fi and pack choices, only when asked) | `0x9000` |
 
 The panel can also carry pack choices into the same `nvs` image. The firmware

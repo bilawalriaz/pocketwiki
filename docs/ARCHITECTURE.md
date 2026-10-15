@@ -37,7 +37,8 @@ Key modules:
 
 - `content_archive.c` validates and reads built-in and portable archives.
 - `pack_store.c` manages the FAT-backed `/packs` filesystem and staged writes.
-- `title_lookup.c` provides byte-stable normalization and binary search.
+- `title_lookup.c` provides byte-stable normalization, binary search, and a
+  batched word-start scan.
 - `web_server.c` serves reading, search, Wi-Fi, and pack-management routes.
 - `wifi_ap.c` manages the access point and saved station credentials. It also
   answers the name `pocketwiki` for clients on that network.
@@ -54,7 +55,7 @@ a catalogue pack.
 | Route | Purpose |
 | --- | --- |
 | `GET /` | Browse the built-in and installed libraries. |
-| `GET /search?q=` | Find exact and prefix title matches. |
+| `GET /search?q=` | Find exact, prefix, then word-start title matches. |
 | `GET /a/<id>?pack=<name>` | Read an article. |
 | `GET /download/<id>?pack=<name>` | Download an article as HTML. |
 | `GET /title/<title>` | Resolve an exact title. |
@@ -72,6 +73,19 @@ a catalogue pack.
 | `POST /api/wifi/config` | Save station credentials. |
 | `GET /api/stats` | Get device telemetry. |
 | `GET /health` | Check service health. |
+
+A reading URL without `?pack=` (`/a/`, `/download/` and `/title/`) is
+redirected to the same URL with the pack named. Packed articles link to
+`/a/<id>` without knowing the name they are installed under, so the device
+takes the library from the Referer (the page the link was on), else the
+built-in one. Without the redirect a link would be answered from whichever
+library another visitor opened last, and a browser would cache it under a URL
+that names no library.
+
+Each handler runs holding the pack store's archive lock, and so does each BLE
+control command. The active archive is one global that reads switch between
+libraries, and uploads and removals close; the lock keeps the BLE service
+from closing a pack file the web server is streaming.
 
 ## Web response budget
 

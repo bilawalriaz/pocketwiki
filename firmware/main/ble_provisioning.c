@@ -119,6 +119,18 @@ static void abort_upload(void)
     oled_clear_transfer();
 }
 
+/* SSIDs are arbitrary bytes: a quote or backslash must not end the string. */
+static void json_escape_ssid(const char *src, char *dst, size_t cap)
+{
+    size_t out = 0;
+    for (size_t i = 0; src[i] && out + 2 < cap; i++) {
+        unsigned char c = (unsigned char)src[i];
+        if (c == '"' || c == '\\') { dst[out++] = '\\'; dst[out++] = (char)c; }
+        else if (c >= 0x20) dst[out++] = (char)c;
+    }
+    dst[out] = 0;
+}
+
 static int append_wifi_status(struct os_mbuf *om)
 {
     wifi_station_status_t status;
@@ -128,13 +140,16 @@ static int append_wifi_status(struct os_mbuf *om)
      * is open by default; password-protected APs fall back to BLE upload. */
     char ap_ip[16];
     if (wifi_ap_get_ip(ap_ip, sizeof ap_ip) != ESP_OK) strlcpy(ap_ip, "-", sizeof ap_ip);
-    char body[240];
+    char ssid[70];
+    json_escape_ssid(status.ssid, ssid, sizeof ssid);
+    char body[280];
     int len = snprintf(body, sizeof body,
         "{\"connected\":%s,\"ssid\":\"%s\",\"ip\":\"%s\",\"reason\":%u,"
         "\"ap_ssid\":\"%s\",\"ap_ip\":\"%s\"}",
-        status.connected ? "true" : "false", status.ssid, status.ip,
+        status.connected ? "true" : "false", ssid, status.ip,
         (unsigned)status.disconnect_reason,
         CONFIG_POCKETWIKI_AP_SSID, ap_ip);
+    if (len < 0 || (size_t)len >= sizeof body) return BLE_ATT_ERR_UNLIKELY;
     return os_mbuf_append(om, body, (uint16_t)len) == 0 ? 0 : BLE_ATT_ERR_INSUFFICIENT_RES;
 }
 
@@ -285,6 +300,13 @@ static int control_access(uint16_t conn_handle, uint16_t attr_handle,
     if (len == 0 || len > sizeof s_response) return BLE_ATT_ERR_INVALID_ATTR_VALUE_LEN;
     uint8_t body[256];
     if (ble_hs_mbuf_to_flat(ctxt->om, body, len, NULL) != 0) return BLE_ATT_ERR_UNLIKELY;
+    /* Commands list, replace and remove packs, which switches or closes the
+     * archive the web server may be streaming from: wait for its request to
+     * finish, briefly, rather than pulling the file out from under it. */
+    if (!pack_store_lock(2000)) {
+        set_response(body[0], PW_BLE_IO_ERROR);
+        return 0;
+    }
     switch (body[0]) {
         case PW_BLE_INFO: respond_info(); break;
         case PW_BLE_PACK_AT:
@@ -300,6 +322,7 @@ static int control_access(uint16_t conn_handle, uint16_t attr_handle,
         case PW_BLE_DELETE: delete_pack(body, len); break;
         default: set_response(body[0], PW_BLE_BAD_COMMAND); break;
     }
+    pack_store_unlock();
     return 0;
 }
 

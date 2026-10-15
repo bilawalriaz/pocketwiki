@@ -34,7 +34,7 @@ nothing to its static memory. Measured on the repository's 2,209-article
 corpus (16,018,944 raw bytes, 7,251.7 B/article, per-article independent
 streams), the format stores **2,189 bytes per article** against 3,418 for
 plain gzip, and 2,388 B/article for the per-domain packs that ship, which is
-825 articles in the C3's pack store and 6,022 in the S3's.
+979 articles in the C3's pack store and 6,204 in the S3's.
 
 ### Limits
 

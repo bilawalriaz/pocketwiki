@@ -34,6 +34,20 @@ static uint32_t s_metadata_articles;
 static bool s_metadata_valid;
 static SemaphoreHandle_t s_metadata_mutex;
 
+static SemaphoreHandle_t s_archive_mutex;
+
+bool pack_store_lock(uint32_t timeout_ms)
+{
+    if (s_archive_mutex == NULL) return false;
+    TickType_t wait = timeout_ms == UINT32_MAX ? portMAX_DELAY : pdMS_TO_TICKS(timeout_ms);
+    return xSemaphoreTake(s_archive_mutex, wait) == pdTRUE;
+}
+
+void pack_store_unlock(void)
+{
+    xSemaphoreGive(s_archive_mutex);
+}
+
 static bool metadata_lock(void)
 {
     return s_metadata_mutex != NULL &&
@@ -72,6 +86,8 @@ esp_err_t pack_store_init(void)
 {
     if (s_metadata_mutex == NULL) s_metadata_mutex = xSemaphoreCreateMutex();
     if (s_metadata_mutex == NULL) return ESP_ERR_NO_MEM;
+    if (s_archive_mutex == NULL) s_archive_mutex = xSemaphoreCreateMutex();
+    if (s_archive_mutex == NULL) return ESP_ERR_NO_MEM;
     s_metadata_valid = false;
     esp_vfs_fat_mount_config_t conf = {
         .format_if_mount_failed = true,
@@ -294,6 +310,18 @@ esp_err_t pack_store_restore_builtin(void)
     return pack_store_open_for_read(PW_BUILTIN_PACK_NAME);
 }
 
+/* Close the pack file `name` if it is the open archive, so it can be replaced
+ * or removed. Restoring the built-in library is not enough: when `name` is the
+ * built-in library's own installed update, restoring it reopens that very
+ * file. FAT names are case-insensitive, and so is this match. */
+static esp_err_t release_pack_file(const char *name)
+{
+    if (strcasecmp(s_active_name, name) != 0 || !ca_get()->from_file) return ESP_OK;
+    ca_revert_to_flash();
+    strlcpy(s_active_name, PW_BUILTIN_PACK_NAME, sizeof s_active_name);
+    return ESP_OK;
+}
+
 bool pack_store_guide_hidden(void)
 {
     return s_guide_hidden;
@@ -324,10 +352,7 @@ esp_err_t pack_store_set_guide_hidden(bool hidden)
 esp_err_t pack_store_remove(const char *name)
 {
     if (name == NULL || !pack_store_safe_name(name)) return ESP_ERR_INVALID_ARG;
-    if (strcmp(s_active_name, name) == 0) {
-        esp_err_t err = pack_store_restore_builtin();
-        if (err != ESP_OK) return err;
-    }
+    release_pack_file(name);
     char path[80];
     path_for(name, path, sizeof path);
     if (!metadata_lock()) return ESP_ERR_INVALID_STATE;
@@ -342,10 +367,7 @@ esp_err_t pack_store_begin_upload(const char *name, FILE **out, char *temp_path,
 {
     if (!pack_store_safe_name(name) || out == NULL || cap < 24) return ESP_ERR_INVALID_ARG;
     /* FAT cannot replace an installed pack while its archive file is open. */
-    if (strcmp(s_active_name, name) == 0) {
-        esp_err_t err = pack_store_restore_builtin();
-        if (err != ESP_OK) return err;
-    }
+    release_pack_file(name);
     strlcpy(temp_path, PW_PACK_DIR "/.upload.tmp", cap);
     FILE *fh = fopen(temp_path, "wb");
     if (fh == NULL) return ESP_FAIL;

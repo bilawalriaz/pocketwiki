@@ -29,6 +29,43 @@ link rewriting, title-normalization parity, QR symbol encoding, catalogue
 parsing, and reference-server routes. Tests that need the article corpus skip
 when the content checkout is not present.
 
+## Run a simulated device
+
+`tools/pwsim.py` compiles the firmware's own web server, archive reader, pack
+store and catalogue reader for the host and boots them the way `app_main.c`
+does, so a change under `firmware/main/` can be tried in a browser in seconds,
+without flashing a board. Only the radio, the flash driver and the HTTP
+transport are stand-ins (see `sim/`).
+
+```sh
+python3 tools/pwsim.py run                         # ESP32-C3 at http://127.0.0.1:8080/
+python3 tools/pwsim.py run --target s3 --port 9000 # the 16 MB S3 pack store
+python3 tools/pwsim.py run --pack build/biology.pwp --fresh
+```
+
+The simulated device keeps the limits that matter to the web server: the C3 or
+S3 pack-store capacity, one handler at a time over a 7-socket pool with LRU
+purge, IDF's 1 KiB request-header and 512-byte URI budgets and its query
+truncation rules, and erased-flash reads past the built-in archive. It is
+built with AddressSanitizer and UBSan. State lives in `build/sim/<target>/`;
+`--fresh` empties the pack store.
+
+The station uplink is up by default so catalogue downloads work. Point the
+device's hard-coded HTTPS URLs at a local server with
+`--map-url https://packs.educated.space=http://127.0.0.1:9000`, or start with
+`--no-uplink`. `PW_SIM_HTTP_DROP_AT=<bytes>` fails one download read at that
+offset, to exercise the installer's restart path, and `PW_SIM_STRICT=1`
+aborts on a handler that never answers or leaves a chunked response open.
+
+`tests/test_device_sim.py` drives a fresh simulated device per test over HTTP:
+article decoding against the packer, uploads, guide updates, catalogue sync
+and verified installs, redirects, slow clients and the socket pool. It needs a
+C compiler and libcurl's headers (`libcurl4-openssl-dev` on Debian/Ubuntu;
+included with macOS), and is skipped without them.
+
+The simulator does not model BLE, heap pressure, Wi-Fi airtime, or flash and
+FAT timing beyond `--flash-read-us`. Confirm those on a board.
+
 ## Build firmware
 
 PlatformIO prepares the stylesheet, catalogue, and built-in pack before each
@@ -114,8 +151,9 @@ python3 tools/pack_content.py build articles/pocketwiki build/preview
 python3 tools/reference_server.py build/preview --port 8080
 ```
 
-The reference server helps you check routes and layout. It does not model
-device memory, BLE, flash latency, or interrupted uploads.
+The reference server helps you check page layout from a single archive. For
+route behaviour, installed packs, and uploads, use the simulated device
+above, which runs the firmware's own handlers.
 
 The public landing page is [`pocketwiki.html`](../pocketwiki.html), the BoardUI
 edition of the project overview, staged as the canonical `/pocketwiki/`. The
@@ -130,7 +168,7 @@ tests and preview both reader widths. To publish the landing page, run
 
 ## Before you open a pull request
 
-1. Run `python3 -m pytest -q`.
+1. Run `python3 -m pytest -q`. It includes the simulated-device suite.
 2. Build firmware if you changed `firmware/`, CMake, Kconfig, or partitions.
 3. Preview HTML or CSS changes at desktop and phone widths.
 4. Keep archive readers and writers compatible, or change the format version.

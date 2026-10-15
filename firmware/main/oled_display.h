@@ -14,6 +14,9 @@ extern "C" {
 
 esp_err_t oled_init(void);
 
+/* True when the detected display's I2C bus uses this GPIO. */
+bool oled_uses_gpio(int gpio);
+
 /* Show live state. online is true when the station-side Wi-Fi connection is
  * active; the setup access point remains available in either state.
  * queued_packs > 0 replaces the reader-address line with the pack queue state,

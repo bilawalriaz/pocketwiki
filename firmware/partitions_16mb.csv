@@ -1,13 +1,14 @@
 # Name,   Type, SubType, Offset,   Size,      Flags
-# ESP32-S3 with 16 MB flash: compact app (1.5 MB), biology content (512 KB),
-# index (64 KB), and the remaining ~14 MB for user-installed portable packs.
-# Sizes sized to measured firmware.bin (~1.3 MB) and biology content.bin (~330 KB)
-# with headroom; everything after index goes to the packs partition. The
+# ESP32-S3 with 16 MB flash: compact app (1.5 MB), the built-in PocketWiki
+# Guide (128 KB content, 16 KB index), and the remaining ~14.8 MB for
+# user-installed portable packs. Sizes fit the measured firmware.bin (~1.2 MB)
+# and guide (~15 KB content, ~1.2 KB index) with headroom; everything after
+# index goes to the packs partition. The
 # packs filesystem is FAT (0x81) with wear levelling - SPIFFS is only
-# practical to ~4 MB, so a 14 MB store must use FAT.
+# practical to ~4 MB, so a 14.8 MB store must use FAT.
 nvs,      data, nvs,     0x9000,   0x6000,
 phy_init, data, phy,     0xf000,   0x1000,
 factory,  app,  factory, 0x10000,  0x180000,
-content,  data, 0x40,    0x190000, 0x80000,
-index,    data, 0x41,    0x210000, 0x10000,
-packs,    data, fat,     0x220000, 0xDE0000,
+content,  data, 0x40,    0x190000, 0x20000,
+index,    data, 0x41,    0x1B0000, 0x4000,
+packs,    data, fat,     0x1B4000, 0xE4C000,

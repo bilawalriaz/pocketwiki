@@ -25,6 +25,13 @@ typedef struct {
 } pack_store_item_t;
 
 esp_err_t pack_store_init(void);
+
+/* The active archive (ca_get()) is one global that pack_store_open_for_read(),
+ * uploads and removals switch or close. The web server holds this lock for
+ * each request and the BLE service for each control command, so neither can
+ * close a pack file the other is reading. Not recursive. */
+bool pack_store_lock(uint32_t timeout_ms);
+void pack_store_unlock(void);
 /* Revalidate installed-pack metadata after external filesystem changes or for
  * diagnostics. Normal reads validate lazily and cache up to 32 pack records;
  * larger libraries fall back to scanning without imposing a pack limit.

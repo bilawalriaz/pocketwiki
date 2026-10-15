@@ -25,6 +25,8 @@ typedef struct {
     uint32_t entry_size;    /* must be 40 */
     tl_read_fn read;
     void *ctx;
+    uint32_t size;          /* total index bytes, or 0 if unknown; lets
+                               tl_word_start size its reads near the end */
 } tl_index_t;
 
 /* Entry field offsets (archive format v1). */
@@ -59,6 +61,14 @@ int tl_exact(const tl_index_t *ix, const uint8_t *norm, size_t norm_len,
  * 0), or -1 on read error. */
 int tl_prefix(const tl_index_t *ix, const uint8_t *norm, size_t norm_len,
               uint32_t *out_ids, int max_ids, int *out_count);
+
+/* Word-start match: titles that do NOT start with norm but where norm begins
+ * right after an ASCII byte other than a letter, digit or apostrophe. Scans the whole index in
+ * title order, reading entries and strings in bounded batches with no heap
+ * allocation, and stops once max_ids ids are found. Returns 0 with
+ * *out_count set (possibly 0), or -1 on read error. */
+int tl_word_start(const tl_index_t *ix, const uint8_t *norm, size_t norm_len,
+                  uint32_t *out_ids, int max_ids, int *out_count);
 
 /* Display title of entry id (UTF-8, not NUL-terminated). Returns 0 and sets
  * *out_len on success; -1 on bounds error or if longer than cap. */

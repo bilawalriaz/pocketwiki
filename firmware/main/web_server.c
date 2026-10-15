@@ -193,6 +193,7 @@ static char *catalog_labels(const pack_store_item_t *items, int count);
 static const char *pack_label(const char *id, const char *labels, int index,
                               char *fallback, size_t cap);
 static void catalog_cache_invalidate(void);
+static bool query_value(httpd_req_t *req, const char *key, char *out, size_t cap);
 
 /* ---- page scaffolding (chunked) ---- */
 
@@ -260,12 +261,19 @@ static int send_library_search_results(httpd_req_t *req, const char *pack,
     if (!ca->valid || limit <= 0) return 0;
     tl_index_t ix = { .entries_off = ca->entries_off, .strings_off = ca->strings_off,
                       .count = ca->count, .entry_size = TL_ENTRY_SIZE,
-                      .read = ca_index_read, .ctx = (void *)ca };
+                      .read = ca_index_read, .ctx = (void *)ca,
+                      .size = ca->index_size };
     uint32_t exact = 0;
     bool have_exact = tl_exact(&ix, norm, norm_len, &exact) == 0;
     uint32_t ids[PW_SEARCH_LIMIT];
     int count = 0;
     if (tl_prefix(&ix, norm, norm_len, ids, limit, &count) != 0) return -1;
+    /* Then titles where the query starts a later word ("wi" -> "Wi-Fi"). */
+    if (count < limit) {
+        int words = 0;
+        if (tl_word_start(&ix, norm, norm_len, ids + count, limit - count, &words) != 0) return -1;
+        count += words;
+    }
     if (!have_exact && count == 0) return 0;
 
     if (html_escape(label, strlen(label), s_render_label_esc, sizeof s_render_label_esc) == 0) return -1;
@@ -729,6 +737,55 @@ static esp_err_t select_requested_library(httpd_req_t *req)
     return pack_store_open_for_read(pack);
 }
 
+/* The library a link was followed from, read from the Referer's pack=
+ * parameter. Packed articles link to "/a/<id>" and "/download/<id>" without
+ * naming their pack (a pack cannot know the name it will be installed under),
+ * so the page the link sits on is what says which library it means. */
+static bool referer_pack(httpd_req_t *req, char *out, size_t cap)
+{
+    char referer[256];
+    size_t len = httpd_req_get_hdr_value_len(req, "Referer");
+    if (len == 0 || len >= sizeof referer ||
+            httpd_req_get_hdr_value_str(req, "Referer", referer, sizeof referer) != ESP_OK) {
+        return false;
+    }
+    const char *query = strchr(referer, '?');
+    if (query == NULL) return false;
+    char *hash = strchr(query, '#');
+    if (hash != NULL) *hash = '\0';
+    return httpd_query_key_value(query + 1, "pack", out, cap) == ESP_OK &&
+           pack_store_safe_name(out);
+}
+
+/* A reading URL without ?pack= is ambiguous: the device serves several
+ * libraries from the same routes, and without a name the request would be
+ * answered from whichever library another visitor opened last. Redirect it to
+ * the canonical URL - the library of the referring page, else the built-in
+ * one - so every cached or bookmarked URL means exactly one article. Returns
+ * true when the request was answered with the redirect. */
+static char s_canonical_location[CONFIG_HTTPD_MAX_URI_LEN + 64];
+
+static bool redirect_to_canonical(httpd_req_t *req, esp_err_t *result)
+{
+    char pack[PW_PACK_NAME_MAX + 1];
+    if (query_value(req, "pack", pack, sizeof pack)) return false;
+    if (!referer_pack(req, pack, sizeof pack)) {
+        strlcpy(pack, PW_BUILTIN_PACK_NAME, sizeof pack);
+    }
+    const char *uri = req->uri;
+    const char *query = strchr(uri, '?');
+    int n = query == NULL
+        ? snprintf(s_canonical_location, sizeof s_canonical_location, "%s?pack=%s", uri, pack)
+        : snprintf(s_canonical_location, sizeof s_canonical_location, "%.*s?pack=%s&%s",
+                   (int)(query - uri), uri, pack, query + 1);
+    if (n < 0 || (size_t)n >= sizeof s_canonical_location) return false;
+    httpd_resp_set_status(req, "302 Found");
+    httpd_resp_set_hdr(req, "Location", s_canonical_location);
+    httpd_resp_set_hdr(req, "Cache-Control", "no-store");
+    *result = send_plain(req, NULL, 0);
+    return true;
+}
+
 static esp_err_t handle_article_id(httpd_req_t *req)
 {
     /* uri = "/a/<digits>" */
@@ -750,6 +807,8 @@ static esp_err_t handle_article_id(httpd_req_t *req)
         return send_error(req, 400, "400 Bad Request", "Bad article id",
                           "Article id out of range.");
     }
+    esp_err_t redirected;
+    if (redirect_to_canonical(req, &redirected)) return redirected;
     if (select_requested_library(req) != ESP_OK) {
         return send_error(req, 404, "404 Not Found", "Library not found",
                           "That library is no longer installed. Return to the library shelf and choose another.");
@@ -778,6 +837,8 @@ static esp_err_t handle_download_id(httpd_req_t *req)
         return send_error(req, 400, "400 Bad Request", "Bad article id",
                           "Article id out of range.");
     }
+    esp_err_t redirected;
+    if (redirect_to_canonical(req, &redirected)) return redirected;
     if (select_requested_library(req) != ESP_OK) {
         return send_error(req, 404, "404 Not Found", "Library not found",
                           "That library is no longer installed. Return to the library shelf and choose another.");
@@ -807,6 +868,8 @@ static esp_err_t handle_article_title(httpd_req_t *req)
         return send_error(req, 400, "400 Bad Request", "Bad title", "Empty title.");
     }
 
+    esp_err_t redirected;
+    if (redirect_to_canonical(req, &redirected)) return redirected;
     if (select_requested_library(req) != ESP_OK) {
         return send_error(req, 404, "404 Not Found", "Library not found",
                           "That library is no longer installed.");
@@ -920,12 +983,19 @@ static esp_err_t json_error(httpd_req_t *req, const char *status, const char *me
     return send_plain(req, body, strlen(body));
 }
 
+/* The server accepts a 512-byte URI (CONFIG_HTTPD_MAX_URI_LEN), and a pack
+ * URL arrives percent-encoded inside it, so the query buffer must hold all of
+ * it: a shorter one turns a long but valid URL into "not an HTTPS URL". It is
+ * static because handlers are serialized and the httpd stack is small. */
+static char s_query_raw[CONFIG_HTTPD_MAX_URI_LEN + 1];
+
 static bool query_value(httpd_req_t *req, const char *key, char *out, size_t cap)
 {
-    char raw[192];
+    char *raw = s_query_raw;
+    const size_t raw_cap = sizeof s_query_raw;
     size_t len = httpd_req_get_url_query_len(req);
-    return len > 0 && len < sizeof raw &&
-           httpd_req_get_url_query_str(req, raw, sizeof raw) == ESP_OK &&
+    return len > 0 && len < raw_cap &&
+           httpd_req_get_url_query_str(req, raw, raw_cap) == ESP_OK &&
            httpd_query_key_value(raw, key, out, cap) == ESP_OK;
 }
 
@@ -950,6 +1020,21 @@ static void url_decode(char *s)
         }
     }
     s[out] = '\0';
+}
+
+/* httpd_req_recv() with the socket's 3 s receive timeout treated as a pause,
+ * not an end: a phone uploading over a busy shared channel routinely stalls
+ * that long between segments. Gives up after PW_RECV_STALL_LIMIT consecutive
+ * timeouts (about 30 s) or on any other socket error. */
+#define PW_RECV_STALL_LIMIT 10
+
+static int recv_patiently(httpd_req_t *req, char *buf, size_t len)
+{
+    for (int stalls = 0;; stalls++) {
+        int got = httpd_req_recv(req, buf, len);
+        if (got != HTTPD_SOCK_ERR_TIMEOUT || stalls >= PW_RECV_STALL_LIMIT) return got;
+        if (esp_task_wdt_status(NULL) == ESP_OK) esp_task_wdt_reset();
+    }
 }
 
 static esp_err_t handle_wifi_scan(httpd_req_t *req)
@@ -1005,7 +1090,7 @@ static esp_err_t handle_wifi_config(httpd_req_t *req)
     char body[257];
     int total = 0;
     while (total < req->content_len) {
-        int got = httpd_req_recv(req, body + total, req->content_len - total);
+        int got = recv_patiently(req, body + total, req->content_len - total);
         if (got <= 0) return json_error(req, "400 Bad Request",
                                         "The Wi-Fi request was incomplete.");
         total += got;
@@ -1024,7 +1109,8 @@ static esp_err_t handle_wifi_config(httpd_req_t *req)
     if (err != ESP_OK) return json_error(req, "400 Bad Request",
                                          "Could not save the Wi-Fi details. Check the network name and password.");
     httpd_resp_set_type(req, "application/json; charset=utf-8");
-    return SEND_LITERAL(req, "{\"ok\":true,\"state\":\"connecting\"}\n");
+    static const char ok[] = "{\"ok\":true,\"state\":\"connecting\"}\n";
+    return send_plain(req, ok, sizeof ok - 1);
 }
 
 static esp_err_t handle_packs(httpd_req_t *req)
@@ -1084,7 +1170,7 @@ static esp_err_t handle_guide_toggle(httpd_req_t *req)
     int remaining = req->content_len;
     while (remaining > 0) {
         int want = remaining > (int)sizeof scratch ? (int)sizeof scratch : remaining;
-        int got = httpd_req_recv(req, scratch, want);
+        int got = recv_patiently(req, scratch, want);
         if (got <= 0) break;
         remaining -= got;
     }
@@ -1142,7 +1228,7 @@ static esp_err_t handle_pack_upload(httpd_req_t *req)
     size_t next_display = 8192;
     while (remaining > 0) {
         int want = remaining > (int)sizeof buffer ? (int)sizeof buffer : remaining;
-        int got = httpd_req_recv(req, (char *)buffer, want);
+        int got = recv_patiently(req, (char *)buffer, want);
         if (got <= 0) {
             pack_store_abort_upload(fh, temp);
             oled_clear_transfer();
@@ -1181,7 +1267,8 @@ static esp_err_t handle_pack_upload(httpd_req_t *req)
  * handle_packs_catalog_sync) so the dashboard shows fresh packs even when the
  * browser has no internet of its own, e.g. joined to the PocketWiki access
  * point. The build-time embedded catalogue remains the fallback. */
-#define CATALOG_FILE "/packs/.catalog.json"
+#define CATALOG_FILE PW_PACK_DIR "/.catalog.json"
+#define CATALOG_TMP_FILE PW_PACK_DIR "/.catalog.tmp"
 #define CATALOG_FILE_MAX 262144
 #define CATALOG_LIVE_URL "https://packs.educated.space/index.json"
 
@@ -1530,7 +1617,7 @@ static esp_err_t handle_packs_catalog_sync(httpd_req_t *req)
     }
     /* Stream straight to flash: the document plus a parsed tree does not fit
      * the C3 heap, and the index is built from the file afterwards. */
-    FILE *out = fopen("/packs/.catalog.tmp", "wb");
+    FILE *out = fopen(CATALOG_TMP_FILE, "wb");
     if (out == NULL) {
         fail = "PocketWiki could not save the refreshed catalogue.";
         goto sync_done;
@@ -1544,7 +1631,7 @@ static esp_err_t handle_packs_catalog_sync(httpd_req_t *req)
             if (n <= 0) break;
             if (fwrite(chunk, 1, (size_t)n, out) != (size_t)n) {
                 fclose(out);
-                unlink("/packs/.catalog.tmp");
+                unlink(CATALOG_TMP_FILE);
                 fail = "PocketWiki could not save the refreshed catalogue.";
                 goto sync_done;
             }
@@ -1554,16 +1641,16 @@ static esp_err_t handle_packs_catalog_sync(httpd_req_t *req)
     }
     fclose(out);
     if (got != total) {
-        unlink("/packs/.catalog.tmp");
+        unlink(CATALOG_TMP_FILE);
         fail = "The catalogue download was incomplete. Try again.";
         goto sync_done;
     }
     {
-        FILE *check = fopen("/packs/.catalog.tmp", "rb");
+        FILE *check = fopen(CATALOG_TMP_FILE, "rb");
         bool valid = check != NULL && pw_catalog_validate(catalog_file_read, check);
         if (check != NULL) fclose(check);
         if (!valid) {
-            unlink("/packs/.catalog.tmp");
+            unlink(CATALOG_TMP_FILE);
             ESP_LOGW(TAG, "catalogue sync: downloaded document rejected (%lld bytes)", (long long)got);
             fail = "The downloaded catalogue failed validation.";
             goto sync_done;
@@ -1575,12 +1662,12 @@ static esp_err_t handle_packs_catalog_sync(httpd_req_t *req)
          * safely written; the embedded catalogue remains the fallback if the
          * subsequent rename is interrupted. */
         if (unlink(CATALOG_FILE) != 0 && errno != ENOENT) {
-            unlink("/packs/.catalog.tmp");
+            unlink(CATALOG_TMP_FILE);
             fail = "PocketWiki could not replace the refreshed catalogue.";
             goto sync_done;
         }
-        if (rename("/packs/.catalog.tmp", CATALOG_FILE) != 0) {
-            unlink("/packs/.catalog.tmp");
+        if (rename(CATALOG_TMP_FILE, CATALOG_FILE) != 0) {
+            unlink(CATALOG_TMP_FILE);
             fail = "PocketWiki could not save the refreshed catalogue.";
             goto sync_done;
         }
@@ -2411,6 +2498,21 @@ static void flash_pack_queue_task(void *arg)
     vTaskDelete(NULL);
 }
 
+/* Every route runs with the archive lock held: handlers switch the active
+ * library freely, and the BLE service must not close a pack file mid-response.
+ * user_ctx carries the route's own entry. */
+static esp_err_t dispatch_locked(httpd_req_t *req)
+{
+    const httpd_uri_t *route = req->user_ctx;
+    if (!pack_store_lock(UINT32_MAX)) {
+        return send_error(req, 503, "503 Service Unavailable", "Library busy",
+                          "The library is not ready yet. Try again.");
+    }
+    esp_err_t result = route->handler(req);
+    pack_store_unlock();
+    return result;
+}
+
 uint32_t web_server_pack_queue_pending(void)
 {
     return s_queue_pending;
@@ -2443,8 +2545,7 @@ esp_err_t web_server_init(void)
         { .uri = "/",           .method = HTTP_GET,  .handler = handle_root },
         { .uri = "/search",     .method = HTTP_GET,  .handler = handle_search },
         { .uri = "/download/*", .method = HTTP_GET,  .handler = handle_download_id },
-        { .uri = "/a/*",        .method = HTTP_GET,  .handler = handle_article_id,
-          .user_ctx = NULL },
+        { .uri = "/a/*",        .method = HTTP_GET,  .handler = handle_article_id },
         { .uri = "/title/*",    .method = HTTP_GET,  .handler = handle_article_title },
         { .uri = "/browse",     .method = HTTP_GET,  .handler = handle_browse },
         { .uri = "/style.css",  .method = HTTP_GET,  .handler = handle_style },
@@ -2464,14 +2565,20 @@ esp_err_t web_server_init(void)
         { .uri = "/api/stats",  .method = HTTP_GET,  .handler = handle_stats },
     };
     for (size_t i = 0; i < sizeof uris / sizeof uris[0]; i++) {
-        esp_err_t err = httpd_register_uri_handler(server, &uris[i]);
+        httpd_uri_t route = uris[i];
+        route.handler = dispatch_locked;
+        route.user_ctx = (void *)&uris[i];
+        esp_err_t err = httpd_register_uri_handler(server, &route);
         if (err != ESP_OK) {
             httpd_stop(server);
             return err;
         }
     }
     /* catch-all */
-    httpd_uri_t all = { .uri = "/*", .method = HTTP_GET, .handler = handle_404 };
+    static const httpd_uri_t all_route = { .uri = "/*", .method = HTTP_GET, .handler = handle_404 };
+    httpd_uri_t all = all_route;
+    all.handler = dispatch_locked;
+    all.user_ctx = (void *)&all_route;
     esp_err_t err = httpd_register_uri_handler(server, &all);
     if (err != ESP_OK) {
         httpd_stop(server);

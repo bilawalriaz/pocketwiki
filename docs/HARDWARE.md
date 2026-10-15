@@ -55,9 +55,11 @@ PocketWiki supports a 128 x 64 SSD1306 OLED over I2C.
 
 The display is optional. If the firmware cannot find it, the library and web
 server still work. On an ESP32-S3, GPIO0 is a boot strap pin; keep it high
-during reset. For a custom S3 board, GPIO1 for SDA and GPIO2 for SCL are safer
-choices. Do not use flash/PSRAM pins or other strapping pins without checking
-the module design.
+during reset. For a custom S3 board, GPIO1 and GPIO2 are safer choices. When
+nothing answers on the configured pins, the S3 firmware also tries SDA 1 /
+SCL 2 and SDA 2 / SCL 1, so a panel on that pair works whichever way round it
+is wired; the boot log names the pins it found. Do not use flash/PSRAM pins or
+other strapping pins without checking the module design.
 
 ## Boot button
 
@@ -72,24 +74,47 @@ anything.
 
 The default is per target (`POCKETWIKI_BUTTON_GPIO`: 9 on the C3, 0 on the
 S3), and both are active low with the internal pull-up enabled. If the button
-GPIO equals the OLED SDA or SCL pin, the firmware logs the conflict and
+GPIO is one the display was found on, the firmware logs the conflict and
 disables the button rather than sharing the pin with I2C traffic. On the S3,
-move the display to the safer SDA 1 / SCL 2 pair (or set
-`POCKETWIKI_BUTTON_GPIO` to another free pin) to use the button.
+wire the display to GPIO1/GPIO2 (or set `POCKETWIKI_BUTTON_GPIO` to another
+free pin) to use the button.
 `POCKETWIKI_BUTTON_ENABLE=n` removes the feature entirely.
 
 ## Flash layout
 
-The C3 layout reserves a 1.5 MiB app partition, 448 KiB for built-in content,
-64 KiB for its index, and a 1,978,368-byte FAT-usable installed-pack store
-before the 8 KiB safety reserve. The 16 MB S3 model provides 14,389,248 FAT
-usable bytes and 14,381,056 bytes after that reserve. These values are generated
+Both layouts reserve a 1.5 MiB app partition, 128 KiB for the built-in
+PocketWiki Guide's content and 16 KiB for its index (the guide packs to about
+15 KB and 1.2 KB; `tools/pack_content.py partition-image` fails the build if it
+outgrows them). Everything after `0x1B4000` is the installed-pack store. On
+the C3 that is 2,347,008 FAT-usable bytes, or 2,338,816 after the 8 KiB safety
+reserve; the 16 MB S3 provides 14,823,424 FAT-usable bytes and 14,815,232
+after that reserve. These values are generated
 from the repository partition tables with IDF FAT geometry; confirm mounted
 capacity on the target module.
 
-The current staged firmware images measure 1,227,184 bytes (C3) and 1,146,672
-bytes (S3). The C3 app therefore has 345,680 bytes of image headroom; the S3
-has 426,192 bytes.
+The current staged firmware images measure 1,230,000 bytes (C3) and 1,153,376
+bytes (S3). The C3 app therefore has 342,864 bytes of image headroom; the S3
+has 419,488 bytes.
+
+### Upgrading across the October 2026 layout change
+
+Earlier firmware gave built-in content 448 KiB (C3) or 512 KiB (S3) and its
+index 64 KiB, with the pack store starting at `0x210000` (C3) or `0x220000`
+(S3). The pack store now starts at `0x1B4000`, so a pack store written by
+older firmware is not readable after the update: installed packs are lost and
+must be installed again. The wear-levelling state sits at the end of the
+partition, which did not move, so do not rely on the firmware noticing the
+stale store and reformatting it. When moving a device across this change,
+erase the whole flash first and then flash all images as the [development
+guide](DEVELOPMENT.md) shows:
+
+```sh
+python3 -m esptool --chip esp32c3 --port /dev/cu.usbmodemXXXX erase-flash
+```
+
+Use `--chip esp32s3` for the S3. The browser flasher already erases the flash
+before writing. Saved Wi-Fi settings live in `nvs`, which does not move, but
+`erase-flash` clears them too.
 
 The `packs` partition uses FAT with wear levelling. `tools/benchmark_flash_budget.py`
 measures the packer over the corpus and writes `benchmarks/flash_budget.json`,

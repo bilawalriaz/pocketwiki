@@ -132,6 +132,79 @@ int tl_prefix(const tl_index_t *ix, const uint8_t *norm, size_t norm_len,
     return 0;
 }
 
+/* ---- word-start search (mirror of archive_format.word_start_match) ---- */
+
+/* A word starts after any ASCII byte that is not a letter, digit or
+ * apostrophe ("wi-fi", "world war", "(film)"). Bytes >= 0x80 belong to UTF-8
+ * characters and never end a word, so a match never starts mid-character. */
+static int tl_word_byte(uint8_t b)
+{
+    return b >= 0x80 || (b >= 'a' && b <= 'z') || (b >= '0' && b <= '9') ||
+           (b >= 'A' && b <= 'Z') || b == '\'';
+}
+
+static int word_start_match(const uint8_t *t, size_t tlen,
+                            const uint8_t *norm, size_t norm_len)
+{
+    if (tlen < norm_len) return 0;
+    if (memcmp(t, norm, norm_len) == 0) return 0;   /* a prefix hit, found earlier */
+    for (size_t i = 1; i + norm_len <= tlen; i++) {
+        if (!tl_word_byte(t[i - 1]) && memcmp(t + i, norm, norm_len) == 0) return 1;
+    }
+    return 0;
+}
+
+#define TL_SCAN_ENTRIES 16                  /* 640 B of entries per read */
+#define TL_SCAN_WINDOW  768                 /* string-table bytes per read */
+
+int tl_word_start(const tl_index_t *ix, const uint8_t *norm, size_t norm_len,
+                  uint32_t *out_ids, int max_ids, int *out_count)
+{
+    *out_count = 0;
+    if (norm_len == 0 || norm_len > 255 || max_ids <= 0) return 0;
+
+    /* The packer writes each entry's strings in entry order, so one window
+     * read usually covers the titles of several entries. Any layout still
+     * works: a title outside the window just moves the window. */
+    uint8_t ents[TL_SCAN_ENTRIES * TL_ENTRY_SIZE];
+    uint8_t win[TL_SCAN_WINDOW];
+    uint32_t win_off = 0, win_len = 0;
+
+    for (uint32_t base = 0; base < ix->count; base += TL_SCAN_ENTRIES) {
+        uint32_t n = ix->count - base;
+        if (n > TL_SCAN_ENTRIES) n = TL_SCAN_ENTRIES;
+        if (ix->read(ix->ctx, ix->entries_off + base * ix->entry_size, ents,
+                     (size_t)n * TL_ENTRY_SIZE) != 0) {
+            return -1;
+        }
+        for (uint32_t k = 0; k < n; k++) {
+            const uint8_t *ent = ents + k * TL_ENTRY_SIZE;
+            uint32_t noff = rd32(ent + TL_ENTRY_OFF_NORM_OFF);
+            uint32_t nlen = rd16(ent + TL_ENTRY_OFF_NORM_LEN);
+            if (nlen > 255) return -1;
+            if (nlen < norm_len) continue;
+            if (noff < win_off || nlen > win_len || noff - win_off > win_len - nlen) {
+                /* Refill from noff, clamped to the index when its size is
+                 * known; otherwise a window past the end falls back to just
+                 * this title. */
+                win_off = noff;
+                win_len = TL_SCAN_WINDOW;
+                if (ix->size > noff && ix->size - noff < win_len) win_len = ix->size - noff;
+                if (win_len < nlen) win_len = nlen;
+                if (ix->read(ix->ctx, win_off, win, win_len) != 0) {
+                    win_len = nlen;
+                    if (ix->read(ix->ctx, win_off, win, win_len) != 0) return -1;
+                }
+            }
+            if (word_start_match(win + (noff - win_off), nlen, norm, norm_len)) {
+                out_ids[(*out_count)++] = base + k;
+                if (*out_count >= max_ids) return 0;
+            }
+        }
+    }
+    return 0;
+}
+
 int tl_read_display_title(const tl_index_t *ix, uint32_t id, uint8_t *buf,
                           size_t cap, uint32_t *out_len)
 {

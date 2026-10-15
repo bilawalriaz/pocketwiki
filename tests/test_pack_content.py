@@ -448,14 +448,14 @@ def test_cli_partition_image_fits(tmp_path):
     r = run_cli("partition-image", str(out),
                 "--partitions", os.path.join(REPO, "firmware", "partitions.csv"))
     assert r.returncode == 0, r.stderr
-    assert os.path.getsize(out / "content.part") == 0x70000
-    assert os.path.getsize(out / "index.part") == 0x10000
+    assert os.path.getsize(out / "content.part") == 0x20000
+    assert os.path.getsize(out / "index.part") == 0x4000
 
 
 def test_cli_partition_image_overflow(tmp_path):
     out = tmp_path / "o"
     pack_content.build(os.path.join(REPO, "tests", "fixtures", "articles", "sample"), str(out))
-    (out / "content.bin").write_bytes(b"\x00" * (0x70000 + 1))
+    (out / "content.bin").write_bytes(b"\x00" * (0x20000 + 1))
     r = run_cli("partition-image", str(out),
                 "--partitions", os.path.join(REPO, "firmware", "partitions.csv"))
     assert r.returncode == 1 and "exceeds" in r.stderr

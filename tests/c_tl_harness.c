@@ -1,10 +1,12 @@
 /* Host-side harness for the firmware's title_lookup.c.
  *
- * Usage: c_tl_harness <index.bin>
+ * Usage: c_tl_harness <index.bin> [nosize]
+ *   nosize leaves tl_index_t.size at 0, as a caller that does not know it.
  *   stdin lines:
  *     n <hex>   -> normalized hex of <hex>
  *     e <hex>   -> entry id of exact match, or -
  *     p <hex>   -> space-separated prefix-match ids, or -
+ *     w <hex>   -> space-separated word-start-match ids, or -
  *
  * The index file is loaded into RAM and served through the same reader
  * callback interface the firmware uses, so the exact firmware code paths
@@ -44,8 +46,8 @@ static int hex_to_bytes(const char *hex, uint8_t *out, size_t cap, size_t *out_l
 
 int main(int argc, char **argv)
 {
-    if (argc != 2) {
-        fprintf(stderr, "usage: %s <index.bin>\n", argv[0]);
+    if (argc != 2 && !(argc == 3 && strcmp(argv[2], "nosize") == 0)) {
+        fprintf(stderr, "usage: %s <index.bin> [nosize]\n", argv[0]);
         return 2;
     }
     FILE *f = fopen(argv[1], "rb");
@@ -72,6 +74,7 @@ int main(int argc, char **argv)
     /* derive layout from the header like the firmware does */
     ix.strings_off = (uint32_t)(s_data[16] | (s_data[17] << 8) | (s_data[18] << 16) | (s_data[19] << 24));
     ix.count = (uint32_t)(s_data[8] | (s_data[9] << 8) | (s_data[10] << 16) | (s_data[11] << 24));
+    ix.size = argc == 3 ? 0 : (uint32_t)s_len;
 
     char line[1024];
     uint8_t in[512], norm[512];
@@ -94,11 +97,13 @@ int main(int argc, char **argv)
             uint32_t id;
             if (tl_exact(&ix, norm, norm_len, &id) == 0) printf("%lu\n", (unsigned long)id);
             else printf("-\n");
-        } else if (mode == 'p') {
+        } else if (mode == 'p' || mode == 'w') {
             size_t norm_len = tl_normalize(in, in_len, norm);
             uint32_t ids[20];
             int n = 0;
-            if (tl_prefix(&ix, norm, norm_len, ids, 20, &n) == 0 && n > 0) {
+            int rc = mode == 'p' ? tl_prefix(&ix, norm, norm_len, ids, 20, &n)
+                                 : tl_word_start(&ix, norm, norm_len, ids, 20, &n);
+            if (rc == 0 && n > 0) {
                 for (int i = 0; i < n; i++) printf("%s%lu", i ? " " : "", (unsigned long)ids[i]);
                 printf("\n");
             } else {
